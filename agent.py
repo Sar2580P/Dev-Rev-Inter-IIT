@@ -18,12 +18,12 @@ class PersonalAgent:
                         )
 
     def run(self, query):
-        try:
-            response = self.agent(query)
-            return response
-        except Exception as e:
-            print(e)
-        return "I did not get that. Please try again."
+        # try:
+        response = self.agent(query)
+        return response
+        # except Exception as e:
+            # print(e)
+        # return "I did not get that. Please try again."
 
 
 agent_chain = PersonalAgent()

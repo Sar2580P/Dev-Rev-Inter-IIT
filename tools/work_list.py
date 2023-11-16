@@ -6,7 +6,6 @@ from langchain.callbacks.manager import (
 )
 import sqlite3
 from tools.argument_mapping.get_args import fill_signature
-import inspect
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from backend_llm.utils import llm
@@ -16,10 +15,12 @@ TEMPLATE = '''
 You are good at writing SQL queries. You have a database with the following table : 
 {table_name} 
 
-table schema :
-{table_schema}
+name of columns in table:
+{column_names}
 
-table sample rows :
+The above list of columns are arranged according to following samples.
+
+sample rows of the same table:
 {table_sample_rows}
 
 You want to query the table with the following arguments :
@@ -29,15 +30,17 @@ You want to query the table with the following arguments :
 Check that sql query is correct before executing it.
 '''
 prompt = PromptTemplate(template=TEMPLATE , 
-                        input_variables=['table_name' , 'table_schema' , 'table_sample_rows' , 'columns']
+                        input_variables=['table_name' , 'column_names' , 'table_sample_rows' , 'columns']
                         )
         
-syntax_chain = LLMChain(llm = llm, prompt=prompt)
+syntax_chain = LLMChain(llm = llm, prompt=prompt , verbose=True)
 
 class WorkList(BaseTool):
     name = "works_list"
     description = '''This tool is useful for querying  table : student 
-    
+        Don't worry about the syntax , just pass query in natural language 
+        It will be converted to SQL query by the tool.
+        
         table following columns:
             applies_to_part ,
             created_by ,
@@ -50,12 +53,13 @@ class WorkList(BaseTool):
             ticket_severity ,
             ticket_source_channel ,
             type ,
+        
     '''
 
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
-        
+        print('inside worklist , query is : \n' , query) 
         signature = {'applies_to_part': List[str],
                     'created_by': List[str] ,
                     'issue_priority': List[str] ,
@@ -69,16 +73,17 @@ class WorkList(BaseTool):
                     'type': List[str],}
         
         table_name = 'student'
-        column_args = fill_signature(query,inspect.signature(signature))
         conn = sqlite3.connect('experimental_db\sample_database.db')
         cursor = conn.cursor()
-        table_schema ,sample_rows = self.get_table_info(table_name, cursor)
-
+        column_names ,sample_rows = self.get_table_info(table_name, cursor)
+        column_args = fill_signature(query,columns=column_names ,sample_rows=sample_rows ,function_signatures= signature)
+        print('\n\n\n\n\n' ,column_args , '\n\n\n\n\n\n')
+        print('Hi')
         sql_query = syntax_chain.run({'table_name' : table_name ,
-                                      'table_schema' : table_schema , 
+                                      'column_names' : column_names , 
                                       'table_sample_rows': sample_rows ,
                                       'columns' : column_args})
-
+        # sql_query = "SELECT * FROM student WHERE issue_priority = 'p0';"
         print('\n\n\n' , sql_query , '\n\n\n')
         rows = cursor.execute(sql_query).fetchall()
         print(rows)
@@ -97,15 +102,15 @@ class WorkList(BaseTool):
         rows = cursor.fetchall()
         table_schema = ''
         sample_rows = ''
-        for row in rows:
-            table_schema += str(row) + '\n'
+        column_names = [column[1] for column in rows]
+
         query = "SELECT * FROM {table_name} LIMIT {num_rows_to_fetch};".format(table_name=table_name , 
                                                                                 num_rows_to_fetch=3)
         cursor.execute(query)
         rows = cursor.fetchall()
         for row in rows:
             sample_rows += str(row) + '\n'
-        return table_schema , sample_rows
+        return column_names , sample_rows
 
 
     async def _arun(

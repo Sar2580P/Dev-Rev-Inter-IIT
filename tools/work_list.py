@@ -11,17 +11,10 @@ from langchain.chains import LLMChain
 from backend_llm.utils import llm
 
 
+
 TEMPLATE = '''
 You are good at writing SQL queries. You have a database with the following table : 
 {table_name} 
-
-name of columns in table:
-{column_names}
-
-The above list of columns are arranged according to following samples.
-
-sample rows of the same table:
-{table_sample_rows}
 
 You want to query the table with the following arguments :
 {columns}
@@ -30,7 +23,7 @@ You want to query the table with the following arguments :
 Check that sql query is correct before executing it.
 '''
 prompt = PromptTemplate(template=TEMPLATE , 
-                        input_variables=['table_name' , 'column_names' , 'table_sample_rows' , 'columns']
+                        input_variables=['table_name' , 'columns']
                         )
         
 syntax_chain = LLMChain(llm = llm, prompt=prompt , verbose=True)
@@ -80,8 +73,6 @@ class WorkList(BaseTool):
         print('\n\n\n\n\n' ,column_args , '\n\n\n\n\n\n')
         print('Hi')
         sql_query = syntax_chain.run({'table_name' : table_name ,
-                                      'column_names' : column_names , 
-                                      'table_sample_rows': sample_rows ,
                                       'columns' : column_args})
         # sql_query = "SELECT * FROM student WHERE issue_priority = 'p0';"
         print('\n\n\n' , sql_query , '\n\n\n')

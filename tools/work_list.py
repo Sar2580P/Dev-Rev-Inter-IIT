@@ -4,29 +4,11 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
-import sqlite3
 from tools.argument_mapping.get_args import fill_signature
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from backend_llm.utils import llm
 
-
-
-TEMPLATE = '''
-You are good at writing SQL queries. You have a database with the following table : 
-{table_name} 
-
-You want to query the table with the following arguments :
-{columns}
-
-
-Check that sql query is correct before executing it.
-'''
-prompt = PromptTemplate(template=TEMPLATE , 
-                        input_variables=['table_name' , 'columns']
-                        )
-        
-syntax_chain = LLMChain(llm = llm, prompt=prompt , verbose=True)
 
 class WorkList(BaseTool):
     name = "works_list"
@@ -51,7 +33,7 @@ class WorkList(BaseTool):
 
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
-    ) -> str:
+    ) :
         print('inside worklist , query is : \n' , query) 
         signature = {'applies_to_part': List[str],
                     'created_by': List[str] ,
@@ -65,19 +47,20 @@ class WorkList(BaseTool):
                     'ticket_source_channel': List[str] ,
                     'type': List[str],}
         
-        table_name = 'student'
-        conn = sqlite3.connect('experimental_db\sample_database.db')
-        cursor = conn.cursor()
-        column_names ,sample_rows = self.get_table_info(table_name, cursor)
-        column_args = fill_signature(query,columns=column_names ,sample_rows=sample_rows ,function_signatures= signature)
-        print('\n\n\n\n\n' ,column_args , '\n\n\n\n\n\n')
-        print('Hi')
-        sql_query = syntax_chain.run({'table_name' : table_name ,
-                                      'columns' : column_args})
-        # sql_query = "SELECT * FROM student WHERE issue_priority = 'p0';"
-        print('\n\n\n' , sql_query , '\n\n\n')
-        rows = cursor.execute(sql_query).fetchall()
-        print(rows)
+        arg_description = {
+            'applies_to_part': 'part to which issue applies',
+            'created_by': 'name of person who created the issue',
+            'issue_priority': ' either of types : "p0" , "p1" , "p2" ',
+            'issue_rev_orgs': 'orgs that reviewed issue',
+            'owned_by': 'name of person who owns the issue',
+            'stage_name': 'stage of issue',
+            'ticket_needs_response': 'whether ticket needs response',
+            'ticket_rev_org': 'orgs that reviewed ticket',
+            'ticket_severity': 'severity of ticket',
+            'ticket_source_channel': 'source channel of ticket',
+            'type': 'type of issue',
+        }
+        column_args = fill_signature(query,function_signatures= signature)
         li = []
         for key, value in column_args.items():
           x = {
@@ -85,24 +68,8 @@ class WorkList(BaseTool):
               'argument_value': value,
           }
           li.append(x)
-        return rows , li
-    
-    def get_table_info(self, table_name, cursor):
-        query = "PRAGMA table_info({table_name})".format(table_name=table_name)
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        table_schema = ''
-        sample_rows = ''
-        column_names = [column[1] for column in rows]
-
-        query = "SELECT * FROM {table_name} LIMIT {num_rows_to_fetch};".format(table_name=table_name , 
-                                                                                num_rows_to_fetch=3)
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        for row in rows:
-            sample_rows += str(row) + '\n'
-        return column_names , sample_rows
-
+        ans = "The function returns work list"
+        return  ans , li
 
     async def _arun(
         self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None

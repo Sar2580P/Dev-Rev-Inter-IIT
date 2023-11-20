@@ -1,4 +1,5 @@
 from langchain.agents import ZeroShotAgent, AgentExecutor
+from langchain.agents.agent import *
 from backend_llm.utils import llm
 from tools.tool_collection import *
 from langchain.agents import initialize_agent
@@ -27,5 +28,8 @@ class PersonalAgent:
 
 
 agent_chain = PersonalAgent()
-x = agent_chain.run('list p0 issues')
+x = agent_chain.run('list p0 issues.')
 print('\n\n\n\n\n\n\n\n\n' , x)
+
+
+# 

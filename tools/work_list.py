@@ -14,9 +14,8 @@ class WorkList(BaseTool):
     name = "works_list"
     description = '''This tool is useful for querying  table : student 
         Don't worry about the syntax , just pass query in natural language 
-        It will be converted to SQL query by the tool.
         
-        table following columns:
+        table has following columns:
             applies_to_part ,
             created_by ,
             issue_priority ,
@@ -69,7 +68,7 @@ class WorkList(BaseTool):
           }
           li.append(x)
         ans = "The function returns work list"
-        return  ans , li
+        return   li
 
     async def _arun(
         self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None

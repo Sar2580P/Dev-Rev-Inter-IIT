@@ -1,44 +1,7 @@
-from langchain.agents import ZeroShotAgent, AgentExecutor
 from langchain.agents.agent import *
 from backend_llm.utils import llm
 from tools.tool_collection import *
-from langchain.agents import initialize_agent
-from langchain.agents import AgentType
-
-
-class PersonalAgent:
-    def __init__(self):
-        
-        # agent
-        self.agent = initialize_agent(
-                        task_tools,
-                        llm,
-                        agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-                        verbose=True,
-                        return_intermediate_steps=True,
-                        )
-
-    def run(self, query):
-        # try:
-        response = self.agent(query)
-        return response
-        # except Exception as e:
-            # print(e)
-        # return "I did not get that. Please try again."
-
-
-# agent_chain = PersonalAgent()
-# x = agent_chain.run('list p0 issues .')
-# # y = agent_chain.run('list p0 issues.')
-# print('\n\n\n\n\n\n\n\n\n' , x)
-
-
-
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
-
-from langchain.tools.base import BaseTool
 from langchain.agents import AgentExecutor
-from langchain.schema import AgentAction, AgentFinish
 from langchain.agents.loading import AGENT_TO_CLASS
 
 agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
@@ -49,6 +12,7 @@ agent_obj = agent_cls.from_llm_and_tools(
 
 class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
+    tool_count : int = 0             # added by me
     def _call(
         self,
         inputs: Dict[str, str],
@@ -81,6 +45,8 @@ class CustomAgentExecutor(AgentExecutor):
                 return self._return(
                     next_step_output, intermediate_steps, run_manager=run_manager
                 )
+            self.tool_count += 1            # added by me
+            print('meow' , self.tool_count)
 
             intermediate_steps.extend(next_step_output)
             if len(next_step_output) == 1:
@@ -131,6 +97,9 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
+            print('intermediate_steps: ', intermediate_steps)
+            print('inputs: ', inputs)
+            print('output: ', output)
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):
                 raise_error = not self.handle_parsing_errors
@@ -189,13 +158,16 @@ class CustomAgentExecutor(AgentExecutor):
                 if return_direct:
                     tool_run_kwargs["llm_prefix"] = ""
                 # We then call the tool on the tool input to get an observation
-                observation, arguments = tool.run(
+                arguments = tool.run(
                     agent_action.tool_input,
                     verbose=self.verbose,
                     color=color,
                     callbacks=run_manager.get_child() if run_manager else None,
                     **tool_run_kwargs,
                 )
+                observation = "$PREV[{i}]".format(i=self.tool_count)
+                print('observation: ', observation)
+ 
                 tool_schema = {                         # added by me
                     'tool_name': tool.name,
                     'arguments': arguments,
@@ -224,6 +196,6 @@ agent_executor = CustomAgentExecutor(
                                 return_intermediate_steps=True,
                                 handle_parsing_errors=True,
                                 )
-x = agent_executor({"input":'list p0 issues.'})
+x = agent_executor({"input":'summarise my p0 issues.'})
 print(x)
 print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)

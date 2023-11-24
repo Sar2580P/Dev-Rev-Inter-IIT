@@ -16,6 +16,7 @@ You have to extract the following arguments from the user query :
 {user_query}
 
 You need to return the dictionary of arguments as keys and extracted values as values.
+The argument values are string , so enclose them in double quotes.
 Check that the extracted arguments are in correct datatypes before returning .
 '''
 prompt = PromptTemplate(template=TEMPLATE , 

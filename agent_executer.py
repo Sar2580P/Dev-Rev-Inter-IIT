@@ -165,14 +165,18 @@ class CustomAgentExecutor(AgentExecutor):
                     callbacks=run_manager.get_child() if run_manager else None,
                     **tool_run_kwargs,
                 )
-                observation = "$PREV[{i}]".format(i=self.tool_count)
+                observation = "$$PREV[{i}]".format(i=self.tool_count)
+                if type(arguments) == str: 
+                    observation = arguments
+                    
+                else:
+                    tool_schema = {                         # added by me
+                        'tool_name': tool.name,
+                        'arguments': arguments,
+                    }
+                    self.return_schema.append(tool_schema)      # added by me
                 print('observation: ', observation)
- 
-                tool_schema = {                         # added by me
-                    'tool_name': tool.name,
-                    'arguments': arguments,
-                }
-                self.return_schema.append(tool_schema)      # added by me
+
             else:
                 tool_run_kwargs = self.agent.tool_run_logging_kwargs()
                 observation = InvalidTool().run(
@@ -196,6 +200,6 @@ agent_executor = CustomAgentExecutor(
                                 return_intermediate_steps=True,
                                 handle_parsing_errors=True,
                                 )
-x = agent_executor({"input":'prioritise my p0 issues.'})
+x = agent_executor({"input":'Summarise high severity tickets from the customer UltimateCustomer'})
 print(x)
 print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)

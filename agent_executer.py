@@ -196,6 +196,6 @@ agent_executor = CustomAgentExecutor(
                                 return_intermediate_steps=True,
                                 handle_parsing_errors=True,
                                 )
-x = agent_executor({"input":'summarise my p0 issues.'})
+x = agent_executor({"input":'prioritise my p0 issues.'})
 print(x)
 print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)

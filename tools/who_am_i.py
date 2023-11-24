@@ -1,0 +1,28 @@
+from langchain.tools import BaseTool
+from typing import Optional, List, Any 
+from langchain.callbacks.manager import (
+    AsyncCallbackManagerForToolRun,
+    CallbackManagerForToolRun,
+)
+from backend_llm.utils import llm
+
+class WhoAmI(BaseTool):
+    name = "who_am_i"
+    description = '''Returns the ID of the current user '''
+
+    def _run(
+        self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
+    ) -> str:
+        print('inside who_am_i tool , query is : \n' , query) 
+        x = {
+            'argument_name': '',
+            'argument_value': query,
+        }
+        return x 
+    
+
+    async def _arun(
+        self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
+    ) -> str:
+        """Use the tool asynchronously."""
+        raise NotImplementedError("custom_search does not support async")

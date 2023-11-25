@@ -1,0 +1,481 @@
+Query,Response
+List all 'Critical' severity issues assigned to User123.,"[
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""issue.severity"",
+                ""argument_value"": ""Critical""
+            },
+            {
+                ""argument_name"": ""owned_by"",
+                ""argument_value"": ""User123""
+            }
+        ]
+    }
+]"
+Summarize the latest 100 work items created by DevTeamA.,"[
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""created_by"",
+                ""argument_value"": ""DevTeamA""
+            },
+            {
+                ""argument_name"": ""limit"",
+                ""argument_value"": ""100""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""summarize_objects"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""objects"",
+                ""argument_value"": ""$$PREV[0]""
+            }
+        ]
+    }
+]"
+Find the sprint ID for the current iteration and add all P1 issues to it.,"[
+    {
+        ""tool_name"": ""get_sprint_id"",
+        ""arguments"": []
+    },
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""issue.priority"",
+                ""argument_value"": ""p1""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""add_work_items_to_sprint"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""work_ids"",
+                ""argument_value"": ""$$PREV[1]""
+            },
+            {
+                ""argument_name"": ""sprint_id"",
+                ""argument_value"": ""$$PREV[0]""
+            }
+        ]
+    }
+]"
+Create tasks based on the text from ProjectX's meeting notes.,"[
+    {
+        ""tool_name"": ""create_actionable_tasks_from_text"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""text"",
+                ""argument_value"": ""ProjectX meeting notes""
+            }
+        ]
+    }
+]"
+Retrieve all tasks related to FeatureY and prioritize them by deadline.,"[
+    {
+        ""tool_name"": ""search_object_by_name"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""query"",
+                ""argument_value"": ""FeatureY""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""prioritize_objects"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""objects"",
+                ""argument_value"": ""$$PREV[0]""
+            }
+        ]
+    }
+]"
+List all tasks created by DEVU-123.,"[
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""created_by"",
+                ""argument_value"": ""DEVU-123""
+            },
+            {
+                ""argument_name"": ""type"",
+                ""argument_value"": ""task""
+            }
+        ]
+    }
+]"
+Show me issues with high severity from REV-123.,"[
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""issue.rev_orgs"",
+                ""argument_value"": [""REV-123""]
+            },
+            {
+                ""argument_name"": ""ticket.severity"",
+                ""argument_value"": [""high""]
+            }
+        ]
+    }
+]"
+Find tickets in the triage stage needing a response.,"[
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""stage.name"",
+                ""argument_value"": [""triage""]
+            },
+            {
+                ""argument_name"": ""ticket.needs_response"",
+                ""argument_value"": true
+            }
+        ]
+    }
+]"
+Retrieve all P1 issues owned by DEVU-123.,"[
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""issue.priority"",
+                ""argument_value"": [""p1""]
+            },
+            {
+                ""argument_name"": ""owned_by"",
+                ""argument_value"": [""DEVU-123""]
+            }
+        ]
+    }
+]"
+Get the current sprint ID.,"[
+    {
+        ""tool_name"": ""get_sprint_id"",
+        ""arguments"": []
+    }
+]
+"
+Find all low severity issues,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""issue.severity"",
+        ""argument_value"": ""low""
+      }
+    ]
+  }
+]"
+List tasks assigned to UserX.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""owned_by"",
+        ""argument_value"": ""UserX""
+      }
+    ]
+  }
+]"
+Show tasks related to ProjectY.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""applies_to_part"",
+        ""argument_value"": ""ProjectY""
+      }
+    ]
+  }
+]"
+Retrieve high priority tickets.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""ticket.priority"",
+        ""argument_value"": ""high""
+      }
+    ]
+  }
+]"
+What are the recent tasks created by UserZ?,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""created_by"",
+        ""argument_value"": ""UserZ""
+      }
+    ]
+  }
+]"
+Find tickets from SourceChannel1.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""ticket.source_channel"",
+        ""argument_value"": ""SourceChannel1""
+      }
+    ]
+  }
+]"
+Summarize issues from DepartmentA.,"[
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""objects"",
+        ""argument_value"": ""DepartmentA""
+      }
+    ]
+  }
+]"
+Identify similar tasks to Task123.,"[
+  {
+    ""tool_name"": ""get_similar_work_items"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""work_id"",
+        ""argument_value"": ""Task123""
+      }
+    ]
+  }
+]"
+Provide sprint details.,"[
+  {
+    ""tool_name"": ""get_sprint_id"",
+    ""arguments"": []
+  }
+]"
+Search for issues related to KeywordABC.,"[
+  {
+    ""tool_name"": ""search_object_by_name"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""query"",
+        ""argument_value"": ""KeywordABC""
+      }
+    ]
+  }
+]"
+Identify all high-priority tasks assigned to user 'UserX' and sort them by deadline.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {""argument_name"": ""owned_by"", ""argument_value"": ""UserX""},
+      {""argument_name"": ""issue.priority"", ""argument_value"": ""high""}
+    ]
+  },
+  {
+    ""tool_name"": ""prioritize_objects"",
+    ""arguments"": [
+      {""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}
+    ]
+  }
+]
+"
+Summarize the latest feedback from customer 'CustomerY' and categorize by sentiment.,"[
+  {
+    ""tool_name"": ""search_object_by_name"",
+    ""arguments"": [{""argument_name"": ""query"", ""argument_value"": ""CustomerY""}]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Create a list of tasks from the project notes titled 'ProjectZ' and assign to team 'TeamA'.,"[
+  {
+    ""tool_name"": ""create_actionable_tasks_from_text"",
+    ""arguments"": [{""argument_name"": ""text"", ""argument_value"": ""ProjectZ""}]
+  },
+  {
+    ""tool_name"": ""add_work_items_to_sprint"",
+    ""arguments"": [
+      {""argument_name"": ""work_ids"", ""argument_value"": ""$$PREV[0]""},
+      {""argument_name"": ""sprint_id"", ""argument_value"": ""TeamA""}
+    ]
+  }
+]
+"
+Retrieve all 'bug' type tickets created last week and generate a report.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""type"", ""argument_value"": ""bug""}]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Find the sprint ID for the current development phase and display all tasks.,"[
+  {
+    ""tool_name"": ""get_sprint_id"",
+    ""arguments"": []
+  },
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""sprint_id"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Compare efficiency metrics for users 'DevA' and 'DevB' in the current sprint.,"[
+  {
+    ""tool_name"": ""get_sprint_id"",
+    ""arguments"": []
+  },
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {""argument_name"": ""sprint_id"", ""argument_value"": ""$$PREV[0]""},
+      {""argument_name"": ""owned_by"", ""argument_value"": ""DevA""}
+    ]
+  },
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {""argument_name"": ""sprint_id"", ""argument_value"": ""$$PREV[0]""},
+      {""argument_name"": ""owned_by"", ""argument_value"": ""DevB""}
+    ]
+  }
+]
+"
+List all tasks under 'FeatureX' and estimate completion time.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""applies_to_part"", ""argument_value"": ""FeatureX""}]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Identify all unresolved issues in 'ModuleY' and prioritize them by severity.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""applies_to_part"", ""argument_value"": ""ModuleY""}]
+  },
+  {
+    ""tool_name"": ""prioritize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Generate a summary of all customer interactions with agent 'AgentZ' this month.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""created_by"", ""argument_value"": ""AgentZ""}]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Find all high-priority tasks for 'ProductA' and estimate effort required.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {""argument_name"": ""applies_to_part"", ""argument_value"": ""ProductA""},
+      {""argument_name"": ""issue.priority"", ""argument_value"": ""high""}
+    ]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+List all tasks related to 'ClientB' in the past quarter and summarize the progress.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""issue.rev_orgs"", ""argument_value"": ""ClientB""}]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Identify the most recent issues reported from 'RegionC' and determine their impact.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""issue.rev_orgs"", ""argument_value"": ""RegionC""}]
+  },
+  {
+    ""tool_name"": ""prioritize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Retrieve all tasks assigned to 'TeamD' for 'ProjectE' and summarize their status.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {""argument_name"": ""owned_by"", ""argument_value"": ""TeamD""},
+      {""argument_name"": ""applies_to_part"", ""argument_value"": ""ProjectE""}
+    ]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Generate a list of all 'urgent' tickets from the last 24 hours and categorize them by type.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""ticket.severity"", ""argument_value"": ""urgent""}]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Find all enhancement requests for 'SoftwareF' and prioritize them for the next release.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""applies_to_part"", ""argument_value"": ""SoftwareF""}]
+  },
+  {
+    ""tool_name"": ""prioritize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Summarize all feedback received from 'ChannelG' in the last week and identify key themes.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""ticket.source_channel"", ""argument_value"": ""ChannelG""}]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]
+"
+Retrieve all tasks related to 'FeatureH' that are overdue and analyze reasons for delay.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [{""argument_name"": ""applies_to_part"", ""argument_value"": ""FeatureH""}]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]
+  }
+]"

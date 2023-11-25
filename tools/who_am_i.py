@@ -11,6 +11,7 @@ class WhoAmI(BaseTool):
     description = '''
             Whenever pronouns are present in query like "me", "I" , etc.
             Call this tool first to get the user_id of the user who is asking the query.
+            Do not call this tool if the query is related to another user or the user is asking some task for another user.
             This tool will return the user_id which can be used by other tools.
             
 '''

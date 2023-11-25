@@ -33,8 +33,9 @@ class CustomAgentExecutor(AgentExecutor):
         start_time = time.time()
         # We now enter the agent loop (until it returns something).
         while self._should_continue(iterations, time_elapsed):
-            # if iterations >1:
-            #     break
+            if self.tool_count == 0:        # added by me
+                self.return_schema = []         # added by me
+                intermediate_steps = []    # added by me
             next_step_output = self._take_next_step(
                 name_to_tool_map,
                 color_mapping,
@@ -43,11 +44,15 @@ class CustomAgentExecutor(AgentExecutor):
                 run_manager=run_manager,
             )
             if isinstance(next_step_output, AgentFinish):
+                print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$finished agent')
+                self.tool_count = 0             # added by me
+                
                 return self._return(
                     next_step_output, intermediate_steps, run_manager=run_manager
                 )
+            
             self.tool_count += 1            # added by me
-            print('meow' , self.tool_count)
+            # print('meow' , self.tool_count)
 
             intermediate_steps.extend(next_step_output)
             if len(next_step_output) == 1:
@@ -98,9 +103,9 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            print('intermediate_steps: ', intermediate_steps)
-            print('inputs: ', inputs)
-            print('output: ', output)
+            # print('intermediate_steps: ', intermediate_steps)
+            # print('inputs: ', inputs)
+            # print('output: ', output)
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):
                 raise_error = not self.handle_parsing_errors
@@ -176,7 +181,7 @@ class CustomAgentExecutor(AgentExecutor):
                         'arguments': arguments,
                     }
                     self.return_schema.append(tool_schema)      # added by me
-                print('observation: ', observation)
+                # print('observation: ', observation)
 
             else:
                 tool_run_kwargs = self.agent.tool_run_logging_kwargs()
@@ -201,6 +206,7 @@ agent_executor = CustomAgentExecutor(
                                 return_intermediate_steps=True,
                                 handle_parsing_errors=True,
                                 )
-x = agent_executor({"input":'Prioritize my p0 issues and add them to current sprint'})
-print(x)
-print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+# x = agent_executor({"input":"For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
+# })
+# print(x)
+# print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)

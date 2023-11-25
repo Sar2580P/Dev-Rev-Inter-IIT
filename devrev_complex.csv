@@ -1,0 +1,442 @@
+Query,Responce
+Prioritize my P0 issues and add them to the current sprint.,"[
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""issue.priority"",
+                ""argument_value"": [""p0""]
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""prioritize_objects"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""objects"",
+                ""argument_value"": ""$$PREV[0]""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""get_sprint_id"",
+        ""arguments"": []
+    },
+    {
+        ""tool_name"": ""add_work_items_to_sprint"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""work_ids"",
+                ""argument_value"": ""$$PREV[1]""
+            },
+            {
+                ""argument_name"": ""sprint_id"",
+                ""argument_value"": ""$$PREV[2]""
+            }
+        ]
+    }
+]"
+Summarize high severity tickets from the customer UltimateCustomer.,"[
+    {
+        ""tool_name"": ""search_object_by_name"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""query"",
+                ""argument_value"": ""UltimateCustomer""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""ticket.rev_org"",
+                ""argument_value"": ""$$PREV[0]""
+            },
+            {
+                ""argument_name"": ""ticket.severity"",
+                ""argument_value"": [""high""]
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""summarize_objects"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""objects"",
+                ""argument_value"": ""$$PREV[1]""
+            }
+        ]
+    }
+]"
+"Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them.","[
+    {
+        ""tool_name"": ""get_similar_work_items"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""work_id"",
+                ""argument_value"": ""TKT-123""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""summarize_objects"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""objects"",
+                ""argument_value"": ""$$PREV[0]""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""create_actionable_tasks_from_text"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""text"",
+                ""argument_value"": ""$$PREV[1]""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""prioritize_objects"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""objects"",
+                ""argument_value"": ""$$PREV[2]""
+            }
+        ]
+    }
+]"
+List all high severity tickets coming in from Slack from customer Cust123 and generate a summary of them,"[
+    {
+        ""tool_name"": ""search_object_by_name"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""query"",
+                ""argument_value"": ""Cust123""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""works_list"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""ticket.rev_org"",
+                ""argument_value"": ""$$PREV[0]""
+            },
+            {
+                ""argument_name"": ""ticket.severity"",
+                ""argument_value"": [""high""]
+            },
+            {
+                ""argument_name"": ""ticket.source_channel"",
+                ""argument_value"": [""slack""]
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""summarize_objects"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""objects"",
+                ""argument_value"": ""$$PREV[1]""
+            }
+        ]
+    }
+]"
+"Given a customer meeting transcript T, create action items and add them to my current sprint.","[
+    {
+        ""tool_name"": ""create_actionable_tasks_from_text"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""text"",
+                ""argument_value"": ""T""
+            }
+        ]
+    },
+    {
+        ""tool_name"": ""get_sprint_id"",
+        ""arguments"": []
+    },
+    {
+        ""tool_name"": ""add_work_items_to_sprint"",
+        ""arguments"": [
+            {
+                ""argument_name"": ""work_ids"",
+                ""argument_value"": ""$$PREV[0]""
+            },
+            {
+                ""argument_name"": ""sprint_id"",
+                ""argument_value"": ""$$PREV[1]""
+            }
+        ]
+    }
+]"
+Prioritize P1 issues related to ProjectZ and add them to the current sprint.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""issue.priority"",
+        ""argument_value"": ""p1""
+      },
+      {
+        ""argument_name"": ""applies_to_part"",
+        ""argument_value"": ""ProjectZ""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""prioritize_objects"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""objects"",
+        ""argument_value"": ""$$PREV[0]""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""get_sprint_id"",
+    ""arguments"": []
+  },
+  {
+    ""tool_name"": ""add_work_items_to_sprint"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""work_ids"",
+        ""argument_value"": ""$$PREV[1]""
+      },
+      {
+        ""argument_name"": ""sprint_id"",
+        ""argument_value"": ""$$PREV[2]""
+      }
+    ]
+  }
+]"
+Generate a summary of high severity issues created by UserA and UserB.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""issue.severity"",
+        ""argument_value"": ""high""
+      },
+      {
+        ""argument_name"": ""created_by"",
+        ""argument_value"": ""UserA, UserB""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""objects"",
+        ""argument_value"": ""$$PREV[0]""
+      }
+    ]
+  }
+]"
+List all tasks in the development stage for ProjectX and summarize them.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""stage.name"",
+        ""argument_value"": ""development""
+      },
+      {
+        ""argument_name"": ""applies_to_part"",
+        ""argument_value"": ""ProjectX""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""objects"",
+        ""argument_value"": ""$$PREV[0]""
+      }
+    ]
+  }
+]"
+Find and prioritize tasks from CustomerC in the QA stage.,"[
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""owned_by"",
+        ""argument_value"": ""CustomerC""
+      },
+      {
+        ""argument_name"": ""stage.name"",
+        ""argument_value"": ""QA""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""prioritize_objects"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""objects"",
+        ""argument_value"": ""$$PREV[0]""
+      }
+    ]
+  }
+]"
+Create tasks from meeting notes N and assign them to UserD.,"[
+  {
+    ""tool_name"": ""create_actionable_tasks_from_text"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""text"",
+        ""argument_value"": ""N""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""add_work_items_to_sprint"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""work_ids"",
+        ""argument_value"": ""$$PREV[0]""
+      },
+      {
+        ""argument_name"": ""owned_by"",
+        ""argument_value"": ""UserD""
+      }
+    ]
+  }
+]"
+Identify and summarize similar tasks to Task456 in the testing phase.,"[
+  {
+    ""tool_name"": ""get_similar_work_items"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""work_id"",
+        ""argument_value"": ""Task456""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""works_list"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""stage.name"",
+        ""argument_value"": ""testing""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""summarize_objects"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""objects"",
+        ""argument_value"": ""$$PREV[1]""
+      }
+    ]
+  }
+]"
+"Extract tasks from document D, prioritize them, and add to sprint S.","[
+  {
+    ""tool_name"": ""create_actionable_tasks_from_text"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""text"",
+        ""argument_value"": ""D""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""prioritize_objects"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""objects"",
+        ""argument_value"": ""$$PREV[0]""
+      }
+    ]
+  },
+  {
+    ""tool_name"": ""add_work_items_to_sprint"",
+    ""arguments"": [
+      {
+        ""argument_name"": ""work_ids"",
+        ""argument_value"": ""$$PREV[1]""
+      },
+      {
+        ""argument_name"": ""sprint_id"",
+        ""argument_value"": ""S""
+      }
+    ]
+  }
+]"
+"Identify high-priority tasks assigned to 'User123', summarize them, and check if any similar","[
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""issue.priority"", ""argument_value"": ""high""}, {""argument_name"": ""owned_by"", ""argument_value"": ""User123""}]},
+  {""tool_name"": ""summarize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""get_similar_work_items"", ""arguments"": [{""argument_name"": ""work_id"", ""argument_value"": ""$$PREV[1]""}]}
+]
+"
+"Search for the latest sprint details, list all tasks in it, and generate a report.","[
+  {""tool_name"": ""get_sprint_id"", ""arguments"": []},
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""sprint_id"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""summarize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[1]""}]}
+]
+"
+"Find all tasks related to 'ProjectX', prioritize them, and add them to the current sprint.","[
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""applies_to_part"", ""argument_value"": ""ProjectX""}]},
+  {""tool_name"": ""prioritize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""get_sprint_id"", ""arguments"": []},
+  {""tool_name"": ""add_work_items_to_sprint"", ""arguments"": [{""argument_name"": ""work_ids"", ""argument_value"": ""$$PREV[1]""}, {""argument_name"": ""sprint_id"", ""argument_value"": ""$$PREV[2]""}]}
+]
+"
+"For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts.","[
+  {""tool_name"": ""search_object_by_name"", ""arguments"": [{""argument_name"": ""query"", ""argument_value"": ""CustomerA""}]},
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""ticket.severity"", ""argument_value"": ""high""}, {""argument_name"": ""ticket.rev_org"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""summarize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[1]""}]},
+  {""tool_name"": ""get_similar_work_items"", ""arguments"": [{""argument_name"": ""work_id"", ""argument_value"": ""$$PREV[2]""}]}
+]
+"
+"Retrieve all tasks in 'development' stage, create actionable tasks from their summary, and prioritize them.","[
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""stage.name"", ""argument_value"": ""development""}]},
+  {""tool_name"": ""summarize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""create_actionable_tasks_from_text"", ""arguments"": [{""argument_name"": ""text"", ""argument_value"": ""$$PREV[1]""}]},
+  {""tool_name"": ""prioritize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[2]""}]}
+]
+"
+"Find all issues created by 'DevTeam1', summarize them, and add the high-priority ones to the current sprint.","[
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""created_by"", ""argument_value"": ""DevTeam1""}]},
+  {""tool_name"": ""summarize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""prioritize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[1]""}]},
+  {""tool_name"": ""get_sprint_id"", ""arguments"": []},
+  {""tool_name"": ""add_work_items_to_sprint"", ""arguments"": [{""argument_name"": ""work_ids"", ""argument_value"": ""$$PREV[2]""}, {""argument_name"": ""sprint_id"", ""argument_value"": ""$$PREV[3]""}]}
+]
+"
+"Summarize all tasks related to 'FeatureY', find similar tasks, and prioritize them.","[
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""applies_to_part"", ""argument_value"": ""FeatureY""}]},
+  {""tool_name"": ""summarize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""get_similar_work_items"", ""arguments"": [{""argument_name"": ""work_id"", ""argument_value"": ""$$PREV[1]""}]},
+  {""tool_name"": ""prioritize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[2]""}]}
+]
+"
+"For 'ProductZ', list all medium-severity issues, summarize them, and check for any related tasks.","[
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""applies_to_part"", ""argument_value"": ""ProductZ""}, {""argument_name"": ""ticket.severity"", ""argument_value"": ""medium""}]},
+  {""tool_name"": ""summarize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""get_similar_work_items"", ""arguments"": [{""argument_name"": ""work_id"", ""argument_value"": ""$$PREV[1]""}]}
+]
+"
+"Retrieve all tasks in 'QA' stage, summarize, and then create actionable tasks for 'TeamA'.","[
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""stage.name"", ""argument_value"": ""QA""}]},
+  {""tool_name"": ""summarize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""create_actionable_tasks_from_text"", ""arguments"": [{""argument_name"": ""text"", ""argument_value"": ""$$PREV[1]""}, {""argument_name"": ""owned_by"", ""argument_value"": ""TeamA""}]}
+]
+"
+"For customer 'ClientB', list all tasks, prioritize, and add urgent ones to the current sprint.","[
+  {""tool_name"": ""search_object_by_name"", ""arguments"": [{""argument_name"": ""query"", ""argument_value"": ""ClientB""}]},
+  {""tool_name"": ""works_list"", ""arguments"": [{""argument_name"": ""ticket.rev_org"", ""argument_value"": ""$$PREV[0]""}]},
+  {""tool_name"": ""prioritize_objects"", ""arguments"": [{""argument_name"": ""objects"", ""argument_value"": ""$$PREV[1]""}]},
+  {""tool_name"": ""get_sprint_id"", ""arguments"": []},
+  {""tool_name"": ""add_work_items_to_sprint"", ""arguments"": [{""argument_name"": ""work_ids"", ""argument_value"": ""$$PREV[2]""}, {""argument_name"": ""sprint_id"", ""argument_value"": ""$$PREV[3]""}]}
+]
+"
+,

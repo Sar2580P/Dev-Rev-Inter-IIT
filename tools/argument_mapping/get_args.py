@@ -23,7 +23,7 @@ You have to extract the following arguments from the user query :
 
 {user_query}
 
-
+Drop the arguments which are not present in the user query.
 You need to return the dictionary of arguments as keys and extracted values as values.
 The argument values are string , so enclose them in double quotes.
 Check that the extracted arguments are in correct datatypes before returning .
@@ -38,6 +38,6 @@ signature_chain = LLMChain(llm = llm, prompt = prompt , verbose=True)
 
 def fill_signature(query:str,function_signatures: dict , arg_description:dict)->Dict[str, Union[List[str] , bool]] :
     x = signature_chain.run({'function_signature':function_signatures ,'arg_description' : arg_description , 'user_query':query})
-    print('signature is : ' , x)
+    # print('signature is : ' , x)
     return ast.literal_eval(x)
     # return x

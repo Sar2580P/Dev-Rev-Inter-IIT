@@ -13,6 +13,7 @@ agent_obj = agent_cls.from_llm_and_tools(
 class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
     tool_count : int = 0             # added by me
+    
     def _call(
         self,
         inputs: Dict[str, str],
@@ -200,6 +201,6 @@ agent_executor = CustomAgentExecutor(
                                 return_intermediate_steps=True,
                                 handle_parsing_errors=True,
                                 )
-x = agent_executor({"input":'Summarise high severity tickets from the customer UltimateCustomer'})
+x = agent_executor({"input":'Prioritize my p0 issues and add them to current sprint'})
 print(x)
 print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)

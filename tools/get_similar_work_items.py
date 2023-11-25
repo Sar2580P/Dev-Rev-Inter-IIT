@@ -8,7 +8,7 @@ from backend_llm.utils import llm
 
 class GetSimilarWorkItems(BaseTool):
     name = "get_similar_work_items"
-    description = '''Returns a list of work items that are similar to the given work item'''
+    description = '''Use this tool when you want to get similar work_items for a given work_id'''
 
     def _run(
         self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None

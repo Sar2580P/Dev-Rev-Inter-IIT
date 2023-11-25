@@ -13,14 +13,11 @@ from tools.who_am_i import WhoAmI
 task_tools = [
     WhoAmI(),
     SearchObjectByName(),
-     GetSprintId(),
+    GetSprintId(),
     WorkList() , 
     Summarize() ,
     AddWorkItemsToSprint(),
     CreateActionableTasksFromText(),
     GetSimilarWorkItems(),
-   
     Prioritize(),
-    
-    
 ]

@@ -8,7 +8,13 @@ from backend_llm.utils import llm
 
 class SearchObjectByName(BaseTool):
     name = "search_object_by_name"
-    description = '''Given a search string, returns the id of a matching object in the system of record.
+    description = '''
+    Use this tool when the query contains name of the object. 
+
+    Instructions:
+    Name only contains letters, numbers, and spaces. Not special characters like !@#$%^&*()_+|:"<>?[]\;',./
+    
+    Given a search string, returns the id of a matching object in the system of record.
     If multiple matches are found, it returns the one where the confidence is highest.
     '''
 

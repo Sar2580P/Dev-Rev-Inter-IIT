@@ -7,7 +7,7 @@ from langchain.callbacks.manager import (
 from backend_llm.utils import llm
 
 class WhoAmI(BaseTool):
-    name = "who_am_i"
+    name = "whoami"
     description = '''
             Whenever pronouns are present in query like "me", "I" , etc.
             Call this tool first to get the user_id of the user who is asking the query.

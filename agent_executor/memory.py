@@ -18,12 +18,11 @@ class Memory():
     def push(self):
         print("Pushing Queue...")
         while not self.queue.empty():
-            self.id += 1
             self.vector_db.add_documents([self.queue.get()])
         
     def pull(self, query:str):
-        results  = self.vector_db.search(query, k=self.k)
-        print("Pulling from Memory...\n\nresults") 
+        results  = self.vector_db.search(query, k=self.k , search_type='similarity')
+        print("Pulling from Memory...\n" , results) 
         return results
     
     # def reset(self , mistake):
@@ -70,8 +69,8 @@ example_prompt = PromptTemplate(
 
 #__________________________________________________________________________________________________________________________
 
-def build_experience(correct_trajectory , correct_tool ,correct_reasoning , wrong_tool , wrong_reasoning , query):
-    examples = correct_trajectory
+def build_experience(x):
+    examples = x['correct_trajectory']
 
     few_shot_prompt = FewShotPromptTemplate( 
     examples=examples,
@@ -90,9 +89,10 @@ def build_experience(correct_trajectory , correct_tool ,correct_reasoning , wron
     example_separator="\n", 
 )
     chain = LLMChain(llm=llm, prompt=few_shot_prompt)
-    x = chain.run(inputs={"query": query ,"wrong_tool": wrong_tool , "wrong_reasoning": wrong_reasoning , 
-                          "correct_tool": correct_tool , "correct_reasoning": correct_reasoning })
-    return x
+    print("\033[91m {}\033[00m" .format('build_experience (memory)'))
+    y = chain.run({"query": x['query'] ,"wrong_tool": x['wrong_tool'] , "wrong_reasoning": x['wrong_reasoning'] , 
+                          "correct_tool": x['correct_tool'] , "correct_reasoning": x['correct_reasoning'] })
+    return y
 
 
 

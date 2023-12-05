@@ -1,19 +1,20 @@
 from langchain.agents.agent import *
 import sys, os
 sys.path.append(os.getcwd())
-
+import ast
 from backend_llm.utils import *
 from tools.tool_collection import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
 import json
-from auxiliary_executor import sub_task_chain
+from agent_executor.auxiliary_executor import *
+from agent.agent import PersonalAgent
 
-agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
-agent_cls = AGENT_TO_CLASS[agent]
-agent_obj = agent_cls.from_llm_and_tools(
-            llm, task_tools,  
-        )
+# agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
+# agent_cls = AGENT_TO_CLASS[agent]
+# agent_obj = agent_cls.from_llm_and_tools(
+#             llm, task_tools,  
+#         )
 
 
 class CustomAgentExecutor(AgentExecutor):
@@ -53,7 +54,10 @@ class CustomAgentExecutor(AgentExecutor):
         time_elapsed = 0.0
         start_time = time.time()
         # We now enter the agent loop (until it returns something).
-
+        print("\033[1;35;40m {} \033[0m" .format('updating agent prompt with mistakes'))
+        self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, user_query=inputs['input'])
+        
+        
         while self._should_continue(iterations, time_elapsed):
             if self.tool_count == 0:        # added by me
                 self.return_schema = []         # added by me
@@ -68,10 +72,9 @@ class CustomAgentExecutor(AgentExecutor):
                 run_manager=run_manager,
             )
             if isinstance(next_step_output, AgentFinish):
-                print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$finished agent')
                 self.tool_count = 0             # added by me
-                print('Agent finished \n\n\n')
-                print('\n\n\n\n\nTrajectory:' , self.wrong_checkpoints)
+                print("\033[1;35;40m {} \033[0m" .format('wrong checkpoints ---> '))
+                print("\033[1;35;40m {} \033[0m" .format(self.wrong_checkpoints))
 
                 return self._return(
                     next_step_output, intermediate_steps, run_manager=run_manager
@@ -129,20 +132,23 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            print('intermediate_steps: ', intermediate_steps)
-            print('inputs: ', inputs)
-            print('output: ', output)
+            print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
             
             if self.train_mode :   # added by me
+                if self.tool_count == len(self.true_tools):
+                    output = AgentFinish(return_values = {'output':'User query successfully answered'} ,
+                                         log ='I now know the final answer.\nFinal Answer: Take shelter of Lord Krishna')
                 if isinstance(output ,AgentAction):
                     is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
 
                     if not is_right_decision:
+                        print("\033[1;35;40m {} \033[0m" .format('agent planned wrongly, picked tool : {} ...'.format(output.tool)))
                         curr_step = {
                                 'tool': output.tool,
                                 'tool_input': output.tool_input,
                                 'reasoning' : output.log.split('\n')[0],
                                     }
+
                         self.wrong_checkpoints[self.tool_count] = curr_step
                         input = {
                             'correct_tool' : self.true_tools[self.tool_count] ,
@@ -150,11 +156,15 @@ class CustomAgentExecutor(AgentExecutor):
                             'query' : inputs['input'] ,
                             'intermediate_steps' : intermediate_steps ,
                         }
-                        tool_input , log = sub_task_chain.run(input)  
+                        print("\033[1;35;40m {} \033[0m".format('Creating sub task for tool : {} \ncalling auxiliary_executor ...'.format(self.true_tools[self.tool_count])))
+                        answer = sub_task(input)   
+                        tool_input, log = answer['tool_input'], answer['reason']                     
+              
                         output.tool = self.true_tools[self.tool_count]
                         output.tool_input = tool_input
-                        output.log = log
-                
+                        output.log = log+"\nAction: {tool}\nAction Input:{tool_input}".format(tool=output.tool, 
+                                                                                              tool_input=output.tool_input)
+
                     self.correct_trajectory.append({
                         'tool_name': output.tool,
                         'tool_input': output.tool_input,
@@ -257,7 +267,9 @@ class CustomAgentExecutor(AgentExecutor):
         pass
     
 #____________________________________________________________________________________________________
-
+agent_obj = PersonalAgent.from_llm_and_tools(
+            llm, task_tools,  user_query=''
+            )
 agent_executor = CustomAgentExecutor(
                                 agent=agent_obj ,
                                 tools=task_tools,
@@ -266,10 +278,42 @@ agent_executor = CustomAgentExecutor(
                                 handle_parsing_errors=True,
                                 )
 #____________________________________________________________________________________________________
-# agent_executor.train()
 
-# # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-agent_executor.eval()
-x = agent_executor({"input":'List my p0 issues.'})
-print(x)
-print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+ground = '''
+[ 
+ { 
+ "tool_name":  "search_object_by_name", 
+ "arguments":  [ 
+ { 
+ "argument_name":  "query", 
+ "argument_value":  "UltimateCustomer" 
+ } 
+] 
+ }, 
+ { 
+ "tool_name":  "works_list", 
+ "arguments":  [ 
+ { 
+ "argument_name":  "ticket.rev_org", 
+ "argument_value":  "$$PREV[0]" 
+ } 
+ ] 
+ }, 
+ { 
+ "tool_name":  "summarize_objects", 
+ "arguments":  [ 
+ { 
+ "argument_name":  "objects", 
+ "argument_value":  "$$PREV[1]" 
+ } 
+ ] 
+ } 
+ ]
+'''
+
+# "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
+# agent_executor.train()
+# agent_executor.get_tool_lists(ground)
+# x = agent_executor({"input":'Summarize high severity tickets from the customer UltimateCustomer'})
+# print(x)
+# print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)

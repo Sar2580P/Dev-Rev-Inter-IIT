@@ -7,7 +7,7 @@ from langchain.callbacks.manager import (
 from backend_llm.utils import llm
 
 class Summarize(BaseTool):
-    name = "Summarize"
+    name = "summarize_objects"
     description = '''This tool is useful for summarizing information.
       It needs a list of objects as input and returns a summary of the objects. 
     '''

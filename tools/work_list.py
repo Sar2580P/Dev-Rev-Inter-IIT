@@ -10,10 +10,9 @@ from backend_llm.utils import llm
 
 class WorkList(BaseTool):
     name = "works_list"
-    description = '''This tool is useful for querying  table :  
-        Don't worry about the syntax , just pass query in natural language 
+    description = '''This tool is useful when following arguments are present in the query :  
         
-        table has following columns:
+        The arguments are as follows:
             applies_to_part ,
             created_by ,
             issue_priority ,

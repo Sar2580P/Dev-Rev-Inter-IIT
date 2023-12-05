@@ -10,14 +10,17 @@ from tools.search_object_by_name import SearchObjectByName
 from tools.who_am_i import WhoAmI
 
 
+
 task_tools = [
     WhoAmI(),
-    SearchObjectByName(),
-    GetSprintId(),
+    # SearchObjectByName(),
+    # GetSprintId(),
     WorkList() , 
-    Summarize() ,
-    AddWorkItemsToSprint(),
-    CreateActionableTasksFromText(),
-    GetSimilarWorkItems(),
-    Prioritize(),
+    # Summarize() ,
+    # AddWorkItemsToSprint(),
+    # CreateActionableTasksFromText(),
+    # GetSimilarWorkItems(),
+    # Prioritize(),
+    # Search(), 
+    # Lookup()
 ]

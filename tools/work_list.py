@@ -27,7 +27,6 @@ class WorkList(BaseTool):
             type ,
         
     '''
-    
 
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None

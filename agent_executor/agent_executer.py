@@ -1,8 +1,13 @@
 from langchain.agents.agent import *
-from backend_llm.utils import llm
+import sys, os
+sys.path.append(os.getcwd())
+
+from backend_llm.utils import *
 from tools.tool_collection import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
+import json
+from auxiliary_executor import sub_task_chain
 
 agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 agent_cls = AGENT_TO_CLASS[agent]
@@ -10,10 +15,25 @@ agent_obj = agent_cls.from_llm_and_tools(
             llm, task_tools,  
         )
 
+
 class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
     tool_count : int = 0             # added by me
+    train_mode : bool = True      # added by me
+    wrong_checkpoints = {}                 # added by me
+    true_tools :List[str] = None                 # added by me
+    correct_trajectory : List[Dict] = []            # added by me
     
+    #_______________________________________________________________________________________________
+    def eval(self):
+        self.train_mode = False
+    def train(self):
+        self.train_mode = True
+
+    def get_tool_lists(self , ground_truth:str):
+        ground_truth = json.loads(ground_truth)
+        self.true_tools = [tool['tool_name'] for tool in ground_truth]
+    #_______________________________________________________________________________________________
     def _call(
         self,
         inputs: Dict[str, str],
@@ -28,14 +48,18 @@ class CustomAgentExecutor(AgentExecutor):
         )
         intermediate_steps: List[Tuple[AgentAction, str]] = []
         # Let's start tracking the number of iterations and time elapsed
+
         iterations = 0
         time_elapsed = 0.0
         start_time = time.time()
         # We now enter the agent loop (until it returns something).
+
         while self._should_continue(iterations, time_elapsed):
             if self.tool_count == 0:        # added by me
                 self.return_schema = []         # added by me
                 intermediate_steps = []    # added by me
+                self.correct_trajectory = []    # added by me
+                self.wrong_checkpoints = {}    # added by me
             next_step_output = self._take_next_step(
                 name_to_tool_map,
                 color_mapping,
@@ -46,7 +70,9 @@ class CustomAgentExecutor(AgentExecutor):
             if isinstance(next_step_output, AgentFinish):
                 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$finished agent')
                 self.tool_count = 0             # added by me
-                
+                print('Agent finished \n\n\n')
+                print('\n\n\n\n\nTrajectory:' , self.wrong_checkpoints)
+
                 return self._return(
                     next_step_output, intermediate_steps, run_manager=run_manager
                 )
@@ -69,7 +95,7 @@ class CustomAgentExecutor(AgentExecutor):
             self.early_stopping_method, intermediate_steps, **inputs
         )
         return self._return(output, intermediate_steps, run_manager=run_manager)
-    
+    #_______________________________________________________________________________________________
     def _return(
         self,
         output: AgentFinish,
@@ -82,7 +108,7 @@ class CustomAgentExecutor(AgentExecutor):
         if self.return_intermediate_steps:
             final_output["intermediate_steps"] = intermediate_steps
         return final_output
-    
+    #_______________________________________________________________________________________________
     def _take_next_step(
         self,
         name_to_tool_map: Dict[str, BaseTool],
@@ -103,9 +129,38 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            # print('intermediate_steps: ', intermediate_steps)
-            # print('inputs: ', inputs)
-            # print('output: ', output)
+            print('intermediate_steps: ', intermediate_steps)
+            print('inputs: ', inputs)
+            print('output: ', output)
+            
+            if self.train_mode :   # added by me
+                if isinstance(output ,AgentAction):
+                    is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
+
+                    if not is_right_decision:
+                        curr_step = {
+                                'tool': output.tool,
+                                'tool_input': output.tool_input,
+                                'reasoning' : output.log.split('\n')[0],
+                                    }
+                        self.wrong_checkpoints[self.tool_count] = curr_step
+                        input = {
+                            'correct_tool' : self.true_tools[self.tool_count] ,
+                            'correct_tool_description' : name_to_tool_map[self.true_tools[self.tool_count]].description ,
+                            'query' : inputs['input'] ,
+                            'intermediate_steps' : intermediate_steps ,
+                        }
+                        tool_input , log = sub_task_chain.run(input)  
+                        output.tool = self.true_tools[self.tool_count]
+                        output.tool_input = tool_input
+                        output.log = log
+                
+                    self.correct_trajectory.append({
+                        'tool_name': output.tool,
+                        'tool_input': output.tool_input,
+                        'log': output.log.split('\n')[0] ,
+                    })
+                
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):
                 raise_error = not self.handle_parsing_errors
@@ -198,6 +253,10 @@ class CustomAgentExecutor(AgentExecutor):
             result.append((agent_action, observation))
         return result
     
+    def reset_mistakes(self):
+        pass
+    
+#____________________________________________________________________________________________________
 
 agent_executor = CustomAgentExecutor(
                                 agent=agent_obj ,
@@ -206,7 +265,11 @@ agent_executor = CustomAgentExecutor(
                                 return_intermediate_steps=True,
                                 handle_parsing_errors=True,
                                 )
-# x = agent_executor({"input":"For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-# })
-# print(x)
-# print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+#____________________________________________________________________________________________________
+# agent_executor.train()
+
+# # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
+agent_executor.eval()
+x = agent_executor({"input":'List my p0 issues.'})
+print(x)
+print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)

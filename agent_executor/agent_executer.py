@@ -9,6 +9,7 @@ from langchain.agents.loading import AGENT_TO_CLASS
 import json
 from agent_executor.auxiliary_executor import *
 from agent.agent import PersonalAgent
+from agent_executor.evaluator import *
 
 # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 # agent_cls = AGENT_TO_CLASS[agent]
@@ -22,9 +23,9 @@ class CustomAgentExecutor(AgentExecutor):
     tool_count : int = 0             # added by me
     train_mode : bool = True      # added by me
     wrong_checkpoints = {}                 # added by me
-    true_tools :List[str] = None                 # added by me
+    true_tools : List[str] = None                 # added by me
     correct_trajectory : List[Dict] = []            # added by me
-    
+    ground_truth : List[Dict] = []
     #_______________________________________________________________________________________________
     def eval(self):
         self.train_mode = False
@@ -33,7 +34,9 @@ class CustomAgentExecutor(AgentExecutor):
 
     def get_tool_lists(self , ground_truth:str):
         ground_truth = json.loads(ground_truth)
+        self.ground_truth = ground_truth
         self.true_tools = [tool['tool_name'] for tool in ground_truth]
+    
     #_______________________________________________________________________________________________
     def _call(
         self,
@@ -139,8 +142,11 @@ class CustomAgentExecutor(AgentExecutor):
                     output = AgentFinish(return_values = {'output':'User query successfully answered'} ,
                                          log ='I now know the final answer.\nFinal Answer: Take shelter of Lord Krishna')
                 if isinstance(output ,AgentAction):
-                    is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
-
+                    # is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
+                    # print(self.ground_truth,'\n', self.return_schema)
+                    is_right_decision, analogy = validate(self.ground_truth, self.return_schema)  # added by me , evaluator
+                    ic("is_right_decision :", is_right_decision)
+                    ic("analogy:", analogy)
                     if not is_right_decision:
                         print("\033[1;35;40m {} \033[0m" .format('agent planned wrongly, picked tool : {} ...'.format(output.tool)))
                         curr_step = {
@@ -170,6 +176,11 @@ class CustomAgentExecutor(AgentExecutor):
                         'tool_input': output.tool_input,
                         'log': output.log.split('\n')[0] ,
                     })
+                    # self.correct_schema.append({
+                    #     'tool_name': output.tool,
+                    #     'arguments': []
+
+                    # })
                 
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):

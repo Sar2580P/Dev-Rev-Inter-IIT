@@ -42,10 +42,11 @@ class PersonalAgent(ZeroShotAgent):
         #________________________________________________________________________________
         past_mistakes = analyse(user_query)
         formatted_mistakes = ''
-        if past_mistakes == 'No mistakes found':
-            formatted_mistakes = past_mistakes
+        if past_mistakes == 'No mistakes found' or past_mistakes == []:
+            formatted_mistakes = 'No mistakes found'
         else :
             for mistake in past_mistakes:
+                formatted_mistakes += 'query : {q}\n'.format(q = mistake.metadata['query'])
                 formatted_mistakes += 'mistake_highlight : {x}\n'.format(x = mistake.page_content) 
                 formatted_mistakes += 'correct_tool : {y}\n'.format(y = mistake.metadata['correct_tool'])
                 formatted_mistakes += 'correct_reasoning : {z}'.format(z = mistake.metadata['correct_reasoning'])

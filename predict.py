@@ -1,5 +1,5 @@
 import pandas as pd
-from agent_executer import agent_executor
+from agent_executor.agent_executer import agent_executor
 from backend_llm.utils import callbacks , wandb_callback
 import time  
 simple_data = pd.read_csv('DevRev - Data - Simple.csv')

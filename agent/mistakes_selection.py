@@ -32,7 +32,6 @@ def choose_mistake(user_query, mistake):
     formatted_mistakes += 'correct_reasoning : {z}\n'.format(z = mistake.metadata['correct_reasoning'])
     
     x = chain.run({'input':user_query, 'mistake':formatted_mistakes})
-    # print(x)
     return ast.literal_eval(x)
 
 

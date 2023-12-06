@@ -3,3 +3,5 @@ Resources
 data
 database
 .env
+.vscode
+__pycache__

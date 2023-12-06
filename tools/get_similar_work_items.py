@@ -14,11 +14,13 @@ class GetSimilarWorkItems(BaseTool):
         self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
         print('inside get_similar_work_items tool , query is : \n' , query) 
+        li = []
         x = {
             'argument_name': 'work_id',
             'argument_value': query,
         }
-        return x 
+        li.append(x)
+        return li 
     
 
     async def _arun(

@@ -14,11 +14,13 @@ class GetSprintId(BaseTool):
         self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
         print('inside get_sprint_id tool , query is : \n' , query) 
+        li = []
         x = {
             'argument_name': '',
             'argument_value': list(),
         }
-        return x 
+        li.append(x)
+        return li
     
 
     async def _arun(

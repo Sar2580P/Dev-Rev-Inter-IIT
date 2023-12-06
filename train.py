@@ -4,6 +4,7 @@ from agent_executor.memory import *
 from langchain.docstore.document import Document
 from icecream import ic
 
+# data  = pd.read_csv('data/DevRev - Data - Simple.csv')
 data  = pd.read_csv('data/DevRev - Data - Simple.csv').iloc[:2 , :]
 agent_executor.train()
 
@@ -30,7 +31,7 @@ for i in range(len(data)):
     
     experience = build_experience(x)
     metadata = {
-      'query': x['query'],
+    #   'query': x['query'],
       'correct_tool': x['correct_tool'] ,
       'correct_tool_input': correct_trajectory[tool_index]['tool_input'] ,
       'correct_reasoning': correct_trajectory[tool_index]['log'] ,

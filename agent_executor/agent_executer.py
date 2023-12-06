@@ -129,12 +129,15 @@ class CustomAgentExecutor(AgentExecutor):
         """
         try:
             intermediate_steps = self._prepare_intermediate_steps(intermediate_steps)
+            ic(intermediate_steps)
+
             # Call the LLM to see what to do.
             output = self.agent.plan(
                 intermediate_steps,
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
+            ic(output)
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
             
             if self.train_mode :   # added by me
@@ -144,6 +147,8 @@ class CustomAgentExecutor(AgentExecutor):
                 if isinstance(output ,AgentAction):
                     # is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
                     # print(self.ground_truth,'\n', self.return_schema)
+                    # analogy = ''
+                    # ic(self.ground_truth, self.return_schema)
                     is_right_decision, analogy = validate(self.ground_truth, self.return_schema)  # added by me , evaluator
                     ic("is_right_decision :", is_right_decision)
                     ic("analogy:", analogy)
@@ -153,7 +158,7 @@ class CustomAgentExecutor(AgentExecutor):
                                 'tool': output.tool,
                                 'tool_input': output.tool_input,
                                 'reasoning' : output.log.split('\n')[0],
-                                    }
+                        }
 
                         self.wrong_checkpoints[self.tool_count] = curr_step
                         input = {
@@ -174,7 +179,7 @@ class CustomAgentExecutor(AgentExecutor):
                     self.correct_trajectory.append({
                         'tool_name': output.tool,
                         'tool_input': output.tool_input,
-                        'log': output.log.split('\n')[0] ,
+                        'log': output.log.split('\n')[0] + analogy,
                     })
                     # self.correct_schema.append({
                     #     'tool_name': output.tool,
@@ -258,6 +263,7 @@ class CustomAgentExecutor(AgentExecutor):
                     }
                     self.return_schema.append(tool_schema)      # added by me
                 # print('observation: ', observation)
+                ic(type(arguments))
 
             else:
                 tool_run_kwargs = self.agent.tool_run_logging_kwargs()

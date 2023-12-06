@@ -16,11 +16,13 @@ class Summarize(BaseTool):
         self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
         print('inside SummarizeTool , query is : \n' , query) 
+        li = []
         x = {
             'argument_name': 'objects',
             'argument_value': query,
         }
-        return x 
+        li.append(x)
+        return li
     
 
     async def _arun(

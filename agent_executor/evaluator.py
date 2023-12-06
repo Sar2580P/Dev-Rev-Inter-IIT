@@ -1,5 +1,6 @@
 import json
 from icecream import ic
+
 def top_nodes(data):
     data = [{item['tool_name']: {'value': 1, 'arguments': item['arguments']}} for item in data]
     # ic(data)
@@ -9,8 +10,11 @@ def top_nodes(data):
         # ic(current_tool_details)
         # Process each argument for the current tool
         for arg in current_tool_details['arguments']:
-            # ic(arg)
-            arg_value = str(arg.get('argument_value', ''))
+            ic(type(arg))
+            arg_value = arg.get('argument_value', '')
+            print(type(arg_value))
+            # arg_value = arg['argument_value']
+            arg_value = str(arg_value)
             if arg_value.startswith('$$PREV['):
                 # Extract the index from the argument value
                 ref_index = int(arg_value[7:-1])
@@ -38,7 +42,7 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
     sample_arguments = sorted([(argument["argument_name"], argument["argument_value"]) for argument in check_node["arguments"]])
     
     if not common_nodes:
-        return (False, "incorrect tool use, should have used " + ' or'.join([gt_node["toolname"] for gt_node in top_ground_truth]))
+        return (False, "incorrect tool use, should have used " + ' or'.join([gt_node["tool_name"] for gt_node in top_ground_truth]))
 
     priority = 0
     # a higher priority means, more stages have been cleared by the node that is being compared to
@@ -90,15 +94,19 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
 
 
 def validate(ground_truth, sample, additional_tool=None):
+    ic("Hello")
     ground_truth = ground_truth.copy()
     sample = sample.copy()
     current_ground_truth = ground_truth.copy()
     current_sample = sample.copy()
-    
+    ic(ground_truth, sample)
     for i, sample_node in enumerate(sample):
+        # ic("Ground Truth")
         top_ground_truth = top_nodes(current_ground_truth)
+        # ic("Return Schema")
         top_sample = top_nodes(current_sample)
-        # print(sample_node)
+        # ic(sample_node)
+
         if sample_node not in top_sample:
             return (False, f"{json.dumps(sample_node)} is dependant on other tools that have not been called yet")
             

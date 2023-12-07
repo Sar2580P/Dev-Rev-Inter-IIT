@@ -1,5 +1,5 @@
 import pandas as pd
-from agent_executer import agent_executor
+from agent_executor.agent_executer import agent_executor
 from backend_llm.utils import callbacks , wandb_callback
 import time  
 simple_data = pd.read_csv('DevRev - Data - Simple.csv')
@@ -8,7 +8,7 @@ complex_data = pd.read_csv('devrev_complex.csv')
 print('Complex_data :\n' ,complex_data.head(2), end = '\n\n\n')
 
 def get_simple_predictions(data):
-  df = pd.DataFrame(columns=['Query', 'True' , 'Predicted', 'Latency'])
+  df = pd.DataFrame(columns=['Query', 'Original' , 'Predicted', 'Latency'])
   error_set = []
   for i in range(len(data)):
     if i>2:

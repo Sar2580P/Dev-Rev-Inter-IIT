@@ -22,11 +22,13 @@ class SearchObjectByName(BaseTool):
         self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
         print('inside search_object_by_name tool , query is : \n' , query) 
+        li = []
         x = {
             'argument_name': 'query',
             'argument_value': query,
         }
-        return x 
+        li.append(x)
+        return li 
     
 
     async def _arun(

@@ -14,11 +14,13 @@ class CreateActionableTasksFromText(BaseTool):
         self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
         print('inside create_actionable_tasks_from_text tool , query is : \n' , query) 
+        li = []
         x = {
             'argument_name': 'text',
             'argument_value': query,
         }
-        return x 
+        li.append(x)
+        return li
     
 
     async def _arun(

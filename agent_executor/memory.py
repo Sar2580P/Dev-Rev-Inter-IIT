@@ -6,11 +6,10 @@ from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.chains import LLMChain
 
 class Memory():
-    def __init__(self, k) -> None:
+    def __init__(self,vector_db, k) -> None:
         self.queue = Queue(maxsize=10) # current List to be added to Long Term Memory
         self.k = 5
-        self.vector_db = Chroma(embedding_function = embedding_func, persist_directory= 'database/mistakes_db' , 
-                                relevance_score_fn='similarity_search_with_score')
+        self.vector_db = vector_db
     
     def stage(self, docs:Document):
         self.queue.put(docs)
@@ -25,11 +24,13 @@ class Memory():
         print("Pulling from Memory...\n" , results) 
         return results
     
-    # def reset(self , mistake):
-    #     self.vector_db.delete()
+    def reset(self):
+        self.vector_db.delete()
 #__________________________________________________________________________________________________________________________
 
-mistake_memory = Memory(k=5)
+V_db = Chroma(embedding_function = embedding_func, persist_directory= 'database/mistakes_db' , 
+                                relevance_score_fn='similarity_search_with_score')
+mistake_memory = Memory(k=5,vector_db=V_db)
 
 prefix_template = '''
 You are good at reasoning on mistakes that has been made by another AI agent while deciding the next tool to be used for the given query.
@@ -94,6 +95,8 @@ def build_experience(x):
                           "correct_tool": x['correct_tool'] , "correct_reasoning": x['correct_reasoning'] })
     return y
 
+def delete_experience():
+    mistake_memory.reset()
 
 
 

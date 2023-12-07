@@ -5,22 +5,44 @@ from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
 )
 from backend_llm.utils import llm
+from tools.argument_mapping.get_args import fill_signature
 
 class CreateActionableTasksFromText(BaseTool):
     name = "create_actionable_tasks_from_text"
     description = '''Given a text, extracts actionable insights, and creates tasks for them, which are kind of a work item. '''
 
+    # def _run(
+    #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
+    # ) -> str:
+    #     print('inside create_actionable_tasks_from_text tool , query is : \n' , query) 
+    #     li = []
+    #     x = {
+    #         'argument_name': 'text',
+    #         'argument_value': query,
+    #     }
+    #     li.append(x)
+    #     return li
+    
     def _run(
-        self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
-    ) -> str:
+        self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
+    ) -> Any:
         print('inside create_actionable_tasks_from_text tool , query is : \n' , query) 
-        li = []
-        x = {
-            'argument_name': 'text',
-            'argument_value': query,
+        signature = {
+                        'text': str,
+                    }
+        # TODO
+        arg_description = {
+            'text': 'A list of work item IDs to be added to the sprint',
         }
-        li.append(x)
-        return li
+        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
+        li = []
+        for key, value in column_args.items():
+            x = {
+                'argument_name': key,
+                'argument_value': value,
+            }
+            li.append(x)
+        return   li
     
 
     async def _arun(

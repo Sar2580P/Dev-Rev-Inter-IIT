@@ -1,6 +1,6 @@
 import pandas as pd
 from agent_executor.agent_executer import agent_executor
-from agent_executor.memory import *
+from agent_executor.agent_memory import *
 from langchain.docstore.document import Document
 from icecream import ic
 from langchain.callbacks import get_openai_callback
@@ -31,22 +31,19 @@ for i in range(len(data)):
         "correct_trajectory" : correct_trajectory[:tool_index]
       }
     
-      experience = build_experience(x)
-      metadata = {
-      #   'query': x['query'],
-        'correct_tool': x['correct_tool'] ,
-        'correct_tool_input': correct_trajectory[tool_index]['tool_input'] ,
-        'correct_reasoning': correct_trajectory[tool_index]['log'] ,
-      }
-      print(metadata)
-      doc = Document(page_content=experience , metadata=metadata)
-      ic('wrong_tool : ' , value['tool'])
-      ic('experience : ' , experience)
-      ic('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-      mistake_memory.stage(doc)
-      print('Total_Cost : ' , cb.total_cost)
-      print('Completion Tokens : ' , cb.completion_tokens)
-      print('Total_Tokens : ' , cb.total_tokens)
+    experience = build_experience(x)
+    metadata = {
+      'query': x['query'],
+      'correct_tool': x['correct_tool'] ,
+      'correct_tool_input': correct_trajectory[tool_index]['tool_input'] ,
+      'correct_reasoning': correct_trajectory[tool_index]['log'] ,
+    }
+    print(metadata)
+    doc = Document(page_content=experience , metadata=metadata)
+    ic('wrong_tool : ' , value['tool'])
+    ic('experience : ' , experience)
+    ic('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    mistake_memory.stage(doc)
 
 
   print("\033[91m {}\033[00m" .format('-----------------------------------------------------------------------------------'))

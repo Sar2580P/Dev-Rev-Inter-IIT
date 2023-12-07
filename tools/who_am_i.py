@@ -5,6 +5,7 @@ from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
 )
 from backend_llm.utils import llm
+from tools.argument_mapping.get_args import fill_signature
 
 class WhoAmI(BaseTool):
     name = "whoami"
@@ -16,13 +17,35 @@ class WhoAmI(BaseTool):
             
 '''
 
-    def _run(
-        self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
-    ) -> str:
-        print('inside who_am_i tool , query is : \n' , query) 
+    # def _run(
+    #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
+    # ) -> str:
+    #     print('inside who_am_i tool , query is : \n' , query) 
         
-        return list()
+    #     return list()
     
+    def _run(
+        self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
+    ) -> Any:
+        print('inside who_am_i tool , query is : \n' , query) 
+        signature = {
+                        'ids': list(),
+                    }
+        
+        # TODO
+        arg_description = {
+            'ids': 'the list of ids of the users',
+        }
+        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
+        li = []
+        for key, value in column_args.items():
+            x = {
+                'argument_name': key,
+                'argument_value': value,
+            }
+            li.append(x)
+        return   li
+
 
     async def _arun(
         self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None

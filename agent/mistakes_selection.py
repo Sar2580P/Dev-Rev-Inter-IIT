@@ -3,7 +3,7 @@ from backend_llm.utils import llm, small_llm
 from langchain.chains import LLMChain
 from typing import List, Union
 from langchain.docstore.document import Document
-from agent_executor.memory import mistake_memory
+from agent_executor.agent_memory import mistake_memory
 import ast
 from prompts import MISTAKE_SELECTION
 

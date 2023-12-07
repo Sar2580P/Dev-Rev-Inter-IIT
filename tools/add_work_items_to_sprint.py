@@ -33,7 +33,7 @@ class AddWorkItemsToSprint(BaseTool):
             'sprint_id': 'The ID of the sprint to which the work items should be added',
             
         }
-        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description)
+        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []
         for key, value in column_args.items():
             x = {

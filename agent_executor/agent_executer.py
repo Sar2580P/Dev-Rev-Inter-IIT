@@ -312,7 +312,7 @@ ground = '''
 '''
 
 # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-# agent_executor.train()
+# agent_executor.eval()
 # agent_executor.get_tool_lists(ground)
 # x = agent_executor({"input":'Summarize high severity tickets from the customer UltimateCustomer'})
 # print(x)

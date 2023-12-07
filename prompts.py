@@ -81,7 +81,8 @@ tool_reasoning : {log}\n
 
 #____________________________________________________________________________________________________________
 
-ARGUMENT_EXTRACTION = '''
+
+TOOLS_PROMPT_EXAMPLES = '''
 You are good at extracting values of certain arguments from a user query in natural language.
 
 Below is the signature of arguments with keys as argument names and 
@@ -99,6 +100,11 @@ Don't fill the values of arguments which are not present in the user query.
 You have to extract the following arguments from the user query :
 
 {user_query}
+
+Below are a few examples where this tool had wrong outputs, do not to repeate these mistakes again.
+
+{memory_examples}
+
 
 Drop the arguments which are not present in the user query.
 You need to return the dictionary of arguments as keys and extracted values as values.

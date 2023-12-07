@@ -36,7 +36,6 @@ def top_nodes(data):
     return converted_list
 
 
-
 def search_similar_node(check_node_index, check_node, top_ground_truth, ground_truth, sample):
     common_nodes = [gt_node for gt_node in top_ground_truth if check_node["tool_name"] == gt_node["tool_name"]]
     sample_arguments = sorted([(argument["argument_name"], argument["argument_value"]) for argument in check_node["arguments"]])

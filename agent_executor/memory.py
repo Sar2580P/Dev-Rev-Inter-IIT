@@ -4,6 +4,7 @@ from langchain.docstore.document import Document
 from queue import Queue
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.chains import LLMChain
+from prompts import PREFIX_MISTAKE_MEMORY, SUFFIX_MISTAKE_MEMORY, CORRECT_TRAJECTORY_TILL_NOW
 
 class Memory():
     def __init__(self,vector_db, k) -> None:
@@ -28,44 +29,14 @@ class Memory():
         self.vector_db.delete()
 #__________________________________________________________________________________________________________________________
 
-V_db = Chroma(embedding_function = embedding_func, persist_directory= 'database/mistakes_db' , 
+V_db = Chroma(embedding_function = small_embedding_func, persist_directory= 'database/mistakes_db' , 
                                 relevance_score_fn='similarity_search_with_score')
 mistake_memory = Memory(k=5,vector_db=V_db)
 
-prefix_template = '''
-You are good at reasoning on mistakes that has been made by another AI agent while deciding the next tool to be used for the given query.
-
-Below is the user query:
-    Query : {query}
-
-Below is the trajectory of right tools used till now and their tool input as well as the reasoning behind using them.
-'''
 #__________________________________________________________________________________________________________________________
-suffix_template = '''
-
-The agent attempts to select the next tool, which turns out to be wrong choice, in the trajectory based on the user query:
-    Wrong Tool : {wrong_tool}
-    Wrong Reasoning : {wrong_reasoning}
-
-The agent was expected to select the following tool inplace of above tool with following reasoning:
-    Correct Tool : {correct_tool}
-    Correct Reasoning : {correct_reasoning}
-
-Based on the above information , you are expected to highlight on the information present in user query which was missed by agent
-Again repeating, you need to generate an experience for the agent, which will help it to learn from its mistakes.
-
-The experience text should not exceed 30 words.
-
-'''
-#__________________________________________________________________________________________________________________________
-example_formatter_template = """
-tool_name : {tool_name}
-tool_input: {tool_input}
-tool_reasoning : {log}\n
-"""
 example_prompt = PromptTemplate(
     input_variables=["tool_name", "tool_input" , "tool_reasoning"],
-    template=example_formatter_template,
+    template=CORRECT_TRAJECTORY_TILL_NOW,
 )
 
 #__________________________________________________________________________________________________________________________
@@ -80,10 +51,10 @@ def build_experience(x):
     example_prompt=example_prompt,
 
     # prompt template string to put before the examples, assigning roles and rules.
-    prefix=prefix_template,
+    prefix=PREFIX_MISTAKE_MEMORY,
     
     # prompt template string to put after the examples.
-    suffix= suffix_template,
+    suffix= SUFFIX_MISTAKE_MEMORY,
     
     # input variable to use in the suffix template
     input_variables=["query", "wrong_tool" , "wrong_reasoning" , "correct_tool" , "correct_reasoning"],
@@ -95,8 +66,8 @@ def build_experience(x):
                           "correct_tool": x['correct_tool'] , "correct_reasoning": x['correct_reasoning'] })
     return y
 
-def delete_experience():
-    mistake_memory.reset()
+# def delete_experience():
+#     mistake_memory.reset()
 
 
 

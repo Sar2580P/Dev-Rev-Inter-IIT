@@ -4,20 +4,13 @@ from langchain.schema.language_model import BaseLanguageModel
 from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS, PREFIX, SUFFIX
 from langchain.prompts import PromptTemplate
 from langchain.tools.base import BaseTool
-from tools.tool_collection import *
-from backend_llm.utils import llm
+from agent_executor.tool_collection import *
+from backend_llm.utils import llm, small_llm
 from langchain.agents.mrkl.base import ZeroShotAgent
 from agent.mistakes_selection import *
 from langchain.agents.agent import Agent, AgentOutputParser
+from prompts import PAST_MISTAKES
 
-MISTAKES ='''
-
-Before proceeding further, below I have mentioned common mistakes made by you while using the tools.
-Please go through them carefully and try to avoid them in future.
-
-{mistakes}
-
-'''
 
 class PersonalAgent(ZeroShotAgent):
     
@@ -29,7 +22,7 @@ class PersonalAgent(ZeroShotAgent):
         user_query: str , 
         prefix: str = PREFIX,
         suffix: str = SUFFIX,
-        mistakes :str = MISTAKES,
+        mistakes :str = PAST_MISTAKES,
         format_instructions: str = FORMAT_INSTRUCTIONS,
         input_variables: Optional[List[str]] = None,
     ) -> PromptTemplate:

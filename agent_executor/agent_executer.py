@@ -3,7 +3,7 @@ import sys, os
 sys.path.append(os.getcwd())
 import ast
 from backend_llm.utils import *
-from tools.tool_collection import *
+from agent_executor.tool_collection import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
 import json
@@ -327,10 +327,15 @@ ground = '''
  } 
  ]
 '''
+# from langchain.callbacks import get_openai_callback
 
 # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
 # agent_executor.eval()
 # agent_executor.get_tool_lists(ground)
-# x = agent_executor({"input":'Summarize high severity tickets from the customer UltimateCustomer'})
-# print(x)
-# print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+# with get_openai_callback() as cb:
+
+#     x = agent_executor({"input":'who am i ?'})
+#     print(x)
+#     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+
+#     print('\n\n\n\n\n' ,cb.total_cost)

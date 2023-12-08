@@ -46,8 +46,7 @@ def build_experience(x):
                           "correct_tool": x['correct_tool'] , "correct_reasoning": x['correct_reasoning'] })
     return y
 
-# def delete_experience():
-#     mistake_memory.reset()
+
 
 
 

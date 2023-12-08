@@ -257,19 +257,17 @@ class CustomAgentExecutor(AgentExecutor):
                     **tool_run_kwargs,
                 )
                 observation = "$$PREV[{i}]".format(i=self.tool_count)
-                if type(arguments) == str: 
-                    observation = arguments
-                    
+               
 #=============================================================================================================================
-                else:
-                    tool_schema = {                         # added by me
-                        'tool_name': tool.name,
-                        'arguments': arguments,
-                    }
-                    self.return_schema.append(tool_schema)      # added by me
-                    t_s = [tool_schema]
-                    g_s = [self.ground_truth[self.tool_count]]
-                    build_tool_experience(t_s, g_s)
+               
+                tool_schema = {                         # added by me
+                    'tool_name': tool.name,
+                    'arguments': arguments,
+                }
+                self.return_schema.append(tool_schema)      # added by me
+                t_s = [tool_schema]
+                g_s = [self.ground_truth[self.tool_count]]
+                build_tool_experience(t_s, g_s)
                 # print('observation: ', observation)
                 ic(type(arguments))
 #=============================================================================================================================
@@ -339,11 +337,11 @@ ground = '''
 from langchain.callbacks import get_openai_callback
 
 # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-agent_executor.eval()
+agent_executor.train()
 agent_executor.get_tool_lists(ground)
 with get_openai_callback() as cb:
 
-    x = agent_executor({"input":'who am i ?'})
+    x = agent_executor({"input":'Summarize high severity tickets from the customer UltimateCustomer'})
     print(x)
     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
 

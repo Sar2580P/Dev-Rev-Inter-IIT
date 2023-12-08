@@ -9,7 +9,7 @@ from prompts import MISTAKE_SELECTION
 
 
 prompt = PromptTemplate(template=MISTAKE_SELECTION, input_variables=["input", "mistake"])
-chain = LLMChain(llm=llm, prompt=prompt)
+chain = LLMChain(llm=small_llm, prompt=prompt)
 
 def choose_mistake(user_query, mistake):
     print("\033[91m {}\033[00m" .format('choose_mistake (mistake_selection)'))

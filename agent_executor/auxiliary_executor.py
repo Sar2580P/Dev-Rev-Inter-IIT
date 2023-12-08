@@ -39,4 +39,5 @@ def sub_task(input):
   if not answer[0]=='{':
     answer = answer[answer.find('{'):]
   print("\033[91m {}\033[00m" .format('sub_task (auxiliary_executor)'))
+  print(answer)
   return ast.literal_eval(answer)

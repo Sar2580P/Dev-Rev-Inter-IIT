@@ -16,8 +16,8 @@ Below you are provided with the user query :
 Below you are provided with one of the mistakes made by another AI agent on some other user query :
 {mistake}
 
-Now, the AI agent wants to know whether the above mistake is relevant to the user query or not, i.e, it should be looked into or not while
-providing the answer to the user query.
+Now, the AI agent wants to know whether the above mistake is relevant to the user query or not, i.e, 
+it should be looked into or not while providing the answer to the user query.
 
 Return 1 if the mistake is relevant to the user query, else return 0.
 '''
@@ -25,19 +25,22 @@ Return 1 if the mistake is relevant to the user query, else return 0.
 # ____________________________________________________________________________________________________________
 
 TOOL_INPUT_PROMPT = '''
-You are expected to create a sub-task from the given user query and the intermediate steps that the agent has taken till now.
+You are expected to create a sub-task from the given user query and the intermediate steps taken till now.
 
 The user query is as follows:
   User_Query : {query}
 
-The intermediate steps taken by the agent till now are as follows:
+The intermediate steps taken till now to solve the above query are as follows:
 {intermediate_steps}
 
 Below is the correct tool that needs to be used next in the intermediate steps:
   Correct_Tool : {correct_tool}
 
-The short description of the correct tool, to help you reason out,  is as follows:
+The short description of the correct tool, to help you reason out, is as follows:
 {correct_tool_description}
+
+While creating the sub-task for above tool, adhere to tool description. 
+Don't query tool for tasks which are not mentioned in tool description.
 
 Just return a dictionary with the following keys ,with no backticks: 
   "tool_input" : The sub-task in natural language based on user query, intermediate steps and tool description 

@@ -2,8 +2,9 @@ import json
 from icecream import ic
 
 def top_nodes(data):
+    ic(data)
     data = [{item['tool_name']: {'value': 1, 'arguments': item['arguments']}} for item in data]
-    # ic(data)
+
     for i in range(0, len(data)):
         current_tool_name = next(iter(data[i]))
         current_tool_details = data[i][current_tool_name]
@@ -38,17 +39,17 @@ def top_nodes(data):
 
 def search_similar_node(check_node_index, check_node, top_ground_truth, ground_truth, sample):
     common_nodes = [gt_node for gt_node in top_ground_truth if check_node["tool_name"] == gt_node["tool_name"]]
-    sample_arguments = sorted([(argument["argument_name"], argument["argument_value"]) for argument in check_node["arguments"]])
+    sample_arguments = sorted([(argument['argument_name'], argument['argument_value']) for argument in check_node['arguments']])
     
     if not common_nodes:
-        return (False, "incorrect tool use, should have used " + ' or'.join([gt_node["tool_name"] for gt_node in top_ground_truth]))
+        return (False, "incorrect tool use, should have used " + ' or'.join([gt_node['tool_name'] for gt_node in top_ground_truth]))
 
     priority = 0
     # a higher priority means, more stages have been cleared by the node that is being compared to
     reason = ""
     
     for gt_node in common_nodes:
-        gt_arguments = sorted([(argument["argument_name"], argument["argument_value"]) for argument in gt_node["arguments"]])
+        gt_arguments = sorted([(argument['argument_name'], argument['argument_value']) for argument in gt_node['arguments']])
         if len(gt_arguments) != len(sample_arguments):
             if priority < 1:
                 reason = f"arguments passed are {', '.join([arg[0] for arg in sample_arguments])} but should be {', '.join([arg[0] for arg in gt_arguments])}"
@@ -91,9 +92,7 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
     return (False, reason)
 
 
-
 def validate(ground_truth, sample, additional_tool=None):
-    ic("Hello")
     ground_truth = ground_truth.copy()
     sample = sample.copy()
     current_ground_truth = ground_truth.copy()
@@ -107,27 +106,30 @@ def validate(ground_truth, sample, additional_tool=None):
         # ic(sample_node)
 
         if sample_node not in top_sample:
+            return (False, f"Tool is dependant on other tools that have not been called yet")
             return (False, f"{json.dumps(sample_node)} is dependant on other tools that have not been called yet")
             
         found, gt_node = search_similar_node(i, sample_node, top_ground_truth, ground_truth, sample)
         if not found:
-            return (False, f"No match found for tool {json.dumps(sample_node)} at index {i}. Reason: {gt_node}")
+            return (False, f"No match found for tool. Reason: {gt_node}")
+            # return (False, f"No match found for tool {json.dumps(sample_node)} at index {i}. Reason: {gt_node}")
 
         current_sample.remove(sample_node)
         modified_sample_node = sample_node.copy()
-        modified_sample_node["tool_name"] += str(i)
+        modified_sample_node['tool_name'] += str(i)
         sample[i] = modified_sample_node
 
         current_ground_truth.remove(gt_node)
         modified_ground_truth_node = gt_node.copy()
-        modified_ground_truth_node["tool_name"] += str(i)
+        modified_ground_truth_node['tool_name'] += str(i)
         ground_truth[ground_truth.index(gt_node)] = modified_ground_truth_node
 
     if additional_tool:
         top_ground_truth = top_nodes(current_ground_truth)
-        top_ground_truth_tools = [tool["tool_name"] for tool in top_ground_truth]
+        top_ground_truth_tools = [tool['tool_name'] for tool in top_ground_truth]
 
         if additional_tool not in top_ground_truth_tools:
-            return (False, f"Your current progress of tool uses is correct however the last tool use should be {'or '.join(top_ground_truth_tools)}")
+            return (False, f"Your current progress of tool uses is correct however the last tool use should be ...")
+            # return (False, f"Your current progress of tool uses is correct however the last tool use should be {'or '.join(top_ground_truth_tools)}")
             
     return (True, "")

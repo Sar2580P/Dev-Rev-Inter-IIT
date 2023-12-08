@@ -9,7 +9,8 @@ from langchain.agents.loading import AGENT_TO_CLASS
 import json
 from agent_executor.auxiliary_executor import *
 from agent.agent import PersonalAgent
-from agent_executor.evaluator import *
+from evaluator import *
+from tools.argument_mapping.tool_memory import build_tool_experience
 
 # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 # agent_cls = AGENT_TO_CLASS[agent]
@@ -129,7 +130,7 @@ class CustomAgentExecutor(AgentExecutor):
         """
         try:
             intermediate_steps = self._prepare_intermediate_steps(intermediate_steps)
-            ic(intermediate_steps)
+            # ic(intermediate_steps)
 
             # Call the LLM to see what to do.
             output = self.agent.plan(
@@ -137,7 +138,7 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            ic(output)
+            # ic(output)
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
             
             if self.train_mode :   # added by me
@@ -149,9 +150,17 @@ class CustomAgentExecutor(AgentExecutor):
                     # print(self.ground_truth,'\n', self.return_schema)
                     # analogy = ''
                     # ic(self.ground_truth, self.return_schema)
-                    is_right_decision, analogy = validate(self.ground_truth, self.return_schema)  # added by me , evaluator
+#=============================================================================================================================
+                    current_schema = self.return_schema
+                    current_schema.append({                        
+                        'tool_name': output.tool,
+                        'arguments': [],
+                    })
+
+                    is_right_decision, analogy = validate(self.ground_truth, current_schema)  # added by me , evaluator
                     ic("is_right_decision :", is_right_decision)
                     ic("analogy:", analogy)
+#=============================================================================================================================
                     if not is_right_decision:
                         print("\033[1;35;40m {} \033[0m" .format('agent planned wrongly, picked tool : {} ...'.format(output.tool)))
                         curr_step = {
@@ -175,17 +184,12 @@ class CustomAgentExecutor(AgentExecutor):
                         output.tool_input = tool_input
                         output.log = log+"\nAction: {tool}\nAction Input:{tool_input}".format(tool=output.tool, 
                                                                                               tool_input=output.tool_input)
-
+                    #TODO
                     self.correct_trajectory.append({
                         'tool_name': output.tool,
                         'tool_input': output.tool_input,
-                        'log': output.log.split('\n')[0] + analogy,
+                        'log': output.log.split('\n')[0],
                     })
-                    # self.correct_schema.append({
-                    #     'tool_name': output.tool,
-                    #     'arguments': []
-
-                    # })
                 
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):
@@ -256,14 +260,19 @@ class CustomAgentExecutor(AgentExecutor):
                 if type(arguments) == str: 
                     observation = arguments
                     
+#=============================================================================================================================
                 else:
                     tool_schema = {                         # added by me
                         'tool_name': tool.name,
                         'arguments': arguments,
                     }
                     self.return_schema.append(tool_schema)      # added by me
+                    t_s = [tool_schema]
+                    g_s = [self.ground_truth[self.tool_count]]
+                    build_tool_experience(t_s, g_s)
                 # print('observation: ', observation)
                 ic(type(arguments))
+#=============================================================================================================================
 
             else:
                 tool_run_kwargs = self.agent.tool_run_logging_kwargs()

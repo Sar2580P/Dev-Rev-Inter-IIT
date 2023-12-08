@@ -5,6 +5,7 @@ from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
 )
 from backend_llm.utils import llm
+from tools.argument_mapping.get_args import fill_signature
 
 class Prioritize(BaseTool):
     name = "Prioritize"
@@ -12,18 +13,38 @@ class Prioritize(BaseTool):
                 priority. The logic of what constitutes priority for a given
                 object is an internal implementation detail.
                 '''
-    def _run(
-        self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
-    ) -> str:
-        print('inside Prioritize_objects Tool , query is : \n' , query)
-        li = []
-        x = {
-            'argument_name': 'objects',
-            'argument_value': query,
-        }
-        li.append(x)
-        return li
+    # def _run(
+    #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
+    # ) -> str:
+    #     print('inside Prioritize_objects Tool , query is : \n' , query)
+    #     li = []
+    #     x = {
+    #         'argument_name': 'objects',
+    #         'argument_value': query,
+    #     }
+    #     li.append(x)
+    #     return li
     
+    def _run(
+        self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
+    ) -> Any:
+        print('inside Prioritize_objects tool , query is : \n' , query) 
+        signature = {
+                        'objects': str,
+                    }
+        # TODO
+        arg_description = {
+            'objects': 'a tool to determine the priorities of objects',
+        }
+        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
+        li = []
+        for key, value in column_args.items():
+            x = {
+                'argument_name': key,
+                'argument_value': value,
+            }
+            li.append(x)
+        return   li
 
     async def _arun(
         self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None

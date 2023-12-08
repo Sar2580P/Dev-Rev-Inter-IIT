@@ -1,32 +1,12 @@
 from langchain.vectorstores.chroma import Chroma
 from backend_llm.utils import *
-from langchain.docstore.document import Document
-from queue import Queue
+
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.chains import LLMChain
 from prompts import PREFIX_MISTAKE_MEMORY, SUFFIX_MISTAKE_MEMORY, CORRECT_TRAJECTORY_TILL_NOW
+from memory import Memory
 
-class Memory():
-    def __init__(self,vector_db, k) -> None:
-        self.queue = Queue(maxsize=10) # current List to be added to Long Term Memory
-        self.k = 5
-        self.vector_db = vector_db
-    
-    def stage(self, docs:Document):
-        self.queue.put(docs)
-        
-    def push(self):
-        print("Pushing Queue...")
-        while not self.queue.empty():
-            self.vector_db.add_documents([self.queue.get()])
-        
-    def pull(self, query:str):
-        results  = self.vector_db.search(query, k=self.k , search_type='similarity')
-        print("Pulling from Memory...\n" , results) 
-        return results
-    
-    def reset(self):
-        self.vector_db.delete()
+
 #__________________________________________________________________________________________________________________________
 
 V_db = Chroma(embedding_function = small_embedding_func, persist_directory= 'database/mistakes_db' , 

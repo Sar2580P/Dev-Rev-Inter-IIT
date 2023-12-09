@@ -9,32 +9,19 @@ from tools.argument_mapping.get_args import fill_signature
 
 class Prioritize(BaseTool):
     name = "Prioritize"
-    description = '''Returns a list of objects sorted by
-                priority. The logic of what constitutes priority for a given
-                object is an internal implementation detail.
-                '''
-    # def _run(
-    #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
-    # ) -> str:
-    #     print('inside Prioritize_objects Tool , query is : \n' , query)
-    #     li = []
-    #     x = {
-    #         'argument_name': 'objects',
-    #         'argument_value': query,
-    #     }
-    #     li.append(x)
-    #     return li
+    description = '''Use this tool when asked to prioritize the objects. '''
+                
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('inside Prioritize_objects tool , query is : \n' , query) 
+        # print('inside Prioritize_objects tool , query is : \n' , query) 
         signature = {
-                        'objects': str,
+                        'objects': List[str],
                     }
-        # TODO
+
         arg_description = {
-            'objects': 'a tool to determine the priorities of objects',
+            'objects': 'the list of objects to be prioritized',
         }
         column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []

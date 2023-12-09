@@ -30,8 +30,11 @@ for i in range(len(data)):
         "correct_reasoning": correct_trajectory[tool_index]['log'] ,
         "correct_trajectory" : correct_trajectory[:tool_index]
       }
-    
-    experience = build_experience(x)
+    x = input("Do you want to correct the reasoning? (y/n) :")
+    if x.lower() == 'n':
+      experience = build_experience(x)
+    else :
+      experience = input("Enter the correct reasoning :")
     metadata = {
       'query': x['query'],
       'correct_tool': x['correct_tool'] ,

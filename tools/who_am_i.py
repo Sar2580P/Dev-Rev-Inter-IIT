@@ -27,9 +27,9 @@ class WhoAmI(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('inside who_am_i tool , query is : \n' , query) 
+        # print('inside who_am_i tool , query is : \n' , query) 
         signature = {
-                        'ids': list(),
+                        'ids': List[str],
                     }
         
         # TODO

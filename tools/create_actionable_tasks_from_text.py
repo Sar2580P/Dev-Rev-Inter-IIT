@@ -10,18 +10,6 @@ from tools.argument_mapping.get_args import fill_signature
 class CreateActionableTasksFromText(BaseTool):
     name = "create_actionable_tasks_from_text"
     description = '''Given a text, extracts actionable insights, and creates tasks for them, which are kind of a work item. '''
-
-    # def _run(
-    #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
-    # ) -> str:
-    #     print('inside create_actionable_tasks_from_text tool , query is : \n' , query) 
-    #     li = []
-    #     x = {
-    #         'argument_name': 'text',
-    #         'argument_value': query,
-    #     }
-    #     li.append(x)
-    #     return li
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
@@ -30,9 +18,9 @@ class CreateActionableTasksFromText(BaseTool):
         signature = {
                         'text': str,
                     }
-        # TODO
+
         arg_description = {
-            'text': 'A list of work item IDs to be added to the sprint',
+            'text': 'The text from which the actionable insights need to be created.',
         }
         column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []

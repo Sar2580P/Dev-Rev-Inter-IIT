@@ -3,7 +3,7 @@ import sys, os
 sys.path.append(os.getcwd())
 import ast
 from backend_llm.utils import *
-from agent_executor.tool_collection import *
+from agent.tool_collection import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
 import json
@@ -69,12 +69,12 @@ class CustomAgentExecutor(AgentExecutor):
                 self.correct_trajectory = []    # added by me
                 self.wrong_checkpoints = {}    # added by me
             next_step_output = self._take_next_step(
-                name_to_tool_map,
-                color_mapping,
-                inputs,
-                intermediate_steps,
-                run_manager=run_manager,
-            )
+                                                    name_to_tool_map,
+                                                    color_mapping,
+                                                    inputs,
+                                                    intermediate_steps,
+                                                    run_manager=run_manager,
+                                                )
             if isinstance(next_step_output, AgentFinish):
                 self.tool_count = 0             # added by me
                 print("\033[1;35;40m {} \033[0m" .format('wrong checkpoints ---> '))
@@ -85,7 +85,6 @@ class CustomAgentExecutor(AgentExecutor):
                 )
             
             self.tool_count += 1            # added by me
-            # print('meow' , self.tool_count)
 
             intermediate_steps.extend(next_step_output)
             if len(next_step_output) == 1:
@@ -145,22 +144,22 @@ class CustomAgentExecutor(AgentExecutor):
                 if self.tool_count == len(self.true_tools):
                     output = AgentFinish(return_values = {'output':'User query successfully answered'} ,
                                          log ='I now know the final answer.\nFinal Answer: Take shelter of Lord Krishna')
+                    
                 if isinstance(output ,AgentAction):
-                    # is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
+                    is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
                     # print(self.ground_truth,'\n', self.return_schema)
                     # analogy = ''
                     # ic(self.ground_truth, self.return_schema)
-#=============================================================================================================================
-                    current_schema = self.return_schema
-                    current_schema.append({                        
-                        'tool_name': output.tool,
-                        'arguments': [],
-                    })
+                #==============================================================================================================
+                    # current_schema = self.return_schema.copy()
+                    # current_schema.append({                        
+                    #     'tool_name': output.tool,
+                    #     'arguments': [],
+                    # })
 
-                    is_right_decision, analogy = validate(self.ground_truth, current_schema)  # added by me , evaluator
-                    ic("is_right_decision :", is_right_decision)
-                    ic("analogy:", analogy)
-#=============================================================================================================================
+                    # is_right_decision, analogy = validate(self.ground_truth, current_schema)  # added by me , evaluator
+
+                #==============================================================================================================
                     if not is_right_decision:
                         print("\033[1;35;40m {} \033[0m" .format('agent planned wrongly, picked tool : {} ...'.format(output.tool)))
                         curr_step = {
@@ -176,7 +175,7 @@ class CustomAgentExecutor(AgentExecutor):
                             'query' : inputs['input'] ,
                             'intermediate_steps' : intermediate_steps ,
                         }
-                        print("\033[1;35;40m {} \033[0m".format('Creating sub task for tool : {} \ncalling auxiliary_executor ...'.format(self.true_tools[self.tool_count])))
+                        print("\033[1;35;40m {} \033[0m".format('\ncalling auxiliary_executor ...\nCreating sub task for tool : {} '.format(self.true_tools[self.tool_count])))
                         answer = sub_task(input)   
                         tool_input, log = answer['tool_input'], answer['reason']                     
               
@@ -258,8 +257,7 @@ class CustomAgentExecutor(AgentExecutor):
                 )
                 observation = "$$PREV[{i}]".format(i=self.tool_count)
                
-#=============================================================================================================================
-               
+                #==============================================================================================================
                 tool_schema = {                         # added by me
                     'tool_name': tool.name,
                     'arguments': arguments,
@@ -267,10 +265,10 @@ class CustomAgentExecutor(AgentExecutor):
                 self.return_schema.append(tool_schema)      # added by me
                 t_s = [tool_schema]
                 g_s = [self.ground_truth[self.tool_count]]
-                build_tool_experience(t_s, g_s)
+                # build_tool_experience(t_s, g_s)
                 # print('observation: ', observation)
-                ic(type(arguments))
-#=============================================================================================================================
+                # ic(type(arguments))
+                #==============================================================================================================
 
             else:
                 tool_run_kwargs = self.agent.tool_run_logging_kwargs()
@@ -292,7 +290,7 @@ class CustomAgentExecutor(AgentExecutor):
     
 #____________________________________________________________________________________________________
 agent_obj = PersonalAgent.from_llm_and_tools(
-            llm, task_tools,  user_query=''
+            llm = llm, tools = task_tools, 
             )
 agent_executor = CustomAgentExecutor(
                                 agent=agent_obj ,
@@ -341,7 +339,7 @@ agent_executor.train()
 agent_executor.get_tool_lists(ground)
 with get_openai_callback() as cb:
 
-    x = agent_executor({"input":'Summarize high severity tickets from the customer UltimateCustomer'})
+    x = agent_executor({"input":'Prioritize my p0 issues.'})
     print(x)
     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
 

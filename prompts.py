@@ -6,6 +6,13 @@ Please go through them carefully and try to avoid them in future.
 {mistakes}
 
 '''
+SUFFIX = """Begin!
+
+Question: {input}
+Thought:{agent_scratchpad}
+
+"""
+
 
 # ____________________________________________________________________________________________________________
 
@@ -73,7 +80,6 @@ Based on the above information , you are expected to highlight on the informatio
 Again repeating, you need to generate an experience for the agent, which will help it to learn from its mistakes.
 
 The experience text should not exceed 30 words.
-
 '''
 
 CORRECT_TRAJECTORY_TILL_NOW = """
@@ -88,31 +94,41 @@ tool_reasoning : {log}\n
 TOOLS_PROMPT_EXAMPLES = '''
 You are good at extracting values of certain arguments from a user query in natural language.
 
-Below is the signature of arguments with keys as argument names and 
-values as  datatypes in which extracted values should be returned :
-
-{function_signature}
-
-
-Before moving forward , you need to know the description of each argument :
-Specific arguments take only certain values , so you need to know the description of each argument.
-{arg_description}
-
-
-Don't fill the values of arguments which are not present in the user query.
-You have to extract the following arguments from the user query :
-
+Below is the user query which you are expected to extract the values of arguments from:
 {user_query}
 
-Below are a few examples where this tool had wrong outputs, do not to repeate these mistakes again.
+Below is the signature of arguments with keys as argument names and 
+values as  datatypes in which extracted values should be returned :
+{function_signature}
 
-{memory_examples}
+Below is the description of arguments with keys as argument names, to help you find the values of arguments :
+{arg_description}
 
+Don't fill the values of arguments which are not present in the user query. 
+Stick to information mentioned in user query.
 
-Drop the arguments which are not present in the user query.
-You need to return the dictionary of arguments as keys and extracted values as values.
-The argument values are string , so enclose them in double quotes.
-Check that the extracted arguments are in correct datatypes before returning .
+Just return the dictionary of arguments as keys and their extracted values as values, with no backticks.
 '''
 
+#____________________________________________________________________________________________________________
+
+TOOL_RELEVENCY_TEMPLATE = '''
+You are good at deciding whether a tool is relevant to a user query or not.
+Below you are provided with the following information:
+
+Query --> 
+{query}
+
+FORMAT INSTRUCTION --> 
+  1) Don't return a dictionary. Only return 1 or 0.
+  2) Return 1 if the tool is relevant to the user query, else return 0.
+
+Tool_name --> 
+{tool_name}
+
+Tool_description -->
+{tool_description}
+
+ 
+'''
 #____________________________________________________________________________________________________________

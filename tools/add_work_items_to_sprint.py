@@ -12,12 +12,8 @@ from backend_llm.utils import llm
 
 class AddWorkItemsToSprint(BaseTool):
     name = "add_work_items_to_sprint"
-    description = '''Adds the given work items to the sprint 
-        
-        It has these given arguments:
-            work_ids ,
-            sprint_id 
-        
+    description = '''Adds the given work items to the sprint. 
+    This tool needs to know the list of work_id and the sprint_id to which the work items should be added.
     '''
 
     def _run(
@@ -41,7 +37,7 @@ class AddWorkItemsToSprint(BaseTool):
                 'argument_value': value,
             }
             li.append(x)
-        ans = "The function returns add_work_items_to_sprint"
+        # ans = "The function returns add_work_items_to_sprint"
         return   li
 
     async def _arun(

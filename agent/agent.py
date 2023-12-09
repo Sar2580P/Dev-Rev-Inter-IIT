@@ -1,25 +1,24 @@
 from typing import List, Optional, Sequence, Any
 from langchain.callbacks.base import BaseCallbackManager
 from langchain.schema.language_model import BaseLanguageModel
-from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS, PREFIX, SUFFIX
+from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS, PREFIX
 from langchain.prompts import PromptTemplate
 from langchain.tools.base import BaseTool
-from agent_executor.tool_collection import *
+from agent.tool_collection import *
 from backend_llm.utils import llm, small_llm
 from langchain.agents.mrkl.base import ZeroShotAgent
 from agent.mistakes_selection import *
 from langchain.agents.agent import Agent, AgentOutputParser
-from prompts import PAST_MISTAKES
+from prompts import PAST_MISTAKES ,SUFFIX
 
 
 class PersonalAgent(ZeroShotAgent):
     
-    query_specific_mistakes : List = []
     @classmethod
     def create_prompt(
         cls,
-        tools: Sequence[BaseTool],
-        user_query: str , 
+        user_query: str ,
+        tools: Sequence[BaseTool] ,
         prefix: str = PREFIX,
         suffix: str = SUFFIX,
         mistakes :str = PAST_MISTAKES,
@@ -27,12 +26,7 @@ class PersonalAgent(ZeroShotAgent):
         input_variables: Optional[List[str]] = None,
     ) -> PromptTemplate:
         print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
-
-        tool_strings = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
-        tool_names = ", ".join([tool.name for tool in tools])
-        format_instructions = format_instructions.format(tool_names=tool_names)
-
-        #________________________________________________________________________________
+        
         past_mistakes = analyse(user_query)
         formatted_mistakes = ''
         if past_mistakes == 'No mistakes found' or past_mistakes == []:
@@ -45,13 +39,20 @@ class PersonalAgent(ZeroShotAgent):
                 formatted_mistakes += 'correct_reasoning : {z}'.format(z = mistake.metadata['correct_reasoning'])
                 formatted_mistakes += '\n\n'
 
+            tools = get_relevent_tools(user_query)
+
         mistakes = mistakes.format(mistakes = formatted_mistakes)
         #________________________________________________________________________________
-        template = "\n\n".join([prefix, tool_strings, format_instructions, mistakes ,suffix])
+        
+        tool_strings = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
+        tool_names = ", ".join([tool.name for tool in tools])
+        format_instructions = format_instructions.format(tool_names=tool_names)
+        #________________________________________________________________________________
+        template = "\n\n".join([prefix, tool_strings, format_instructions, suffix])
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         
-        return   PromptTemplate(template=template, input_variables=input_variables)
+        return PromptTemplate(template=template, input_variables=input_variables)
     #________________________________________________________________________________________________________________________________
     @classmethod
     def from_llm_and_tools(
@@ -69,8 +70,9 @@ class PersonalAgent(ZeroShotAgent):
     ) -> Agent:
         """Construct an agent from an LLM and tools."""
         cls._validate_tools(tools)
+
         prompt = cls.create_prompt(
-            tools,
+            tools=tools,
             prefix=prefix,
             user_query=user_query,
             suffix=suffix,

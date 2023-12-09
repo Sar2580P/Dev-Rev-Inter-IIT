@@ -13,23 +13,12 @@ class SearchObjectByName(BaseTool):
     Use this tool when the query contains name of the object. 
 
     Instructions:
-    Name only contains letters, numbers, and spaces. Not special characters like !@#$%^&*()_+|:"<>?[]\;',./
+        Name only contains letters, numbers, and spaces. Not special characters like !@#$%^&*()_+|:"<>?[]\;',./
     
     Given a search string, returns the id of a matching object in the system of record.
     If multiple matches are found, it returns the one where the confidence is highest.
     '''
 
-    # def _run(
-    #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
-    # ) -> str:
-    #     print('inside search_object_by_name tool , query is : \n' , query) 
-    #     li = []
-    #     x = {
-    #         'argument_name': 'query',
-    #         'argument_value': query,
-    #     }
-    #     li.append(x)
-    #     return li 
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
@@ -38,9 +27,9 @@ class SearchObjectByName(BaseTool):
         signature = {
                         'query': str,
                     }
-        # TODO
+
         arg_description = {
-            'query': 'a string which is the result of search',
+            'query': 'customer name present in the query',
         }
         column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []

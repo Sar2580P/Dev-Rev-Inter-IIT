@@ -4,24 +4,14 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
-from backend_llm.utils import llm
+from backend_llm.utils import llm, small_llm
 from tools.argument_mapping.get_args import fill_signature
 
 class GetSimilarWorkItems(BaseTool):
     name = "get_similar_work_items"
-    description = '''Use this tool when you want to get similar work_items for a given work_id'''
-
-    # def _run(
-    #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
-    # ) -> str:
-    #     print('inside get_similar_work_items tool , query is : \n' , query) 
-    #     li = []
-    #     x = {
-    #         'argument_name': 'work_id',
-    #         'argument_value': query,
-    #     }
-    #     li.append(x)
-    #     return li 
+    description = '''Use this tool when you want to get work_items similar to the current work_item.
+    This tool returns a list of similar work_items for the given work_id. 
+    '''
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
@@ -30,9 +20,8 @@ class GetSimilarWorkItems(BaseTool):
         signature = {
                         'work_id': str,
                     }
-        # TODO
         arg_description = {
-            'work_id': 'A list of work item IDs to be added to the sprint',
+            'work_id': 'The ID of the work item for which you want to find similar items',
         }
         column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []

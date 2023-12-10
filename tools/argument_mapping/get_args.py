@@ -17,15 +17,17 @@ signature_chain = LLMChain(llm = llm, prompt = prompt , verbose=True)
 def fill_signature(query:str, function_signatures: dict , arg_description:dict, tool_name:str)->Dict[str, Union[List[str] , bool]] :
 
     # Retrieve the examples from memory
-    formated_example = 'No errors made by the agent'
-    # memory_examples = retrieve_tool_experience(user_query=tool_name, tool_name=tool_name)
+    # formated_example = 'No errors made by the agent'
+    memory_examples = retrieve_tool_experience(user_query=tool_name, tool_name=tool_name)
     # ic(memory_examples)
-    # if isinstance(memory_examples , str) or memory_examples == []:
-    #     formated_example = 'No mistakes found'
-    # else:
-    #     for example in memory_examples:
-    #         formated_example += 'Example: \n{ex}\n'.format(ex = example.page_content)
 
+    formated_example = ""
+    if isinstance(memory_examples , str) or memory_examples == []:
+        formated_example = 'No mistakes found'
+    else:
+        for example in memory_examples:
+            formated_example += 'Example: \n{ex}\n'.format(ex = example.page_content)
+    # ic(formated_example)
     # Run the Chain
     x = signature_chain.run({'function_signature':function_signatures ,'arg_description' : arg_description , 'user_query' : query, 'memory_examples' : formated_example})
     print('signature is : ' , x)

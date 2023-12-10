@@ -22,6 +22,8 @@ example_prompt = PromptTemplate(
 #__________________________________________________________________________________________________________________________
 
 def build_experience(x):
+    print(x)
+    print(type(x))
     examples = x['correct_trajectory']
 
     few_shot_prompt = FewShotPromptTemplate( 

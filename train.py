@@ -30,8 +30,8 @@ for i in range(len(data)):
         "correct_reasoning": correct_trajectory[tool_index]['log'] ,
         "correct_trajectory" : correct_trajectory[:tool_index]
       }
-    x = input("Do you want to correct the reasoning? (y/n) :")
-    if x.lower() == 'n':
+    human_eval = input("Do you want to correct the reasoning? (y/n) :")
+    if human_eval.lower() == 'n':
       experience = build_experience(x)
     else :
       experience = input("Enter the correct reasoning :")

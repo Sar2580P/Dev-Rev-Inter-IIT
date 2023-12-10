@@ -16,6 +16,7 @@ from backend_llm.utils import llm, small_llm
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from prompts import TOOL_RELEVENCY_TEMPLATE
+from tools.logic_tool import LogicTool
 
 task_tools = [
     WhoAmI(),
@@ -27,6 +28,7 @@ task_tools = [
     CreateActionableTasksFromText(),
     GetSimilarWorkItems(),
     Prioritize(),
+    LogicTool()
     # Search(), 
     # Lookup()
 ]
@@ -37,6 +39,7 @@ check_relevency = LLMChain(llm = small_llm , prompt = tool_relevency_prompt)
 def get_relevent_tools(user_query:str) -> List[BaseTool]:
     relevent_tools = []
     relevent_tool_names = set()
+    print(tool_relevency_prompt)
     for tool in task_tools:
         input = {
             "query" : user_query,
@@ -44,8 +47,9 @@ def get_relevent_tools(user_query:str) -> List[BaseTool]:
             "tool_description" : tool.description
         }
         ans =check_relevency(inputs = input)
-        # print('\n\n\n\n' ,ans, '\n\n\n')
-        print('\n\n\n\n' ,ans['text'], '\n\n\n')
+        print('\n\n\n\n' ,ans, '\n\n\n')
+        break
+        # print('\n\n\n\n' ,ans['text'], '\n\n\n')
         is_tool_relevent = int(ans['text']) == 1
         if is_tool_relevent:
             relevent_tools.append(tool)
@@ -60,7 +64,7 @@ def get_relevent_tools(user_query:str) -> List[BaseTool]:
     return relevent_tools
 
 
-query = "Prioritize my P0 issues and add them to the current sprint"
-tools = get_relevent_tools(query)
+# query = "Prioritize my  P0 issues and add them to the current sprint"
+# tools = get_relevent_tools(query)
 
-{'query': 'Prioritize my P0 issues and add them to the current sprint', 'tool_name': 'whoami', 'tool_description': '\n            Whenever pronouns are present in query like "me", "I" , etc.\n            Call this tool first to get the user_id of the user who is asking the query.\n            Do not call this tool if the query is related to another user or the user is asking some task for another user.\n            This tool will return the user_id which can be used by other tools.\n            \n', 'text': '0'}
+# {'query': 'Prioritize my P0 issues and add them to the current sprint', 'tool_name': 'whoami', 'tool_description': '\n            Whenever pronouns are present in query like "me", "I" , etc.\n            Call this tool first to get the user_id of the user who is asking the query.\n            Do not call this tool if the query is related to another user or the user is asking some task for another user.\n            This tool will return the user_id which can be used by other tools.\n            \n', 'text': '0'}

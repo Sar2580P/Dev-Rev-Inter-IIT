@@ -119,16 +119,14 @@ Below you are provided with the following information:
 Query --> 
 {query}
 
-FORMAT INSTRUCTION --> 
-  1) Don't return a dictionary. Only return 1 or 0.
-  2) Return 1 if the tool is relevant to the user query, else return 0.
-
 Tool_name --> 
 {tool_name}
 
 Tool_description -->
 {tool_description}
 
- 
+FORMAT INSTRUCTION --> 
+  1) Don't return a dictionary. Only return 1 or 0.
+  2) Return 1 if the tool is relevant to the user query, else return 0.
 '''
 #____________________________________________________________________________________________________________

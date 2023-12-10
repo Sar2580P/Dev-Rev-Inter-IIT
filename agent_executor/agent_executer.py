@@ -139,7 +139,7 @@ class CustomAgentExecutor(AgentExecutor):
             )
             # ic(output)
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
-            
+            print(intermediate_steps)
             if self.train_mode :   # added by me
                 if self.tool_count == len(self.true_tools):
                     output = AgentFinish(return_values = {'output':'User query successfully answered'} ,
@@ -263,8 +263,8 @@ class CustomAgentExecutor(AgentExecutor):
                     'arguments': arguments,
                 }
                 self.return_schema.append(tool_schema)      # added by me
-                t_s = [tool_schema]
-                g_s = [self.ground_truth[self.tool_count]]
+                # t_s = [tool_schema]
+                # g_s = [self.ground_truth[self.tool_count]]
                 # build_tool_experience(t_s, g_s)
                 # print('observation: ', observation)
                 # ic(type(arguments))
@@ -302,44 +302,17 @@ agent_executor = CustomAgentExecutor(
 #____________________________________________________________________________________________________
 
 ground = '''
-[ 
- { 
- "tool_name":  "search_object_by_name", 
- "arguments":  [ 
- { 
- "argument_name":  "query", 
- "argument_value":  "UltimateCustomer" 
- } 
-] 
- }, 
- { 
- "tool_name":  "works_list", 
- "arguments":  [ 
- { 
- "argument_name":  "ticket.rev_org", 
- "argument_value":  "$$PREV[0]" 
- } 
- ] 
- }, 
- { 
- "tool_name":  "summarize_objects", 
- "arguments":  [ 
- { 
- "argument_name":  "objects", 
- "argument_value":  "$$PREV[1]" 
- } 
- ] 
- } 
- ]
+
+
 '''
 from langchain.callbacks import get_openai_callback
 
 # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-agent_executor.train()
-agent_executor.get_tool_lists(ground)
+agent_executor.eval()
+# agent_executor.get_tool_lists(ground)
 with get_openai_callback() as cb:
 
-    x = agent_executor({"input":'Prioritize my p0 issues.'})
+    x = agent_executor({"input":'Prioritize my P0 issues and add them to the current sprint only if there are 3 issues'})
     print(x)
     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
 

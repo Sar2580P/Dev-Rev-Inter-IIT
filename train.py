@@ -30,11 +30,11 @@ for i in range(len(data)):
         "correct_reasoning": correct_trajectory[tool_index]['log'] ,
         "correct_trajectory" : correct_trajectory[:tool_index]
       }
-    x = input("Do you want to correct the reasoning? (y/n) :")
-    if x.lower() == 'n':
+    a = input("Do you want to correct the reasoning? (y/n) :")
+    if a.lower() == 'n':
       experience = build_experience(x)
     else :
-      experience = input("Enter the correct reasoning :")
+      experience = input("This has been the mistake summary : \n\t{x}. \nPlease write the correct reasoning :".format(x=x))
     metadata = {
       'query': x['query'],
       'correct_tool': x['correct_tool'] ,
@@ -56,3 +56,10 @@ for i in range(len(data)):
 
 
 
+# x = {
+#   'query': 'How to create a new branch in git?',
+#   'wrong_tool': 'git',
+#   'wrong_reasoning': 'git branch',
+#   'correct_tool': 'git',
+# }
+# print(x)

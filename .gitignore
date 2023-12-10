@@ -5,3 +5,4 @@ database
 .env
 .vscode
 __pycache__
+backend_llm/__pycache__

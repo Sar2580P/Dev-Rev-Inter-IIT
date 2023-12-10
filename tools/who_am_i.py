@@ -14,8 +14,7 @@ class WhoAmI(BaseTool):
             Call this tool first to get the user_id of the user who is asking the query.
             Do not call this tool if the query is related to another user or the user is asking some task for another user.
             This tool will return the user_id which can be used by other tools.
-            
-'''
+            '''
 
     # def _run(
     #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
@@ -28,23 +27,23 @@ class WhoAmI(BaseTool):
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
         # print('inside who_am_i tool , query is : \n' , query) 
-        signature = {
-                        'ids': List[str],
-                    }
+        # signature = {
+        #                 'ids': List[str],
+        #             }
         
-        # TODO
-        arg_description = {
-            'ids': 'the list of ids of the users',
-        }
-        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
-        li = []
-        for key, value in column_args.items():
-            x = {
-                'argument_name': key,
-                'argument_value': value,
-            }
-            li.append(x)
-        return   li
+        # # TODO
+        # arg_description = {
+        #     'ids': 'the list of ids of the users',
+        # }
+        # column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
+        # li = []
+        # for key, value in column_args.items():
+        #     x = {
+        #         'argument_name': key,
+        #         'argument_value': value,
+        #     }
+        #     li.append(x)
+        return   list()
 
 
     async def _arun(

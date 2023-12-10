@@ -9,7 +9,7 @@ from tools.argument_mapping.get_args import fill_signature
 
 class GetSprintId(BaseTool):
     name = "get_sprint_id"
-    description = '''Returns the ID of the current sprint '''
+    description = '''Returns the ID of the current sprint. '''
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None

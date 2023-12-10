@@ -30,7 +30,6 @@ sub_task_prompt = PromptTemplate(template=TOOL_INPUT_PROMPT ,
                                  input_variables=["query" , "intermediate_steps" , "correct_tool" , "correct_tool_description"] , 
                                 #  partial_variables={"format_instructions": auxiliary_parser.get_format_instructions()}
                                  )
-
 sub_task_chain = LLMChain(prompt=sub_task_prompt , llm=llm)
 
 def sub_task(input):

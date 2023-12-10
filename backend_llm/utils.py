@@ -37,7 +37,7 @@ small_embedding_func = Embedding()
 #     tags=["test"],
 # )
 # callbacks = [wandb_callback]
-llm = OpenAI(temperature=0 , model="text-davinci-003")
+llm = OpenAI(temperature=0 , model="gpt-3.5-turbo-instruct")
 
 embedding_func = OpenAIEmbeddings()
 
@@ -49,3 +49,16 @@ def load_config(CONFIG_PATH):
 
 # config = load_config('backendPython/config.yaml')
 #_________________________________________________________________________________________
+import requests
+
+API_URL = "https://api-inference.huggingface.co/models/forestai/fireact_codellama_34b_lora"
+headers = {"Authorization": "Bearer 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"}
+
+def query(payload):
+	response = requests.post(API_URL, headers=headers, json=payload)
+	return response.json()
+	
+output = query({
+	"inputs": "Can you please let us know more details about your ",
+})
+print(output)

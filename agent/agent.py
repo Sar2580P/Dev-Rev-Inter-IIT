@@ -28,6 +28,7 @@ class PersonalAgent(ZeroShotAgent):
         print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
         
         past_mistakes = analyse(user_query)
+        # past_mistakes = 'No mistakes found'
         formatted_mistakes = ''
         if past_mistakes == 'No mistakes found' or past_mistakes == []:
             formatted_mistakes = 'No mistakes found'
@@ -39,7 +40,7 @@ class PersonalAgent(ZeroShotAgent):
                 formatted_mistakes += 'correct_reasoning : {z}'.format(z = mistake.metadata['correct_reasoning'])
                 formatted_mistakes += '\n\n'
 
-            tools = get_relevent_tools(user_query)
+            # tools = get_relevent_tools(user_query)
 
         mistakes = mistakes.format(mistakes = formatted_mistakes)
         #________________________________________________________________________________

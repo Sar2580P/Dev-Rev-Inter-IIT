@@ -40,7 +40,7 @@ class PersonalAgent(ZeroShotAgent):
                 formatted_mistakes += 'correct_reasoning : {z}'.format(z = mistake.metadata['correct_reasoning'])
                 formatted_mistakes += '\n\n'
 
-            # tools = get_relevent_tools(user_query)
+        # tools = get_relevent_tools(user_query)
 
         mistakes = mistakes.format(mistakes = formatted_mistakes)
         #________________________________________________________________________________

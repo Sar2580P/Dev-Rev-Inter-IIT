@@ -41,16 +41,19 @@ def get_relevent_tools(user_query:str) -> List[BaseTool]:
     relevent_tool_names = set()
     print(tool_relevency_prompt)
     for tool in task_tools:
-        input = {
-            "query" : user_query,
-            "tool_name" : tool.name,
-            "tool_description" : tool.description
+        # print(tool)
+        input_keys = {
+            'query' : user_query,
+            'tool_name' : tool.name,
+            'tool_description' : tool.description,
         }
-        ans =check_relevency(inputs = input)
-        print('\n\n\n\n' ,ans, '\n\n\n')
-        break
-        # print('\n\n\n\n' ,ans['text'], '\n\n\n')
-        is_tool_relevent = int(ans['text']) == 1
+        ans = check_relevency.run(input_keys)
+        try:
+            ans = ans.split(':')[1]
+        except:
+            ans = ans
+        # print('\n\n\n\n' ,ans, '\n\n\n')
+        is_tool_relevent = int(ans) == 1
         if is_tool_relevent:
             relevent_tools.append(tool)
             relevent_tool_names.add(tool.name)
@@ -60,7 +63,7 @@ def get_relevent_tools(user_query:str) -> List[BaseTool]:
         relevent_tool_names.add("get_sprint_id")
 
     print("\033[91m {}\033[00m" .format('Finally picking below tools ...\n{relevent_tool_names}'.format(relevent_tool_names = relevent_tool_names)))
-    print(relevent_tools)
+    # print(relevent_tools)
     return relevent_tools
 
 

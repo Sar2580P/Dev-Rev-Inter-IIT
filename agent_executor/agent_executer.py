@@ -11,6 +11,7 @@ from agent_executor.auxiliary_executor import *
 from agent.agent import PersonalAgent
 from evaluator import *
 from tools.argument_mapping.tool_memory import build_tool_experience
+import copy
 
 # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 # agent_cls = AGENT_TO_CLASS[agent]
@@ -146,18 +147,23 @@ class CustomAgentExecutor(AgentExecutor):
                                          log ='I now know the final answer.\nFinal Answer: Take shelter of Lord Krishna')
                     
                 if isinstance(output ,AgentAction):
-                    is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
+                    # is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
                     # print(self.ground_truth,'\n', self.return_schema)
                     # analogy = ''
                     # ic(self.ground_truth, self.return_schema)
                 #==============================================================================================================
-                    # current_schema = self.return_schema.copy()
-                    # current_schema.append({                        
-                    #     'tool_name': output.tool,
-                    #     'arguments': [],
-                    # })
+                    current_schema = copy.deepcopy(self.return_schema)
+                    current_schema.append({                        
+                        'tool_name': output.tool,
+                        'arguments': [],
+                    })
 
-                    # is_right_decision, analogy = validate(self.ground_truth, current_schema)  # added by me , evaluator
+                    is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema)  # added by me , evaluator
+
+                    ic(is_right_decision, analogy, correct_arg)
+
+                    if(is_right_decision == True):
+                        analogy = ''
 
                 #==============================================================================================================
                     if not is_right_decision:
@@ -183,11 +189,10 @@ class CustomAgentExecutor(AgentExecutor):
                         output.tool_input = tool_input
                         output.log = log+"\nAction: {tool}\nAction Input:{tool_input}".format(tool=output.tool, 
                                                                                               tool_input=output.tool_input)
-                    #TODO
                     self.correct_trajectory.append({
                         'tool_name': output.tool,
                         'tool_input': output.tool_input,
-                        'log': output.log.split('\n')[0],
+                        'log': output.log.split('\n')[0] + analogy,
                     })
                 
         except OutputParserException as e:
@@ -263,9 +268,7 @@ class CustomAgentExecutor(AgentExecutor):
                     'arguments': arguments,
                 }
                 self.return_schema.append(tool_schema)      # added by me
-                # t_s = [tool_schema]
-                # g_s = [self.ground_truth[self.tool_count]]
-                # build_tool_experience(t_s, g_s)
+                build_tool_experience(self.ground_truth, self.return_schema)
                 # print('observation: ', observation)
                 # ic(type(arguments))
                 #==============================================================================================================
@@ -301,19 +304,46 @@ agent_executor = CustomAgentExecutor(
                                 )
 #____________________________________________________________________________________________________
 
-ground = '''
+# ground = '''
+# [ 
+#  { 
+#  "tool_name":  "search_object_by_name", 
+#  "arguments":  [ 
+#  { 
+#  "argument_name":  "query", 
+#  "argument_value":  "UltimateCustomer" 
+#  } 
+# ] 
+#  }, 
+#  { 
+#  "tool_name":  "works_list", 
+#  "arguments":  [ 
+#  { 
+#  "argument_name":  "ticket.rev_org", 
+#  "argument_value":  "$$PREV[0]" 
+#  } 
+#  ] 
+#  }, 
+#  { 
+#  "tool_name":  "summarize_objects", 
+#  "arguments":  [ 
+#  { 
+#  "argument_name":  "objects", 
+#  "argument_value":  "$$PREV[1]" 
+#  } 
+#  ] 
+#  } 
+#  ]
+# '''
+# from langchain.callbacks import get_openai_callback
 
-
-'''
-from langchain.callbacks import get_openai_callback
-
-# "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-agent_executor.eval()
+# # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
+# agent_executor.train()
 # agent_executor.get_tool_lists(ground)
-with get_openai_callback() as cb:
+# with get_openai_callback() as cb:
 
-    x = agent_executor({"input":'Prioritize my P0 issues and add them to the current sprint only if there are 3 issues'})
-    print(x)
-    print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+#     x = agent_executor({"input":'Prioritize my p0 issues.'})
+#     print(x)
+#     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
 
-    print('\n\n\n\n\n' ,cb.total_cost)
+#     print('\n\n\n\n\n' ,cb.total_cost)

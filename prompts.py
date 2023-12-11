@@ -17,16 +17,15 @@ Thought:{agent_scratchpad}
 # ____________________________________________________________________________________________________________
 
 MISTAKE_SELECTION =  '''
-Below you are provided with the user query :
-{input}
+Below you are provided with the current user query :
+CURRENT_USER_QUERY : {input}
 
-Below you are provided with one of the mistakes made by another AI agent on some other user query :
-{mistake}
+Below you are provided with one of the past mistakes made by another AI agent on some other user query :
+SOME_PAST_QUERY : {past_query}
+CORRESPONDING_PAST_MISTAKE : {past_mistake}
 
-Now, the AI agent wants to know whether the above mistake is relevant to the user query or not, i.e, 
-it should be looked into or not while providing the answer to the user query.
-
-Return 1 if the mistake is relevant to the user query, else return 0.
+Check diligently if the current user query is similar to the past query, in terms of the vulnerability of the AI agent to make the same mistake.
+If there are some chances of making the same or similar mistake on the current user query, return 1 else return 0.
 '''
 
 # ____________________________________________________________________________________________________________
@@ -67,19 +66,27 @@ Below is the trajectory of right tools used till now and their tool input as wel
 '''
 
 SUFFIX_MISTAKE_MEMORY = '''
-
-The agent attempts to select the next tool, which turns out to be wrong choice, in the trajectory based on the user query:
-    Wrong Tool : {wrong_tool}
-    Wrong Reasoning : {wrong_reasoning}
-
-The agent was expected to select the following tool inplace of above tool with following reasoning:
+The agent attempts to select the next tool, which turns out to be wrong choice, in the trajectory based on the user query.
+Below I have mentioned the correct tool that should have been used instead of the wrong tool.
     Correct Tool : {correct_tool}
-    Correct Reasoning : {correct_reasoning}
+    Correct Tool Description : {correct_tool_description}
 
-Based on the above information , you are expected to highlight on the information present in user query which was missed by agent
+Below I provide the wrong tool that was selected by the agent and its description.
+    Wrong Tool : {wrong_tool}
+    Wrong Tool Description : {wrong_tool_description}
+
+Based on the above information :
+  1-) Reason why the wrong tool should not be selected by the agent based on:
+    a-) contrast between tool capabilities (based on wrong tool description) and user query,
+  2-) Reason why agent failed to pick the correct tool based on:
+    a-) similarity between tool capability (description of correct tool) and the user query, 
+    b-) reason out how the agent failed to pick the correct tool based on the trajectory of right tools used till now 
+
+Be specific don't use general statements.
+Put everything as a paragraph in the experience text.
+
 Again repeating, you need to generate an experience for the agent, which will help it to learn from its mistakes.
-
-The experience text should not exceed 30 words.
+The experience text should not exceed 30 words and not less than 7 words, don't add too many stop words
 '''
 
 CORRECT_TRAJECTORY_TILL_NOW = """
@@ -93,21 +100,26 @@ tool_reasoning : {log}\n
 
 TOOLS_PROMPT_EXAMPLES = '''
 You are good at extracting values of certain arguments from a user query in natural language.
-
-Below is the user query which you are expected to extract the values of arguments from:
-{user_query}
-
 Below is the signature of arguments with keys as argument names and 
 values as  datatypes in which extracted values should be returned :
 {function_signature}
 
-Below is the description of arguments with keys as argument names, to help you find the values of arguments :
+Before moving forward , you need to know the description of each argument :
+Specific arguments take only certain values , so you need to know the description of each argument.
 {arg_description}
 
-Don't fill the values of arguments which are not present in the user query. 
-Stick to information mentioned in user query.
+FORMAT INSTRUCTION -->
+- You need to return the dictionary of arguments as keys and extracted values as values.
+- Ensure that argument values are in double quotes.
+- Check that the extracted arguments are in correct datatypes before returning.
 
-Just return the dictionary of arguments as keys and their extracted values as values, with no backticks.
+Don't mention those arguments in final query whose values are not present in user query.
+You have to extract the following arguments from the user query :
+{user_query}
+
+Before returning the dictionary of arguments, ensure that all keys and values are in double quotes.
+Simply return the dictionary of arguments with keys as argument names and values as extracted values, with no backticks.
+Nothing else should be returned.
 '''
 
 #____________________________________________________________________________________________________________

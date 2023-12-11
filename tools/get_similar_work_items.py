@@ -16,7 +16,7 @@ class GetSimilarWorkItems(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('inside get_similar_work_items tool , query is : \n' , query) 
+        print('\ninside get_similar_work_items tool...') 
         signature = {
                         'work_id': str,
                     }

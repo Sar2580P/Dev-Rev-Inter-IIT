@@ -19,7 +19,7 @@ class AddWorkItemsToSprint(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) :
-        print('inside add_work_items_to_sprint tool , query is : \n' , query) 
+        print('\ninside add_work_items_to_sprint tool ...') 
         signature = {'work_ids': List[str],
                     'sprint_id': str ,
                     }

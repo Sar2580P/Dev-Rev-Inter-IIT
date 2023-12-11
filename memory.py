@@ -2,14 +2,14 @@ from queue import Queue
 from langchain.docstore.document import Document
 
 class Memory():
-    def __init__(self,vector_db, k=2) -> None:
+    def __init__(self,vector_db, k=5) -> None:
         self.queue = Queue(maxsize=10) # current List to be added to Long Term Memory
-        self.k = 5
+        self.k = k
         self.vector_db = vector_db
     
     def stage(self, docs:Document):
         self.queue.put(docs)
-        print("Document staged...")
+        print("\033[91m {}\033[00m" .format('Document Staged in Memory...'))
         
     def push(self):
         print(f"Pushing {self.queue.qsize()} Documents...")
@@ -22,8 +22,11 @@ class Memory():
         else:
             results  = self.vector_db.similarity_search(query, k=self.k , search_type='similarity',filter = filter)
 
-        print("Pulling from Memory...\n" , results) 
         return results
     
-    def reset(self):
-        self.vector_db.delete()
+    def clear(self):
+        '''
+        Clears all items from the queue.
+        '''
+
+        self.queue = Queue(maxsize=10)

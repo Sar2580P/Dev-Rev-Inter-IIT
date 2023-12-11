@@ -8,11 +8,9 @@ from backend_llm.utils import llm
 from tools.argument_mapping.get_args import fill_signature
 
 class WhoAmI(BaseTool):
-    name = "whoami"
+    name = "who_am_i"
     description = '''
-            Whenever pronouns are present in query like "me", "I" , etc.
-            Call this tool first to get the user_id of the user who is asking the query.
-            Do not call this tool if the query is related to another user or the user is asking some task for another user.
+            Use this tool only when pronouns are present in query like "me", "I" , etc. Else don't use this tool.
             This tool will return the user_id which can be used by other tools.
             '''
 
@@ -26,7 +24,7 @@ class WhoAmI(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        # print('inside who_am_i tool , query is : \n' , query) 
+        print('\ninside who_am_i tool...') 
         # signature = {
         #                 'ids': List[str],
         #             }

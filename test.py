@@ -7,7 +7,7 @@ embedding_func = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 
 database = Chroma(embedding_function = embedding_func, persist_directory= 'database/testdb' , 
                                 relevance_score_fn='similarity_search_with_score')
-memory = Memory(k=2, vector_db=database)
+memory = Memory(k=5, vector_db=database)
 
 experience1 = "Kshitiz is god and he will be god."
 metadata1 = {

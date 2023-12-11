@@ -14,7 +14,7 @@ class CreateActionableTasksFromText(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('inside create_actionable_tasks_from_text tool , query is : \n' , query) 
+        print('\ninside create_actionable_tasks_from_text tool...') 
         signature = {
                         'text': str,
                     }
@@ -24,12 +24,13 @@ class CreateActionableTasksFromText(BaseTool):
         }
         column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []
-        for key, value in column_args.items():
-            x = {
-                'argument_name': key,
-                'argument_value': value,
-            }
-            li.append(x)
+        # for key, value in column_args.items():
+        #     x = {
+        #         'argument_name': key,
+        #         'argument_value': value,
+        #     }
+        #     li.append(x)
+        li.append({'argument_name': 'text', 'argument_value': query})
         return   li
     
 

@@ -1,40 +1,31 @@
 import pandas as pd
 from agent_executor.agent_executer import agent_executor
-from backend_llm.utils import callbacks , wandb_callback
-import time  
-simple_data = pd.read_csv('DevRev - Data - Simple.csv')
-print('Simple_data :\n' ,simple_data.head(2))
-complex_data = pd.read_csv('devrev_complex.csv')
-print('Complex_data :\n' ,complex_data.head(2), end = '\n\n\n')
+from agent_executor.agent_memory import *
+from langchain.docstore.document import Document
+from langchain.callbacks import get_openai_callback
+import time 
 
-def get_simple_predictions(data):
-  df = pd.DataFrame(columns=['Query', 'Original' , 'Predicted', 'Latency'])
-  error_set = []
-  for i in range(len(data)):
-    if i>2:
-     break
-    query = data.iloc[i, 0]
-    true = data.iloc[i,1]
-    # try:
+data  = pd.read_excel('data\DEVREV Dataset 2.0.xlsx' , sheet_name='Direct_C+V').iloc[49:51, :]
+prediction_df = pd.DataFrame(columns=['query' , 'groundJson' , 'predicted_json' , 'latency (in seconds)' , 'queryCost' , 'queryTokens'])
+agent_executor.eval()
+
+ct = 0
+for i in range(len(data)):
+  print("\033[1;32m {}\033[00m" .format('QUERY COUNT : {i}'.format(i=i)))
+  query, ground_json = data.iloc[i , 0] , data.iloc[i , 1]
+  print("\033[1;32m {}\033[00m" .format('QUERY : ') , "\033[93m {}\033[00m" .format(query))
+  print("\033[1;32m {}\033[00m" .format('Ground JSON :') , "\033[93m {}\033[00m" .format(ground_json))
+
+  
+  with get_openai_callback() as cb:
     start = time.time()
-    agent_executor(query)
-    # wandb_callback.flush_tracker(agent_executor, reset=False, finish=True)
-    predicted = agent_executor.return_schema
-    print('\n\n\n\n' , predicted)
-    time_taken = time.time() -start
-    df.loc[i] = [query, true, predicted , time_taken]
-    # except:
-    #   print('skipped')
-    #   li = [i ,query]
-    #   error_set.append(li)
-    #   df.loc[i] = [query, true, 'error' , 'error']
-    print(i)
-    
+    x = agent_executor(inputs={"input": query})
+    predict_json = agent_executor.return_schema
+    latency = time.time() - start 
+    query_cost = cb.total_cost
+    query_tokens = cb.total_tokens
+    prediction_df.loc[i] = [query , ground_json , predict_json , round(latency,2) , round(query_cost,5) , query_tokens]
+  print("\033[91m {}\033[00m" .format('---------------- QUERY_COST : $ {cost}---------------- MISTAKES LEARNED : {ct}-------------------- QUERY TOKENS : {tokens}-----------------'.format(cost = round(cb.total_cost, 5) , 
+                                                                                                                                                                                            ct = ct, tokens = cb.total_tokens)))
+prediction_df.to_csv('data/Direct_C+V_prediction.csv', index=False)
 
-  df.to_csv('predictions.csv', index=False)
-  return error_set
-
-
-
-error_set = get_simple_predictions(simple_data)
-print(error_set)

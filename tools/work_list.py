@@ -12,25 +12,26 @@ class WorkList(BaseTool):
     name = "works_list"
     description = '''This tool is useful when following arguments are present in the query :  
         
-        The arguments are as follows:
-            applies_to_part ,
-            created_by ,
-            issue_priority ,
-            issue_rev_orgs ,
-            limit, 
-            owned_by ,
-            stage_name ,
-            ticket_needs_response ,
-            ticket_rev_org ,
-            ticket_severity ,
-            ticket_source_channel ,
-            type ,
+        Below are the arguments and their description :
+            'applies_to_part': 'part to which issue applies',
+            'created_by': 'name of person who created the issue',
+            'issue_priority': ' either of types : "p0" , "p1" , "p2" ',
+            'issue_rev_orgs': 'orgs that reviewed issue',
+            'limit' : 'maximum number of work-items to return' , 
+            'owned_by': 'name of person who owns the issue',
+            'stage_name': 'stage of issue',
+            'ticket_needs_response': 'either of types : "True" , "False"',
+            'ticket_rev_org': 'orgs that reviewed ticket',
+            'ticket_severity': 'either of types : blocker , high , medium , low',
+            'ticket_source_channel': 'source channel of ticket',
+            'type': 'either of types : issues , ticket , task'
         
     '''
 
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
+        print('\ninside work_list tool...')
         signature = {'applies_to_part': List[str],
                     'created_by': List[str] ,
                     'issue_priority': str ,
@@ -54,9 +55,9 @@ class WorkList(BaseTool):
             'stage_name': 'stage of issue',
             'ticket_needs_response': 'whether ticket needs response',
             'ticket_rev_org': 'orgs that reviewed ticket',
-            'ticket_severity': 'severity of ticket',
+            'ticket_severity': 'either of types : blocker , high , medium , low',
             'ticket_source_channel': 'source channel of ticket',
-            'type': 'type of issue',
+            'type': 'either of types : issues , ticket , task'
         }
         column_args = fill_signature(query,function_signatures= signature , arg_description=arg_description,tool_name=self.name)
         li = []

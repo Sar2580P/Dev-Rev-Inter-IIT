@@ -22,8 +22,7 @@ example_prompt = PromptTemplate(
 #__________________________________________________________________________________________________________________________
 
 def build_experience(x):
-    print(x)
-    print(type(x))
+  
     examples = x['correct_trajectory']
 
     few_shot_prompt = FewShotPromptTemplate( 
@@ -39,17 +38,18 @@ def build_experience(x):
     suffix= SUFFIX_MISTAKE_MEMORY,
     
     # input variable to use in the suffix template
-    input_variables=["query", "wrong_tool" , "wrong_reasoning" , "correct_tool" , "correct_reasoning"],
+    input_variables=["query", "correct_tool" , "correct_tool_description" , 
+                     "wrong_tool" , "wrong_tool_description" ],
     example_separator="\n", 
 )
     chain = LLMChain(llm=llm, prompt=few_shot_prompt)
-    print("\033[91m {}\033[00m" .format('build_experience (memory)'))
-    y = chain.run({"query": x['query'] ,"wrong_tool": x['wrong_tool'] , "wrong_reasoning": x['wrong_reasoning'] , 
-                          "correct_tool": x['correct_tool'] , "correct_reasoning": x['correct_reasoning'] })
+    print("\033[91m {}\033[00m" .format('build_experience (agent_memory)'))
+    y = chain.run({"query": x['query'] ,  
+                  "correct_tool": x['correct_tool'] ,"correct_tool_description": x['correct_tool_description'], 
+                   "wrong_tool": x['wrong_tool'] ,"wrong_tool_description": x['wrong_tool_description'] })
+    if y[0] == '\n':
+        y = y[1:]
     return y
-
-
-
 
 
 

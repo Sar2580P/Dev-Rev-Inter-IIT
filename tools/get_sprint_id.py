@@ -14,18 +14,18 @@ class GetSprintId(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('inside get_sprint_id tool , query is : \n' , query) 
-        signature = {}
+        print('\ninside get_sprint_id tool...') 
+        # signature = {}
                         
-        arg_description = {}
-        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
+        # arg_description = {}
+        # column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []
-        for key, value in column_args.items():
-            x = {
-                'argument_name': key,
-                'argument_value': value,
-            }
-            li.append(x)
+        # for key, value in column_args.items():
+        #     x = {
+        #         'argument_name': key,
+        #         'argument_value': value,
+        #     }
+        #     li.append(x)
         return li
     
 

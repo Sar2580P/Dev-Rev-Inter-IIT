@@ -160,7 +160,7 @@ def format_arg(arg_list: list):
 
 def search_similar_node(check_node_index, check_node, top_ground_truth, ground_truth, sample):
     common_nodes = [gt_node for gt_node in top_ground_truth if check_node["tool_name"] == gt_node["tool_name"]]
-    ic(check_node)
+    # ic(check_node)
     sample_arguments = sorted([(argument['argument_name'], argument['argument_value']) for argument in check_node['arguments']])
     
     if not common_nodes:
@@ -172,7 +172,7 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
     
     for gt_node in common_nodes:
         gt_arguments = sorted([(argument['argument_name'], argument['argument_value']) for argument in gt_node['arguments']])
-        ic(gt_arguments)
+        # ic(gt_arguments)
         if len(gt_arguments) != len(sample_arguments):
             if priority < 1:
                 if(len(sample_arguments) == 0):
@@ -189,7 +189,7 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
                     priority = 2
                 break
             
-            if arg_gt[1].startswith("$") and arg_sample[1].startswith("$"):
+            if "$" in arg_gt[1] and "$" in arg_sample[1]:
                 index_gt     = int(arg_gt[1][7:-1])
                 index_sample = int(arg_sample[1][7:-1])
 
@@ -216,13 +216,14 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
         else:
             return (True, (gt_node,[]))
     correct_args = gt_node["arguments"]
-    ic(correct_args)
+    # ic(correct_args)
     for i, arg in enumerate(correct_args):
         name, val = arg["argument_name"], arg["argument_value"]
-        ic(name, val)
+        # ic(name, val)
         if type(val) == str and val.startswith("$$"):
             ind = keep_digits(val)
             correct_args[i]["argument_value"] = f"$$PREV[{ind}]"
+    print(reason)
     return (False, ("Tool use was correct but "+reason, correct_args))
 
 
@@ -231,14 +232,14 @@ def validate(ground_truth, sample, additional_tool=None):
     sample = sample.copy()
     current_ground_truth = ground_truth.copy()
     current_sample = sample.copy()
-    ic(ground_truth, sample)
+    # ic(ground_truth, sample)
     for i, sample_node in enumerate(sample):
         # ic("Ground Truth")
         top_ground_truth = top_nodes(current_ground_truth)
         # ic("Return Schema")
         top_sample = top_nodes(current_sample)
         # ic(sample_node)
-        ic(sample_node)
+        # ic(sample_node)
         if sample_node not in top_sample:
             # return (False, f"Tool is dependant on other tools that have not been called yet")
             return (False, f"Tool \'{sample_node['tool_name']}\'  with arguments: {', '.join([arg['argument_name']+':'+str(arg['argument_value']) for arg in sample_node['arguments']])} is dependant on other tools that have not been called yet", [])
@@ -253,7 +254,7 @@ def validate(ground_truth, sample, additional_tool=None):
         modified_sample_node['tool_name'] += str(i)
         sample[i] = modified_sample_node
 
-        ic(current_ground_truth,gt_node)
+        # ic(current_ground_truth,gt_node)
         current_ground_truth.remove(gt_node)
         modified_ground_truth_node = copy.deepcopy(gt_node)
         modified_ground_truth_node['tool_name'] += str(i)
@@ -268,6 +269,6 @@ def validate(ground_truth, sample, additional_tool=None):
             # return (False, f"Your current progress of tool uses is correct however the last tool use should be ...")
             return (False, f"Your current progress of tool uses is correct however the last tool use should be {'or '.join([tool['tool_name'] for tool in top_ground_truth_tools])}", [])
             
-    return (True, "")
+    return (True, "", [])
 
-print(validate(GT, SP))
+# print(validate(GT, SP))

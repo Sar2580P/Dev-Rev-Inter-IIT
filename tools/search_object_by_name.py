@@ -9,24 +9,20 @@ from tools.argument_mapping.get_args import fill_signature
 
 class SearchObjectByName(BaseTool):
     name = "search_object_by_name"
-    description = '''
-    Use this tool when the query contains name of the object. 
-    Consider using when personal nouns are present in the query.
+    description = ''''
+    Given a search string, returns the id of a matching object in the system of record. If multiple matches are found, it
+    returns the one where the confidence is highest.
 
-    Instructions:
-        1-) Name only contains letters, numbers, and spaces. 
-        2-) Name does not special characters like !@#$%^&*()_+|:"<>?[]\;',./
-
-    Example : Prioritize 'p0' issues for customer Ultimate Electronics
-    Answer : Ultimate Electronics
-
+    The tool requires the following arguments:
+        'query': 'The search string, could be for example customer’s name, part name, username.  
+    
     '''
 
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('inside search_object_by_name tool , query is : \n' , query) 
+        print('\ninside search_object_by_name tool...') 
         signature = {
                         'query': str,
                     }

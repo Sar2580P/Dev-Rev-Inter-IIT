@@ -28,7 +28,7 @@ task_tools = [
     CreateActionableTasksFromText(),
     GetSimilarWorkItems(),
     Prioritize(),
-    LogicTool()
+    # LogicTool()
     # Search(), 
     # Lookup()
 ]

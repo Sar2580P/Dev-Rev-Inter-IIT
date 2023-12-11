@@ -16,7 +16,7 @@ class Summarize(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('inside SummarizeTool tool , query is : \n' , query) 
+        print('\ninside SummarizeTool tool...') 
         # signature = {
         #                 'objects': List[object],
         #             }

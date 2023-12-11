@@ -15,7 +15,7 @@ class LogicTool(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        
+        print('\ninside logic_tool tool...')
         signature = {'python_code': str,
                     'arg_0': None ,
                     'arg_1': None ,

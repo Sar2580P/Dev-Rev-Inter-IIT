@@ -24,7 +24,7 @@ class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
     tool_count : int = 0             # added by me
     train_mode : bool = True      # added by me
-    wrong_checkpoints = {}                 # added by me
+    checkpoints = {}                 # added by me
     true_tools : List[str] = None                 # added by me
     correct_trajectory : List[Dict] = []            # added by me
     ground_truth : List[Dict] = []
@@ -60,15 +60,16 @@ class CustomAgentExecutor(AgentExecutor):
         start_time = time.time()
         # We now enter the agent loop (until it returns something).
         print("\033[1;35;40m {} \033[0m" .format('updating agent prompt with mistakes'))
-        self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, user_query=inputs['input'])
-        
+        self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
+                                                               user_query=inputs['input'])
         
         while self._should_continue(iterations, time_elapsed):
             if self.tool_count == 0:        # added by me
                 self.return_schema = []         # added by me
                 intermediate_steps = []    # added by me
                 self.correct_trajectory = []    # added by me
-                self.wrong_checkpoints = {}    # added by me
+                self.checkpoints = {}    # added by me
+
             next_step_output = self._take_next_step(
                                                     name_to_tool_map,
                                                     color_mapping,
@@ -78,8 +79,8 @@ class CustomAgentExecutor(AgentExecutor):
                                                 )
             if isinstance(next_step_output, AgentFinish):
                 self.tool_count = 0             # added by me
-                print("\033[1;35;40m {} \033[0m" .format('wrong checkpoints ---> '))
-                print("\033[1;35;40m {} \033[0m" .format(self.wrong_checkpoints))
+                print("\033[1;35;40m {} \033[0m" .format('checkpoints ---> '))
+                print("\033[1;35;40m {} \033[0m" .format(self.checkpoints))
 
                 return self._return(
                     next_step_output, intermediate_steps, run_manager=run_manager
@@ -138,16 +139,14 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            # ic(output)
+           
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
-            print(intermediate_steps)
             if self.train_mode :   # added by me
                 if self.tool_count == len(self.true_tools):
                     output = AgentFinish(return_values = {'output':'User query successfully answered'} ,
                                          log ='I now know the final answer.\nFinal Answer: Take shelter of Lord Krishna')
                     
                 if isinstance(output ,AgentAction):
-                    # is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
                     # print(self.ground_truth,'\n', self.return_schema)
                     # analogy = ''
                     # ic(self.ground_truth, self.return_schema)
@@ -159,6 +158,7 @@ class CustomAgentExecutor(AgentExecutor):
                     })
 
                     is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema)  # added by me , evaluator
+                    is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
 
                     ic(is_right_decision, analogy, correct_arg)
 
@@ -169,12 +169,13 @@ class CustomAgentExecutor(AgentExecutor):
                     if not is_right_decision:
                         print("\033[1;35;40m {} \033[0m" .format('agent planned wrongly, picked tool : {} ...'.format(output.tool)))
                         curr_step = {
-                                'tool': output.tool,
-                                'tool_input': output.tool_input,
-                                'reasoning' : output.log.split('\n')[0],
-                        }
-
-                        self.wrong_checkpoints[self.tool_count] = curr_step
+                                    'correct_tool': self.true_tools[self.tool_count],
+                                    'correct_tool_description': name_to_tool_map[self.true_tools[self.tool_count]].description,
+                                    'wrong_tool': output.tool,
+                                    'wrong_tool_description': name_to_tool_map[output.tool].description,
+                            }
+                        self.checkpoints[self.tool_count] = curr_step
+                        
                         input = {
                             'correct_tool' : self.true_tools[self.tool_count] ,
                             'correct_tool_description' : name_to_tool_map[self.true_tools[self.tool_count]].description ,
@@ -189,10 +190,13 @@ class CustomAgentExecutor(AgentExecutor):
                         output.tool_input = tool_input
                         output.log = log+"\nAction: {tool}\nAction Input:{tool_input}".format(tool=output.tool, 
                                                                                               tool_input=output.tool_input)
+                    
+                        
+
                     self.correct_trajectory.append({
                         'tool_name': output.tool,
                         'tool_input': output.tool_input,
-                        'log': output.log.split('\n')[0] + analogy,
+                        'log': analogy+". "+ output.log.split('\n')[0]
                     })
                 
         except OutputParserException as e:
@@ -268,6 +272,8 @@ class CustomAgentExecutor(AgentExecutor):
                     'arguments': arguments,
                 }
                 self.return_schema.append(tool_schema)      # added by me
+
+                print("\033[1;35;40m {} \033[0m".format('Checking Argument Correctness... (agent_executor)'))
                 build_tool_experience(self.ground_truth, self.return_schema)
                 # print('observation: ', observation)
                 # ic(type(arguments))
@@ -347,3 +353,5 @@ agent_executor = CustomAgentExecutor(
 #     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
 
 #     print('\n\n\n\n\n' ,cb.total_cost)
+
+

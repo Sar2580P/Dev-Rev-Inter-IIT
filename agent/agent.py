@@ -34,11 +34,7 @@ class PersonalAgent(ZeroShotAgent):
             formatted_mistakes = 'No mistakes found'
         else :
             for mistake in past_mistakes:
-                formatted_mistakes += 'query : {q}\n'.format(q = mistake.metadata['query'])
-                formatted_mistakes += 'mistake_highlight : {x}\n'.format(x = mistake.page_content) 
-                formatted_mistakes += 'correct_tool : {y}\n'.format(y = mistake.metadata['correct_tool'])
-                formatted_mistakes += 'correct_reasoning : {z}'.format(z = mistake.metadata['correct_reasoning'])
-                formatted_mistakes += '\n\n'
+                formatted_mistakes += mistake.page_content 
 
         # tools = get_relevent_tools(user_query)
 
@@ -49,11 +45,13 @@ class PersonalAgent(ZeroShotAgent):
         tool_names = ", ".join([tool.name for tool in tools])
         format_instructions = format_instructions.format(tool_names=tool_names)
         #________________________________________________________________________________
-        template = "\n\n".join([prefix, tool_strings, format_instructions, suffix])
+        template = "\n\n".join([prefix, tool_strings, format_instructions, mistakes, suffix])
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         
-        return PromptTemplate(template=template, input_variables=input_variables)
+        prompt =  PromptTemplate(template=template, input_variables=input_variables)
+        print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
+        return prompt
     #________________________________________________________________________________________________________________________________
     @classmethod
     def from_llm_and_tools(

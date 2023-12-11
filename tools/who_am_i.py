@@ -13,13 +13,6 @@ class WhoAmI(BaseTool):
             Use this tool only when pronouns are present in query like "me", "I" , etc. Else don't use this tool.
             This tool will return the user_id which can be used by other tools.
             '''
-
-    # def _run(
-    #     self, query:str, run_manager: Optional[CallbackManagerForToolRun] = None
-    # ) -> str:
-    #     print('inside who_am_i tool , query is : \n' , query) 
-        
-    #     return list()
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None

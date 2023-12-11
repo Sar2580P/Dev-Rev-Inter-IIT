@@ -188,7 +188,8 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
                     reason = f"argument name should have been \'{arg_gt[0]}\' but was \'{arg_sample[0]}\'"
                     priority = 2
                 break
-            
+            if(type(arg_sample[1]) == bool):
+                continue
             if "$" in arg_gt[1] and "$" in arg_sample[1]:
                 index_gt     = int(arg_gt[1][7:-1])
                 index_sample = int(arg_sample[1][7:-1])

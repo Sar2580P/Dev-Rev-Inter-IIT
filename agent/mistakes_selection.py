@@ -8,11 +8,11 @@ import ast
 from prompts import MISTAKE_SELECTION
 
 
-prompt = PromptTemplate(template=MISTAKE_SELECTION, input_variables=["input", "past_query","past_mistake"])
+prompt = PromptTemplate(template=MISTAKE_SELECTION, input_variables=["input", "mistake"])
 chain = LLMChain(llm=small_llm, prompt=prompt)
 
 def choose_mistake(user_query, mistake):
-    x = chain.run({'input':user_query, 'past_query': mistake.metadata['query'] , 'past_mistake': mistake.page_content})
+    x = chain.run({'input':user_query,  'mistake': mistake.page_content})
     y=  ast.literal_eval(x)        
     return y
 
@@ -27,14 +27,14 @@ def analyse(user_query):
     final_mistakes = [] 
     i=0
     for mistake in mistakes:
-        mistaken_tool = mistake.metadata['wrong_tool']
+        mistaken_tool = mistake.metadata['correct_tool']
         if not mistaken_tool in mistaken_tool_set:
             mistaken_tool_set.add(mistaken_tool)
             ans = choose_mistake(user_query , mistake)
             if ans == 1:
                 i+=1
                 print("\033[91m {}\033[00m" .format('\tchosen_mistakes : {i} (mistake_selection)'.format(i=i)))
-                print("\033[93m {}\033[00m" .format(prompt.template.format(input=user_query, past_query=mistake.metadata['query'] , past_mistake=mistake.page_content)))
+                print("\033[93m {}\033[00m" .format(prompt.template.format(input=user_query , mistake=mistake.page_content)))
                 final_mistakes.append(mistake)
 
     return final_mistakes

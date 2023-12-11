@@ -25,7 +25,7 @@ for i in range(len(data)):
     query_cost = cb.total_cost
     query_tokens = cb.total_tokens
     prediction_df.loc[i] = [query , ground_json , predict_json , round(latency,2) , round(query_cost,5) , query_tokens]
-  print("\033[91m {}\033[00m" .format('---------------- QUERY_COST : $ {cost}---------------- MISTAKES LEARNED : {ct}-------------------- QUERY TOKENS : {tokens}-----------------'.format(cost = round(cb.total_cost, 5) , 
+  print("\033[91m {}\033[00m".format('---------------- QUERY_COST : $ {cost}---------------- MISTAKES LEARNED : {ct}-------------------- QUERY TOKENS : {tokens}-----------------'.format(cost = round(cb.total_cost, 5) , 
                                                                                                                                                                                             ct = ct, tokens = cb.total_tokens)))
 prediction_df.to_csv('data/Direct_C+V_prediction.csv', index=False)
 

@@ -9,7 +9,7 @@ from memory import Memory
 
 #__________________________________________________________________________________________________________________________
 
-V_db = Chroma(embedding_function = small_embedding_func, persist_directory= 'database/mistakes_db' , 
+V_db = Chroma(embedding_function = embedding_func, persist_directory= 'database/mistakes_db' , 
                                 relevance_score_fn='similarity_search_with_score')
 mistake_memory = Memory(k=5,vector_db=V_db)
 

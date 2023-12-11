@@ -4,46 +4,41 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
+import sys, os
+sys.path.append(os.getcwd())
 from backend_llm.utils import llm
-from tools.argument_mapping.get_args import fill_signature
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
+from prompts import VAR_ARGS_LOGIC_TOOL, LOGICAL_TEMPLATE
+import ast
 
-class LogicTool(BaseTool):
+prompt = PromptTemplate(
+input_variables=["query"],
+template= VAR_ARGS_LOGIC_TOOL,
+)
+extract_var_args = LLMChain(llm = llm , prompt=prompt)
+generate_code_prompt = PromptTemplate(template=LOGICAL_TEMPLATE, input_variables=['query' , 'language'])
+generate_code = LLMChain(llm = llm , prompt=generate_code_prompt)
+
+class LogicalTool(BaseTool):
     name = "logic_tool"
-    description = '''A special code block tool that is ONLY allowed to operate on the output of other tools,
-                    that must be passed as arguments'''
+    description = '''
+    Prioritize the use of this tool over the llm reasoning capabilities to answer logical queries. 
+    This tool is specialised to perform logical operations on its inputs like:
+    conditional statements, while loops, addition, subtraction, iterate over lists etc.
+    
+    '''
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
         print('\ninside logic_tool tool...')
-        signature = {'python_code': str,
-                    'arg_0': None ,
-                    'arg_1': None ,
-                    'arg_2': None ,}
-        
-        arg_description = {
-            'python_code': """a definition of a python function that takes the arguments arg_0, arg_1, arg_2 of the format:
-                              def func(arg_0, arg_1, arg_2, ...):
-                                  (...)
-                                  return (...)
-                              the function is supposed to perform logical operations on its inputs like
-                              addition, subtraction, while loops, conditional statements, iterate over lists etc.
-                              
-                              ex. def func(arg_0, arg_1):
-                                      return arg_0 + arg_1
-                              can be a special use of the function to add two numbers""",
-            'arg_0': 'the input argument arg_0 to the function defined by "python_code" MUST BE A REFERENCE ($$PREV[..])',
-            'arg_1': 'the input argument arg_1 to the function defined by "python_code" MUST BE A REFERENCE ($$PREV[..])',
-            'arg_2': 'the input argument arg_2 to the function defined by "python_code" MUST BE A REFERENCE ($$PREV[..])',
-        }
-        column_args = fill_signature(query,function_signatures= signature , arg_description=arg_description,tool_name=self.name)
+        code = generate_code.run({'query' : query , 'language' : 'python'})
+        print("\033[97m {}\033[00m" .format('Generated Code : \n{i}'.format(i=code)))
         li = []
-        for key, value in column_args.items():
-          x = {
-              'argument_name': key,
-              'argument_value': value,
-          }
-          li.append(x)
+        li.append({
+            'code' : code,
+        })
         return   li
     
 
@@ -52,3 +47,21 @@ class LogicTool(BaseTool):
     ) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("custom_search does not support async")
+
+
+# def fff(query):
+    
+    
+#     print('\ninside logic_tool tool...')
+#     argument_types = extract_var_args.run(query)
+#     print("\033[96m {}\033[00m" .format("Logic Argument Type: \n{i}".format(i=argument_types)))
+#     code = generate_code.run({'query' : query , 'language' : 'java'})
+#     print("\033[97m {}\033[00m" .format('Generated Code : \n{i}'.format(i=code)))
+#     li = []
+#     li.append({
+#         'code' : code,
+#     })
+#     return   li
+
+
+# fff('sum all items in $$PREV[7] ')

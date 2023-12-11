@@ -28,6 +28,7 @@ class CustomAgentExecutor(AgentExecutor):
     true_tools : List[str] = None                 # added by me
     correct_trajectory : List[Dict] = []            # added by me
     ground_truth : List[Dict] = []
+    thought_action_observations : List[Dict] = []   # added by me
     #_______________________________________________________________________________________________
     def eval(self):
         self.train_mode = False
@@ -69,6 +70,7 @@ class CustomAgentExecutor(AgentExecutor):
                 intermediate_steps = []    # added by me
                 self.correct_trajectory = []    # added by me
                 self.checkpoints = {}    # added by me
+                self.thought_action_observations = []    # added by me
 
             next_step_output = self._take_next_step(
                                                     name_to_tool_map,
@@ -144,21 +146,18 @@ class CustomAgentExecutor(AgentExecutor):
             if self.train_mode :   # added by me
                 if self.tool_count == len(self.true_tools):
                     output = AgentFinish(return_values = {'output':'User query successfully answered'} ,
-                                         log ='I now know the final answer.\nFinal Answer: Take shelter of Lord Krishna')
-                    
+                                         log ='I now know the final answer.\nFinal Answer : sarvagya')
                 if isinstance(output ,AgentAction):
-                    # print(self.ground_truth,'\n', self.return_schema)
-                    # analogy = ''
-                    # ic(self.ground_truth, self.return_schema)
+
                 #==============================================================================================================
                     current_schema = copy.deepcopy(self.return_schema)
                     current_schema.append({                        
                         'tool_name': output.tool,
                         'arguments': [],
                     })
-
+                    
                     is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema)  # added by me , evaluator
-                    is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
+                    # is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
 
                     ic(is_right_decision, analogy, correct_arg)
 
@@ -191,13 +190,12 @@ class CustomAgentExecutor(AgentExecutor):
                         output.log = log+"\nAction: {tool}\nAction Input:{tool_input}".format(tool=output.tool, 
                                                                                               tool_input=output.tool_input)
                     
-                        
-
                     self.correct_trajectory.append({
                         'tool_name': output.tool,
                         'tool_input': output.tool_input,
                         'log': analogy+". "+ output.log.split('\n')[0]
                     })
+                    self.thought_action_observations.append(output.log)
                 
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):

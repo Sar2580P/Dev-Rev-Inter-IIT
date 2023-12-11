@@ -15,15 +15,15 @@ class WorkList(BaseTool):
         Below are the arguments and their description :
             'applies_to_part': 'part to which issue applies',
             'created_by': 'name of person who created the issue',
-            'issue_priority': ' either of types : "p0" , "p1" , "p2" ',
-            'issue_rev_orgs': 'orgs that reviewed issue',
+            'issue.priority': ' either of types : "p0" , "p1" , "p2" ',
+            'issue.rev_orgs': 'orgs that reviewed issue',
             'limit' : 'maximum number of work-items to return' , 
             'owned_by': 'name of person who owns the issue',
-            'stage_name': 'stage of issue',
-            'ticket_needs_response': 'either of types : "True" , "False"',
-            'ticket_rev_org': 'orgs that reviewed ticket',
-            'ticket_severity': 'either of types : blocker , high , medium , low',
-            'ticket_source_channel': 'source channel of ticket',
+            'stage.name': 'stage of issue',
+            'ticket.needs_response': 'either of types : "True" , "False"',
+            'ticket.rev_org': 'orgs that reviewed ticket',
+            'ticket.severity': 'either of types : blocker , high , medium , low',
+            'ticket.source_channel': 'source channel of ticket',
             'type': 'either of types : issues , ticket , task'
         
     '''
@@ -34,29 +34,29 @@ class WorkList(BaseTool):
         print('\ninside work_list tool...')
         signature = {'applies_to_part': List[str],
                     'created_by': List[str] ,
-                    'issue_priority': str ,
-                    'issue_rev_orgs': List[str] ,
+                    'issue.priority': str ,
+                    'issue.rev_orgs': List[str] ,
                     'limit' : int ,
                     'owned_by': List[str] ,
-                    'stage_name': List[str] ,
-                    'ticket_needs_response': bool ,
-                    'ticket_rev_org': List[str] ,
-                    'ticket_severity': List[str] , 
-                    'ticket_source_channel': List[str] ,
+                    'stage.name': List[str] ,
+                    'ticket.needs_response': bool ,
+                    'ticket.rev_org': List[str] ,
+                    'ticket.severity': List[str] , 
+                    'ticket.source_channel': List[str] ,
                     'type': List[str],}
         
         arg_description = {
             'applies_to_part': 'part to which issue applies',
             'created_by': 'name of person who created the issue',
-            'issue_priority': ' either of types : "p0" , "p1" , "p2" ',
-            'issue_rev_orgs': 'orgs that reviewed issue',
+            'issue.priority': ' either of types : "p0" , "p1" , "p2" ',
+            'issue.rev_orgs': 'orgs that reviewed issue',
             'limit' : 'maximum number of work-items to return' , 
             'owned_by': 'name of person who owns the issue',
-            'stage_name': 'stage of issue',
-            'ticket_needs_response': 'whether ticket needs response',
-            'ticket_rev_org': 'orgs that reviewed ticket',
-            'ticket_severity': 'either of types : blocker , high , medium , low',
-            'ticket_source_channel': 'source channel of ticket',
+            'stage.name': 'stage of issue',
+            'ticket.needs_response': 'Filters for tickets that need a response, either of types : "True" , "False"',
+            'ticket.rev_org': 'Filters for tickets associated with any of the provided Rev organizations ',
+            'ticket.severity': 'either of types : blocker , high , medium , low',
+            'ticket.source_channel': 'Filters for tickets with any of the provided source channels',
             'type': 'either of types : issues , ticket , task'
         }
         column_args = fill_signature(query,function_signatures= signature , arg_description=arg_description,tool_name=self.name)

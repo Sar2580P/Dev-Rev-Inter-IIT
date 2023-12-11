@@ -21,8 +21,7 @@ Below you are provided with the current user query :
 CURRENT_USER_QUERY : {input}
 
 Below you are provided with one of the past mistakes made by another AI agent on some other user query :
-SOME_PAST_QUERY : {past_query}
-CORRESPONDING_PAST_MISTAKE : {past_mistake}
+{mistake}
 
 Check diligently if the current user query is similar to the past query, in terms of the vulnerability of the AI agent to make the same mistake.
 If there are some chances of making the same or similar mistake on the current user query, return 1 else return 0.
@@ -75,18 +74,15 @@ Below I provide the wrong tool that was selected by the agent and its descriptio
     Wrong Tool : {wrong_tool}
     Wrong Tool Description : {wrong_tool_description}
 
-Based on the above information :
-  1-) Reason why the wrong tool should not be selected by the agent based on:
-    a-) contrast between tool capabilities (based on wrong tool description) and user query,
-  2-) Reason why agent failed to pick the correct tool based on:
-    a-) similarity between tool capability (description of correct tool) and the user query, 
-    b-) reason out how the agent failed to pick the correct tool based on the trajectory of right tools used till now 
+Based on the above information, generate a brief experience for the agent, which will help it to learn from its mistakes :
+    - Extract some highlight/ semantics understanding focussing on why is wrong tool not fit for the user query.
+    - Extract some highlight /semantics from correct tool description focussing on user query.
 
-Be specific don't use general statements.
-Put everything as a paragraph in the experience text.
+* Keep the experience text short and crisp, at max 30 words and atleast 7 words.
+* Be specific don't use general statements.
+* Put everything as a paragraph in the experience text.
 
 Again repeating, you need to generate an experience for the agent, which will help it to learn from its mistakes.
-The experience text should not exceed 30 words and not less than 7 words, don't add too many stop words
 '''
 
 CORRECT_TRAJECTORY_TILL_NOW = """
@@ -142,3 +138,51 @@ FORMAT INSTRUCTION -->
   2) Return 1 if the tool is relevant to the user query, else return 0.
 '''
 #____________________________________________________________________________________________________________
+VAR_ARGS_LOGIC_TOOL = '''
+You will be provided with the following user query:
+{query}
+
+You need to infer the probable arguments and also their data types from the user query.
+You need to return the following dictionary of arguments as keys and their data types as values:
+
+Below I provide a sample dictionary of arguments as keys and their data types as values:
+"arg1":"str"
+"arg2":"int"
+"arg3" : "List"
+
+- Use your knowledge if argument types of certain arguments can't be inferred from the user query.
+- Don't pollute the dictionary with unnecessary arguments. Stick to information provided in the user query.
+- Ensure that the arguments are in correct data types before returning the dictionary.
+- Simply return the dictionary of arguments with keys as argument names and values as their data types, with no backticks.
+'''
+
+#____________________________________________________________________________________________________________
+
+LOGICAL_TEMPLATE = '''
+
+You will be provided with the following user query:
+{query}
+
+You need to return a code block executing the above user query in the given programming language.
+Create a function with the name "sum" with proper variables and call that function with the above provided arguments.
+
+
+Below I provide an example code block in python so that you know the desired output format:
+```
+def sum(arg1 , arg2 , arg3):
+    return arg1+arg2+arg3
+    
+sum($$PREV[0] , $$PREV[6] , 123)
+```
+you may devise any function of your own using a combination of sum, variables, loops, if-else statements etc.
+
+- Make sure that the code is in correct syntax before returning.
+- Don't return anything else other than the code block. 
+- Simply return the code block, nothing else to be returned
+
+'''
+
+
+
+# You are also provided the dataypes of arguments present in the user query:
+# {function_signature}

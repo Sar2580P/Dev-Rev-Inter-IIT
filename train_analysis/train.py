@@ -7,7 +7,7 @@ from langchain.docstore.document import Document
 from icecream import ic
 from langchain.callbacks import get_openai_callback
 
-data  = pd.read_csv('data\DEVREV Dataset 2.0 - Single Tool.csv' ).iloc[30:40 , :]
+data  = pd.read_csv('data\multi_class2_full.csv' ).iloc[16:40 , :]
 # print(data.shape)
 
 
@@ -16,7 +16,7 @@ agent_executor.train()
 ct = 0
 for i in range(len(data)):
   print("\033[1;32m {}\033[00m" .format('QUERY COUNT : {i}'.format(i=i)))
-  query, ground_json = data.iloc[i , 0] , "["+data.iloc[i , 1]+"]"
+  query, ground_json = data.iloc[i , 0] , data.iloc[i , 1]
   print("\033[1;32m {}\033[00m" .format('QUERY : ') , "\033[93m {}\033[00m" .format(query))
   print("\033[1;32m {}\033[00m" .format('Ground JSON :') , "\033[93m {}\033[00m" .format(ground_json))
 

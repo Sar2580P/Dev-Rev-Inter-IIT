@@ -7,13 +7,14 @@ from langchain.docstore.document import Document
 from langchain.callbacks import get_openai_callback
 import time 
 
-data  = pd.read_csv('data\DEVREV Dataset 2.0 - Single Tool.csv').iloc[50: , ]
+data  = pd.read_csv('data\multi_class2_full.csv').iloc[10:100 , ]
 
-if not os.path.exists('prediction_data/DEVREV Dataset 2.0 - Single Tool.csv'):
+path = 'prediction_data/multi_class2_full.csv'
+if not os.path.exists(path):
   prediction_df = pd.DataFrame(columns=['query' , 'groundJson' , 'predicted_json' , 'latency (in seconds)' , 'queryCost' , 'queryTokens'])
-  prediction_df.to_csv('prediction_data/DEVREV Dataset 2.0 - Single Tool.csv', index=False)
+  prediction_df.to_csv(path, index=False)
 
-prediction_df = pd.read_csv('prediction_data/DEVREV Dataset 2.0 - Single Tool.csv')
+prediction_df = pd.read_csv(path)
 agent_executor.eval()
 
 ct = 0
@@ -37,5 +38,5 @@ for i in range(len(data)):
       print("Skipping query ....")
   print("\033[91m {}\033[00m".format('---------------- QUERY_COST : $ {cost}---------------- QUERY TOKENS : {tokens}-----------------'.format(cost = round(cb.total_cost, 5) , 
                                                                                                                                              tokens = cb.total_tokens)))
-  prediction_df.to_csv('prediction_data/DEVREV Dataset 2.0 - Single Tool.csv', index=False)
+  prediction_df.to_csv(path, index=False)
 

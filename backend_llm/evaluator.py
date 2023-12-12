@@ -116,7 +116,8 @@ def remove_digits(string):
     return re.sub(r'[0-9]+', '', string)
 
 def keep_digits(string):
-    return re.sub(r'[^\d]+', '', string) 
+    print('&&&*' , string)
+    return re.sub(r'[^\d]+', '', str(string)) 
 
 def top_nodes(data):
     ic(data)

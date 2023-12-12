@@ -81,12 +81,22 @@ $ tree <task>
 ```
 
 ## HOW TO ADD NEW TOOL : 
-You can create a new file in *tools* folder in a similar manner how other tools are created. Copy the code template from any of the available tools and filled and update the tool_name, tool_description and also _run() as per your need for the new tool. 
+* To add new tool to the setup, run add_tool.py
+* Provide all the necessary info, it asks while running.
+* Add the tool to tools_collection.py as other tools are added.
 
-Then include the new tool in "tools_collection.py". Ready for new_tool usage.
+## SETUP:
+The setup can be run in 2 modes:
+ * Train mode
+ * Eval Mode
 
-## How to Run Setup :
-There is a main.py file , there is a code written where you can pass the query, 
- * it will provide the LLM created json
- * Also, the steps of thought-action while answering.
+### Train Mode :
+* The query runs, if it makes some mistake, you can decide whether to save that experience in vectore_db or not
+* Just visit train.py , where you can build your experience in rl-setup
 
+### Eval Mode : 
+* Just run predict.py on user queries
+* The past mistake memory is added to agent prompt to help it assist in avoiding similar mistakes again.
+  
+
+##

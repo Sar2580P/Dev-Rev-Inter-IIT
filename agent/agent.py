@@ -45,7 +45,7 @@ class PersonalAgent(ZeroShotAgent):
         tool_names = ", ".join([tool.name for tool in tools])
         format_instructions = format_instructions.format(tool_names=tool_names)
         #________________________________________________________________________________
-        template = "\n\n".join([prefix, tool_strings, format_instructions, mistakes, suffix])
+        template = "\n\n".join([prefix, tool_strings, format_instructions, "", suffix])
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         

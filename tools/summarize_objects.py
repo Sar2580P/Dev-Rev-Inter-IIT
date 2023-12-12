@@ -17,25 +17,25 @@ class Summarize(BaseTool):
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
         print('\ninside SummarizeTool tool...') 
-        # signature = {
-        #                 'objects': List[object],
-        #             }
+        signature = {
+                        'objects': List[object],
+                    }
 
-        # arg_description = {
-        #     'objects': 'the query to be summarized',
-        # }
-        # column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
+        arg_description = {
+            'objects': 'the query to be summarized',
+        }
+        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []
-        # for key, value in column_args.items():
-        #     x = {
-        #         'argument_name': key,
-        #         'argument_value': value,
-        #     }
-        #     li.append(x)
-        li.append({
-            'argument_name': 'objects',
-            'argument_value': query,
-        })
+        for key, value in column_args.items():
+            x = {
+                'argument_name': key,
+                'argument_value': value,
+            }
+            li.append(x)
+        # li.append({
+        #     'argument_name': 'objects',
+        #     'argument_value': query,
+        # })
         return   li
     
 

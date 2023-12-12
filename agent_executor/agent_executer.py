@@ -127,7 +127,7 @@ class CustomAgentExecutor(AgentExecutor):
         intermediate_steps: List[Tuple[AgentAction, str]],
         run_manager: Optional[CallbackManagerForChainRun] = None,
     ) -> Union[AgentFinish, List[Tuple[AgentAction, str]]]:
-        """Take a single step in the thought-action-observation loop.
+        """Take a single step in the thought-tool-observation loop.
 
         Override this to take control of how the agent makes and acts on choices.
         """
@@ -156,8 +156,8 @@ class CustomAgentExecutor(AgentExecutor):
                         'arguments': [],
                     })
                     
-                    is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema)  # added by me , evaluator
-                    # is_right_decision = output.tool == self.true_tools[self.tool_count]  # added by me , evaluator
+                    ic(self.ground_truth, current_schema[:-1], output.tool)
+                    is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema[:-1], output.tool)  # added by me , evaluator
 
                     ic(is_right_decision, analogy, correct_arg)
 
@@ -269,10 +269,15 @@ class CustomAgentExecutor(AgentExecutor):
                     'tool_name': tool.name,
                     'arguments': arguments,
                 }
-                self.return_schema.append(tool_schema)      # added by me
 
                 print("\033[1;35;40m {} \033[0m".format('Checking Argument Correctness... (agent_executor)'))
-                build_tool_experience(self.ground_truth, self.return_schema)
+                response, correct_arguments = build_tool_experience(self.ground_truth, self.return_schema+[tool_schema])
+
+                if response is False:
+                    tool_schema["arguments"] = correct_arguments
+
+                ic(tool_schema, response, )
+                self.return_schema.append(tool_schema)      # added by me
                 # print('observation: ', observation)
                 # ic(type(arguments))
                 #==============================================================================================================

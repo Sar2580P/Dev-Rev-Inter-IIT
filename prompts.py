@@ -1,10 +1,10 @@
 PAST_MISTAKES ='''
 
 Before proceeding further, below I have mentioned common mistakes made by you while using the tools.
-Please go through them carefully and try to avoid them in future.
 
 {mistakes}
 
+!! PLEASE GO THROUGH THEM CAREFULLY AND AVOID MAKING SIMILAR MISTAKES.
 '''
 SUFFIX = """Begin!
 
@@ -38,11 +38,10 @@ The user query is as follows:
 The intermediate steps taken till now to solve the above query are as follows:
 {intermediate_steps}
 
-Below is the correct tool that needs to be used next in the intermediate steps:
-  Correct_Tool : {correct_tool}
+Below is the next tool that needs to be used: {tool_name}
 
-The short description of the correct tool, to help you reason out, is as follows:
-{correct_tool_description}
+The short description of the tool, to help you reason out, is as follows:
+{tool_description}
 
 While creating the sub-task for above tool, adhere to tool description. 
 Don't query tool for tasks which are not mentioned in tool description.

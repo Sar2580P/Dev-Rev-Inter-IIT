@@ -7,7 +7,7 @@ from langchain.docstore.document import Document
 from icecream import ic
 from langchain.callbacks import get_openai_callback
 
-data  = pd.read_csv('data\DEVREV Dataset 2.0 - Single Tool.csv' ).iloc[:40 , :]
+data  = pd.read_csv('data\DEVREV Dataset 2.0 - Single Tool.csv' ).iloc[30:40 , :]
 # print(data.shape)
 
 
@@ -54,8 +54,8 @@ for i in range(len(data)):
       mistake_memory.stage(doc)
     
     print("\033[96m {}\033[00m" .format(agent_executor.return_schema))
-    
-  user_decision = input('Do you want to save the experience? (y/n) : ')  
+  user_decision = 'y'
+  # user_decision = input('Do you want to save the experience? (y/n) : ')  
   if user_decision.lower() == 'y':
     ct+= mistake_memory.queue.qsize()
     mistake_memory.push()

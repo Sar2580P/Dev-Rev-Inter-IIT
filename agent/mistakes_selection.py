@@ -1,5 +1,5 @@
 from langchain.prompts import PromptTemplate  
-from backend_llm.utils import llm, small_llm
+from backend_llm.utils import llm 
 from langchain.chains import LLMChain
 from typing import List, Union
 from langchain.docstore.document import Document
@@ -9,7 +9,7 @@ from prompts import MISTAKE_SELECTION
 
 
 prompt = PromptTemplate(template=MISTAKE_SELECTION, input_variables=["input", "mistake"])
-chain = LLMChain(llm=small_llm, prompt=prompt)
+chain = LLMChain(llm=llm, prompt=prompt)
 
 def choose_mistake(user_query, mistake):
     x = chain.run({'input':user_query,  'mistake': mistake.page_content})

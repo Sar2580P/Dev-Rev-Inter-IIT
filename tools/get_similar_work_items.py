@@ -4,7 +4,7 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
-from backend_llm.utils import llm, small_llm
+from backend_llm.utils import llm
 from tools.argument_mapping.get_args import fill_signature
 
 class GetSimilarWorkItems(BaseTool):

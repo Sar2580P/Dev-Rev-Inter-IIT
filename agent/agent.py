@@ -5,7 +5,7 @@ from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS, PREFIX
 from langchain.prompts import PromptTemplate
 from langchain.tools.base import BaseTool
 from agent.tool_collection import *
-from backend_llm.utils import llm, small_llm
+from backend_llm.utils import llm 
 from langchain.agents.mrkl.base import ZeroShotAgent
 from agent.mistakes_selection import *
 from langchain.agents.agent import Agent, AgentOutputParser

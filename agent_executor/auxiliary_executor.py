@@ -2,7 +2,7 @@ from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.chains import LLMChain
 from langchain.output_parsers import PydanticOutputParser
 from langchain.pydantic_v1 import BaseModel, Field, validator
-from backend_llm.utils import llm, small_llm
+from backend_llm.utils import llm
 import ast
 from prompts import TOOL_INPUT_PROMPT
 

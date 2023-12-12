@@ -112,9 +112,13 @@ Don't mention those arguments in final query whose values are not present in use
 You have to extract the following arguments from the user query :
 {user_query}
 
-Before returning the dictionary of arguments, ensure that all keys and values are in double quotes.
+Before returning the dictionary of arguments, 
+- ensure that keys and values are in single quotes if they are not in single quotes.
 Simply return the dictionary of arguments with keys as argument names and values as extracted values, with no backticks.
 Nothing else should be returned.
+
+ALERT :
+- Keep a check that you don't put single quotes over things which are already in single quotes.
 '''
 
 #____________________________________________________________________________________________________________

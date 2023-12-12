@@ -273,4 +273,3 @@ def validate(ground_truth, sample, additional_tool=None):
             
     return (True, "", [])
 
-# print(validate(GT, SP))

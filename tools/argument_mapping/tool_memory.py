@@ -1,8 +1,10 @@
-from memory import Memory
+import sys, os
+sys.path.append(os.getcwd())
+from backend_llm.memory import Memory
 from backend_llm.utils import *
 from langchain.vectorstores.chroma import Chroma
 from langchain.docstore.document import Document
-from evaluator import *
+from backend_llm.evaluator import *
 
 #__________________________________________________________________________________________________________________________
 

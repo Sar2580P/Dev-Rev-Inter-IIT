@@ -9,7 +9,7 @@ from langchain.agents.loading import AGENT_TO_CLASS
 import json
 from agent_executor.auxiliary_executor import *
 from agent.agent import PersonalAgent
-from evaluator import *
+from backend_llm.evaluator import *
 from tools.argument_mapping.tool_memory import build_tool_experience
 import copy
 

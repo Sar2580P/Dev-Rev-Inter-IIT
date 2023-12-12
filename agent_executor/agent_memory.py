@@ -1,10 +1,12 @@
+import sys, os
+sys.path.append(os.getcwd())
 from langchain.vectorstores.chroma import Chroma
 from backend_llm.utils import *
 
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.chains import LLMChain
 from prompts import PREFIX_MISTAKE_MEMORY, SUFFIX_MISTAKE_MEMORY, CORRECT_TRAJECTORY_TILL_NOW
-from memory import Memory
+from backend_llm.memory import Memory
 
 
 #__________________________________________________________________________________________________________________________

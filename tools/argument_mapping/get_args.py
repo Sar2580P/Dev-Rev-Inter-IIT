@@ -28,10 +28,9 @@ def fill_signature(query:str, function_signatures: dict , arg_description:dict, 
     else:
         for example in memory_examples:
             formated_example += 'Example: \n{ex}\n'.format(ex = example.page_content)
-    # ic(formated_example)
-    # Run the Chain
+   
     x = signature_chain.run({'function_signature':function_signatures ,'arg_description' : arg_description , 'user_query' : query, 'memory_examples' : formated_example})
-    x = re.sub("'",'"',x)
+    x = re.sub(r'""', '"', x)
     x = re.sub('true','True',x)
     x = re.sub('false','False',x)
     print('signature is : ' , x)

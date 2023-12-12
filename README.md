@@ -80,4 +80,23 @@ $ tree <task>
 
 ```
 
-## STAY HAPPY 
+## HOW TO ADD NEW TOOL : 
+* To add new tool to the setup, run add_tool.py
+* Provide all the necessary info, it asks while running.
+* Add the tool to tools_collection.py as other tools are added.
+
+## SETUP:
+The setup can be run in 2 modes:
+ * Train mode
+ * Eval Mode
+
+### Train Mode :
+* The query runs, if it makes some mistake, you can decide whether to save that experience in vectore_db or not
+* Just visit train.py , where you can build your experience in rl-setup
+
+### Eval Mode : 
+* Just run predict.py on user queries
+* The past mistake memory is added to agent prompt to help it assist in avoiding similar mistakes again.
+  
+
+##

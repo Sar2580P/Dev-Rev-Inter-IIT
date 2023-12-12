@@ -1,12 +1,12 @@
 import sys, os
 sys.path.append(os.getcwd())
 from langchain.vectorstores.chroma import Chroma
-from backend_llm.utils import *
+from utils.llm_utility import *
 
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.chains import LLMChain
-from prompts import PREFIX_MISTAKE_MEMORY, SUFFIX_MISTAKE_MEMORY, CORRECT_TRAJECTORY_TILL_NOW
-from backend_llm.memory import Memory
+from utils.prompts import PREFIX_MISTAKE_MEMORY, SUFFIX_MISTAKE_MEMORY, CORRECT_TRAJECTORY_TILL_NOW
+from memory.memory import Memory
 
 
 #__________________________________________________________________________________________________________________________
@@ -44,11 +44,12 @@ def build_experience(x):
                      "wrong_tool" , "wrong_tool_description" ],
     example_separator="\n", 
 )
-    chain = LLMChain(llm=llm, prompt=few_shot_prompt)
+    chain = LLMChain(llm=llm, prompt=few_shot_pormpt)
     print("\033[91m {}\033[00m" .format('build_experience (agent_memory)'))
     y = chain.run({"query": x['query'] ,  
                   "correct_tool": x['correct_tool'] ,"correct_tool_description": x['correct_tool_description'], 
                    "wrong_tool": x['wrong_tool'] ,"wrong_tool_description": x['wrong_tool_description'] })
+    
     if y[0] == '\n':
         y = y[1:]
     return y

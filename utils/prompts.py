@@ -97,29 +97,20 @@ tool_reasoning : {log}\n
 
 
 TOOLS_PROMPT_EXAMPLES = '''
-You are good at extracting values of certain arguments from a user query in natural language.
-Below is the signature of arguments with keys as argument names and 
-values as  datatypes in which extracted values should be returned :
-{function_signature}
+You are provided with a user query below :
+QUERY : {user_query}
 
-Before moving forward , you need to know the description of each argument :
-Specific arguments take only certain values , so you need to know the description of each argument.
-{arg_description}
+You need to chec whether the value of argument can be extracted from query based on argument description :
+ARGUMENT_DESCRIPTION : {arg_description}
 
-FORMAT INSTRUCTION -->
-- Don't create argument names that are not present above.
-- You need to return the dictionary of arguments as keys and extracted values as values.
-- Ensure that argument values are in double quotes.
-- Check that the extracted arguments are in correct datatypes before returning.
+You are also provided the data-type of how the argument expects the value to be :
+ARGUMENT_TYPE : {argument_type}
 
-Don't mention those arguments in final query whose values are not present in user query.
-You have to extract the following arguments from the user query :
-{user_query}
+- Don't unnecessarily pollute the argument with unnecessary words. Stick to information provided in the user query.
+- Ensure that the argument is in correct data type before returning.
+- 
 
-Before returning the dictionary of arguments, 
-Simply return the dictionary of arguments with keys as argument names and values as extracted values, with no backticks.
-Nothing else should be returned.
-
+ANSWER : 
 '''
 
 #____________________________________________________________________________________________________________

@@ -5,11 +5,11 @@ from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS, PREFIX
 from langchain.prompts import PromptTemplate
 from langchain.tools.base import BaseTool
 from agent.tool_collection import *
-from backend_llm.utils import llm 
+from utils.llm_utility import llm 
 from langchain.agents.mrkl.base import ZeroShotAgent
 from agent.mistakes_selection import *
 from langchain.agents.agent import Agent, AgentOutputParser
-from prompts import PAST_MISTAKES ,SUFFIX
+from utils.prompts import PAST_MISTAKES ,SUFFIX
 
 
 class PersonalAgent(ZeroShotAgent):

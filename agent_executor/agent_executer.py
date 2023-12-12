@@ -2,17 +2,17 @@ from langchain.agents.agent import *
 import sys, os
 sys.path.append(os.getcwd())
 import ast
-from backend_llm.utils import *
+from utils.llm_utility import *
 from agent.tool_collection import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
 import json
 from agent_executor.auxiliary_executor import *
 from agent.agent import PersonalAgent
-from backend_llm.evaluator import *
-from tools.argument_mapping.tool_memory import build_tool_experience
+from evaluator import *
+from memory.tool_memory import build_tool_experience
 import copy
-from prompts import CRITIQUE_TEMPLATE
+from utils.prompts import CRITIQUE_TEMPLATE
 
 # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 # agent_cls = AGENT_TO_CLASS[agent]
@@ -21,7 +21,8 @@ from prompts import CRITIQUE_TEMPLATE
 #         )
 
 
-critique = LLMChain(llm = llm , prompt=PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools']))
+# critique = LLMChain(llm = llm , prompt=PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools']))
+
 class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
     tool_count : int = 0             # added by me
@@ -30,7 +31,7 @@ class CustomAgentExecutor(AgentExecutor):
     true_tools : List[str] = None                 # added by me
     correct_trajectory : List[Dict] = []            # added by me
     ground_truth : List[Dict] = []
-    thought_action_observations : List[Dict] = []   # added by me
+    execution_chain : List[Dict] = []   # added by me
     
     #_______________________________________________________________________________________________
     def eval(self):
@@ -40,7 +41,7 @@ class CustomAgentExecutor(AgentExecutor):
 
     def get_tool_lists(self , ground_truth:str):
         ground_truth = json.loads(ground_truth)
-        print(ground_truth)
+        # print(ground_truth)
         self.ground_truth = ground_truth
         self.true_tools = [tool['tool_name'] for tool in ground_truth]
     
@@ -53,15 +54,15 @@ class CustomAgentExecutor(AgentExecutor):
         
         """Run text through and get agent response."""
 
-        is_query_valid = critique.run({'query' : inputs['input'] , 'tools' : "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])})
-        print('Critique output: {s}\n'.format(s = is_query_valid))
-        if '0' in is_query_valid:
-            print("hi")
-            return self._return(
-                    output=AgentFinish(return_values = {'output':'dvdvsdd'} ,
-                                         log ='I now know the final answer.\nFinal Answer : sarvagya'),
-                                         intermediate_steps = [] , run_manager=run_manager
-            )
+        # is_query_valid = critique.run({'query' : inputs['input'] , 'tools' : "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])})
+        # print('Critique output: {s}\n'.format(s = is_query_valid))
+        # if '0' in is_query_valid:
+        #     print("hi")
+        #     return self._return(
+        #             output=AgentFinish(return_values = {'output':'dvdvsdd'} ,
+        #                                  log ='I now know the final answer.\nFinal Answer : sarvagya'),
+        #                                  intermediate_steps = [] , run_manager=run_manager
+        #     )
         
         # Construct a mapping of tool name to tool for easy lookup
         name_to_tool_map = {tool.name: tool for tool in self.tools}
@@ -87,7 +88,7 @@ class CustomAgentExecutor(AgentExecutor):
                 intermediate_steps = []    # added by me
                 self.correct_trajectory = []    # added by me
                 self.checkpoints = {}    # added by me
-                self.thought_action_observations = []    # added by me
+                self.execution_chain = []    # added by me
 
             next_step_output = self._take_next_step(
                                                     name_to_tool_map,
@@ -158,7 +159,9 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-           
+            print(output.log,"hereee")
+            index2=output.log.find("\n")
+            current_step={"thought":output.log[0:index2]}
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
             if self.train_mode :   # added by me
                 if self.tool_count == len(self.true_tools):
@@ -212,7 +215,7 @@ class CustomAgentExecutor(AgentExecutor):
                         'tool_input': output.tool_input,
                         'log': analogy+". "+ output.log.split('\n')[0]
                     })
-                    self.thought_action_observations.append(output.log)
+                    self.execution_chain.append(output.log)
                 
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):
@@ -253,6 +256,7 @@ class CustomAgentExecutor(AgentExecutor):
             return [(output, observation)]
         # If the tool chosen is the finishing tool, then we end and return.
         if isinstance(output, AgentFinish):
+            current_step["tool"] = self.return_schema
             return output
         actions: List[AgentAction]
         if isinstance(output, AgentAction):
@@ -294,6 +298,8 @@ class CustomAgentExecutor(AgentExecutor):
                         tool_schema["arguments"] = correct_arguments
 
                 self.return_schema.append(tool_schema)
+                current_step["tool"]=tool_schema
+                self.execution_chain.append(current_step)
                 ic(self.return_schema)
                       # added by me
                 # print('observation: ', observation)

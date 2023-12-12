@@ -6,10 +6,10 @@ from langchain.callbacks.manager import (
 )
 import sys, os
 sys.path.append(os.getcwd())
-from backend_llm.utils import llm
+from utils.llm_utility import llm
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from prompts import VAR_ARGS_LOGIC_TOOL, LOGICAL_TEMPLATE
+from utils.prompts import VAR_ARGS_LOGIC_TOOL, LOGICAL_TEMPLATE
 import ast
 
 prompt = PromptTemplate(

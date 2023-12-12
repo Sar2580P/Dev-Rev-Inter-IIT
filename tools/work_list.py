@@ -4,8 +4,8 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
-from tools.argument_mapping.get_args import fill_signature
-from backend_llm.utils import llm
+from utils.get_args import fill_signature
+from utils.llm_utility import llm
 
 
 class WorkList(BaseTool):

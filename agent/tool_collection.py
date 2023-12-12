@@ -12,10 +12,10 @@ from tools.prioritize_objects import Prioritize
 from tools.search_object_by_name import SearchObjectByName
 from tools.who_am_i import WhoAmI
 import ast 
-from backend_llm.utils import llm
+from utils.llm_utility import llm
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from prompts import TOOL_RELEVENCY_TEMPLATE
+from utils.prompts import TOOL_RELEVENCY_TEMPLATE
 from tools.logic_tool import LogicalTool
 
 task_tools = [

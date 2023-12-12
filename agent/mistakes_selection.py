@@ -1,11 +1,11 @@
 from langchain.prompts import PromptTemplate  
-from backend_llm.utils import llm 
+from utils.llm_utility import llm 
 from langchain.chains import LLMChain
 from typing import List, Union
 from langchain.docstore.document import Document
-from agent_executor.agent_memory import mistake_memory
+from memory.agent_memory import mistake_memory
 import ast
-from prompts import MISTAKE_SELECTION
+from utils.prompts import MISTAKE_SELECTION
 
 
 prompt = PromptTemplate(template=MISTAKE_SELECTION, input_variables=["input", "mistake"])

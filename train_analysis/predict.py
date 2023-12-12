@@ -2,7 +2,7 @@ import pandas as pd
 import sys, os
 sys.path.append(os.getcwd())
 from agent_executor.agent_executer import agent_executor
-from agent_executor.agent_memory import *
+from memory.agent_memory import *
 from langchain.docstore.document import Document
 from langchain.callbacks import get_openai_callback
 import time 

@@ -3,10 +3,9 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from backend_llm.utils import llm
 from tools.argument_mapping.tool_memory import retrieve_tool_experience
-from icecream import ic
-import ast
 from prompts import TOOLS_PROMPT_EXAMPLES
 import re
+from tool_output_parser import parser
 
 prompt = PromptTemplate(template=TOOLS_PROMPT_EXAMPLES , 
                         input_variables=['function_signature' ,'arg_description','user_query','memory_examples'] ,
@@ -34,4 +33,5 @@ def fill_signature(query:str, function_signatures: dict , arg_description:dict, 
     x = re.sub('true','True',x)
     x = re.sub('false','False',x)
     print('signature is : ' , x)
-    return ast.literal_eval(x)
+    # return ast.literal_eval(x)
+    return parser(x,function_signatures)

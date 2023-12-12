@@ -37,20 +37,22 @@ class PersonalAgent(ZeroShotAgent):
                 formatted_mistakes += mistake.page_content 
 
         # tools = get_relevent_tools(user_query)
-
+    
         mistakes = mistakes.format(mistakes = formatted_mistakes)
+        if user_query == '':
+            mistakes = ''
         #________________________________________________________________________________
         
         tool_strings = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
         tool_names = ", ".join([tool.name for tool in tools])
         format_instructions = format_instructions.format(tool_names=tool_names)
         #________________________________________________________________________________
-        template = "\n\n".join([prefix, tool_strings, format_instructions, "", suffix])
+        template = "\n\n".join([prefix, tool_strings, format_instructions, mistakes, suffix])
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         
         prompt =  PromptTemplate(template=template, input_variables=input_variables)
-        print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
+        # print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
         return prompt
     #________________________________________________________________________________________________________________________________
     @classmethod

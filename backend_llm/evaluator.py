@@ -119,8 +119,9 @@ def keep_digits(string):
     return re.sub(r'[^\d]+', '', string) 
 
 def top_nodes(data):
-    # ic(data)
+    ic(data)
     data = [{item['tool_name']: {'value': 1, 'arguments': item['arguments']}} for item in data]
+    print()
 
     for i in range(0, len(data)):
         current_tool_name = next(iter(data[i]))

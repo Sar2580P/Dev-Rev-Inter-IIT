@@ -17,14 +17,17 @@ Thought:{agent_scratchpad}
 # ____________________________________________________________________________________________________________
 
 MISTAKE_SELECTION =  '''
-Below you are provided with the current user query :
-CURRENT_USER_QUERY : {input}
 
 Below you are provided with one of the past mistakes made by another AI agent on some other user query :
 {mistake}
 
+Below you are provided with the current user query :
+CURRENT_USER_QUERY : {input}
+
 Check diligently if the current user query is similar to the past query, in terms of the vulnerability of the AI agent to make the same mistake.
 If there are some chances of making the same or similar mistake on the current user query, return 1 else return 0.
+
+ANSWER : 
 '''
 
 # ____________________________________________________________________________________________________________
@@ -104,6 +107,7 @@ Specific arguments take only certain values , so you need to know the descriptio
 {arg_description}
 
 FORMAT INSTRUCTION -->
+- Don't create argument names that are not present above.
 - You need to return the dictionary of arguments as keys and extracted values as values.
 - Ensure that argument values are in double quotes.
 - Check that the extracted arguments are in correct datatypes before returning.
@@ -113,12 +117,9 @@ You have to extract the following arguments from the user query :
 {user_query}
 
 Before returning the dictionary of arguments, 
-- ensure that keys and values are in single quotes if they are not in single quotes.
 Simply return the dictionary of arguments with keys as argument names and values as extracted values, with no backticks.
 Nothing else should be returned.
 
-ALERT :
-- Keep a check that you don't put single quotes over things which are already in single quotes.
 '''
 
 #____________________________________________________________________________________________________________
@@ -185,7 +186,36 @@ you may devise any function of your own using a combination of sum, variables, l
 
 '''
 
+#____________________________________________________________________________________________________________
+CRITIQUE_TEMPLATE = '''
 
+Below you are provided the tools available in toolkit and their description :
+{tools}
+
+- You need to judge whether the query can be answered by the tools available in toolkit or not, ALONG WITH REASON.
+- Return 1 if the query can be answered by the tools available in toolkit, else return 0 , ALONG WITH REASON.
+- Nothing else should be returned.
+
+QUERY_EXAMPLE : "What is the use of life?"
+ANSWER : 0
+REASON : The available tools are not useful to answer the query.
+
+QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint"
+ANSWER : 1
+REASON : The available tools are useful to answer the query.
+
+QUERY_EXAMPLE : "Search for youtube videos of user id DEVU-67"
+ANSWER : 0
+REASON : no tool is present to search for youtube videos.
+
+QUERY_EXAMPLE : "Create a excel file of work items in the current sprint"
+ANSWER : 0
+REASON : no tool is present to create excel file.
+
+QUERY : {query}
+ANSWER : 
+REASON :
+'''
 
 # You are also provided the dataypes of arguments present in the user query:
 # {function_signature}

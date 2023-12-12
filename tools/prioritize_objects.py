@@ -16,25 +16,25 @@ class Prioritize(BaseTool):
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
         print('\ninside Prioritize_objects tool...') 
-        # signature = {
-        #                 'objects': List[str],
-        #             }
+        signature = {
+                        'objects': List[str],
+                    }
 
-        # arg_description = {
-        #     'objects': 'the list of objects to be prioritized',
-        # }
-        # column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
-        # li = []
-        # for key, value in column_args.items():
-        #     x = {
-        #         'argument_name': key,
-        #         'argument_value': value,
-        #     }
-        #     li.append(x)
-        li = [{
-            'argument_name': 'objects',
-            'argument_value':query,
-            }]
+        arg_description = {
+            'objects': 'the list of objects to be prioritized',
+        }
+        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
+        li = []
+        for key, value in column_args.items():
+            x = {
+                'argument_name': key,
+                'argument_value': value,
+            }
+            li.append(x)
+        # li = [{
+        #     'argument_name': 'objects',
+        #     'argument_value':query,
+        #     }]
         return   li
 
     async def _arun(

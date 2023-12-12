@@ -25,8 +25,7 @@ class LogicalTool(BaseTool):
     description = '''
     Prioritize the use of this tool over the llm reasoning capabilities to answer logical queries. 
     This tool is specialised to perform logical operations on its inputs like:
-    conditional statements, while loops, addition, subtraction, iterate over lists etc.
-    
+    conditional statements, while loops, addition, subtraction, iterate over lists etc.    
     '''
     
     def _run(

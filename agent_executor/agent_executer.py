@@ -12,6 +12,7 @@ from agent.agent import PersonalAgent
 from backend_llm.evaluator import *
 from tools.argument_mapping.tool_memory import build_tool_experience
 import copy
+from prompts import CRITIQUE_TEMPLATE
 
 # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 # agent_cls = AGENT_TO_CLASS[agent]
@@ -20,6 +21,7 @@ import copy
 #         )
 
 
+critique = LLMChain(llm = llm , prompt=PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools']))
 class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
     tool_count : int = 0             # added by me
@@ -29,6 +31,7 @@ class CustomAgentExecutor(AgentExecutor):
     correct_trajectory : List[Dict] = []            # added by me
     ground_truth : List[Dict] = []
     thought_action_observations : List[Dict] = []   # added by me
+    
     #_______________________________________________________________________________________________
     def eval(self):
         self.train_mode = False
@@ -37,6 +40,7 @@ class CustomAgentExecutor(AgentExecutor):
 
     def get_tool_lists(self , ground_truth:str):
         ground_truth = json.loads(ground_truth)
+        print(ground_truth)
         self.ground_truth = ground_truth
         self.true_tools = [tool['tool_name'] for tool in ground_truth]
     
@@ -46,7 +50,19 @@ class CustomAgentExecutor(AgentExecutor):
         inputs: Dict[str, str],
         run_manager: Optional[CallbackManagerForChainRun] = None,
     ) -> Dict[str, Any]:
+        
         """Run text through and get agent response."""
+
+        is_query_valid = critique.run({'query' : inputs['input'] , 'tools' : "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])})
+        print('Critique output: {s}\n'.format(s = is_query_valid))
+        if '0' in is_query_valid:
+            print("hi")
+            return self._return(
+                    output=AgentFinish(return_values = {'output':'dvdvsdd'} ,
+                                         log ='I now know the final answer.\nFinal Answer : sarvagya'),
+                                         intermediate_steps = [] , run_manager=run_manager
+            )
+        
         # Construct a mapping of tool name to tool for easy lookup
         name_to_tool_map = {tool.name: tool for tool in self.tools}
         # We construct a mapping from each tool to a color, used for logging.
@@ -59,6 +75,7 @@ class CustomAgentExecutor(AgentExecutor):
         iterations = 0
         time_elapsed = 0.0
         start_time = time.time()
+        
         # We now enter the agent loop (until it returns something).
         print("\033[1;35;40m {} \033[0m" .format('updating agent prompt with mistakes'))
         self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
@@ -270,14 +287,15 @@ class CustomAgentExecutor(AgentExecutor):
                     'arguments': arguments,
                 }
 
-                print("\033[1;35;40m {} \033[0m".format('Checking Argument Correctness... (agent_executor)'))
-                response, correct_arguments = build_tool_experience(self.ground_truth, self.return_schema+[tool_schema])
+                if self.train_mode :
+                    print("\033[1;35;40m {} \033[0m".format('Checking Argument Correctness... (agent_executor)'))
+                    response, correct_arguments = build_tool_experience(self.ground_truth, self.return_schema+[tool_schema])
+                    if response is False:
+                        tool_schema["arguments"] = correct_arguments
 
-                if response is False:
-                    tool_schema["arguments"] = correct_arguments
-
-                ic(tool_schema, response, )
-                self.return_schema.append(tool_schema)      # added by me
+                self.return_schema.append(tool_schema)
+                ic(self.return_schema)
+                      # added by me
                 # print('observation: ', observation)
                 # ic(type(arguments))
                 #==============================================================================================================

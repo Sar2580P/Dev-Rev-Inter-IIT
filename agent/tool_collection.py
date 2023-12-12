@@ -19,13 +19,14 @@ from prompts import TOOL_RELEVENCY_TEMPLATE
 from tools.logic_tool import LogicalTool
 
 task_tools = [
-  # LogicalTool(),
+  
     WhoAmI(),
     SearchObjectByName(),
     GetSprintId(),
     WorkList() , 
     Summarize() ,
     AddWorkItemsToSprint(),
+    # LogicalTool(),
     CreateActionableTasksFromText(),
     GetSimilarWorkItems(),
     Prioritize(),

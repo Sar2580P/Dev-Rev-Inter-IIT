@@ -80,4 +80,13 @@ $ tree <task>
 
 ```
 
-## STAY HAPPY 
+## HOW TO ADD NEW TOOL : 
+You can create a new file in *tools* folder in a similar manner how other tools are created. Copy the code template from any of the available tools and filled and update the tool_name, tool_description and also _run() as per your need for the new tool. 
+
+Then include the new tool in "tools_collection.py". Ready for new_tool usage.
+
+## How to Run Setup :
+There is a main.py file , there is a code written where you can pass the query, 
+ * it will provide the LLM created json
+ * Also, the steps of thought-action while answering.
+

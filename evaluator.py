@@ -172,11 +172,12 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
     
     for gt_node in common_nodes:
         gt_arguments = sorted([(argument['argument_name'], argument['argument_value']) for argument in gt_node['arguments']])
-        # ic(gt_arguments)
+        ic(gt_arguments)
+        ic(sample_arguments)
         if len(gt_arguments) != len(sample_arguments):
             if priority < 1:
                 if(len(sample_arguments) == 0):
-                        reason = f"No! arguments are passed, whereas arguments: {format_arg(gt_arguments)} should be passed"
+                    reason = f"No! arguments are passed, whereas arguments: {format_arg(gt_arguments)} should be passed"
                 else:
                     reason = f"arguments passed are \'{', '.join([arg[0] for arg in sample_arguments])}\' but should be {format_arg(gt_arguments)}"
                 priority = 1
@@ -191,8 +192,8 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
             if(type(arg_sample[1]) == bool):
                 continue
             if "$" in arg_gt[1] and "$" in arg_sample[1]:
-                index_gt     = int(arg_gt[1][7:-1])
-                index_sample = int(arg_sample[1][7:-1])
+                index_gt     = int(keep_digits(arg_gt[1]))
+                index_sample = int(keep_digits(arg_sample[1]))
 
 
                 if  ground_truth[index_gt]["tool_name"] != sample[index_sample]["tool_name"]:
@@ -268,7 +269,7 @@ def validate(ground_truth, sample, additional_tool=None):
 
         if additional_tool not in top_ground_truth_tools:
             # return (False, f"Your current progress of tool uses is correct however the last tool use should be ...")
-            return (False, f"Your current progress of tool uses is correct however the last tool use should be {'or '.join([tool['tool_name'] for tool in top_ground_truth_tools])}", [])
+            return (False, f"Your current progress of tool uses is correct however the last tool use should be {'or '.join([tool for tool in top_ground_truth_tools])}", [])
             
     return (True, "", [])
 

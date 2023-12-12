@@ -82,7 +82,7 @@ def build_experience(x):
 # def LLMsummarizer(query, tool_list, tool, signal):
 
 #     ARTICLE = f"""
-#     You are a Robot's memory that keep logs of all the actions you have yet taken.
+#     You are a Robot's memory that keep logs of all the Tools you have yet taken.
 
 #     The current task list is as follows:
 #     {tool_list}, it represents the tools which have already been used for the provide query.

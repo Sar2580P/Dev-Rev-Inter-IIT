@@ -5,7 +5,7 @@ from langchain.docstore.document import Document
 from icecream import ic
 from langchain.callbacks import get_openai_callback
 
-data  = pd.read_excel('data\DEVREV Dataset 2.0.xlsx' , sheet_name='New_C+V').iloc[50:70, :]
+data  = pd.read_excel('data\DEVREV Dataset 2.0.xlsx' , sheet_name='New_C+V').iloc[57:70, :]
 agent_executor.train()
 
 ct = 0
@@ -48,6 +48,8 @@ for i in range(len(data)):
       doc = Document(page_content=learning , metadata=metadata)
       mistake_memory.stage(doc)
     
+    print("\033[96m {}\033[00m" .format(agent_executor.return_schema))
+    
   user_decision = input('Do you want to save the experience? (y/n) : ')  
   if user_decision.lower() == 'y':
     ct+= mistake_memory.queue.qsize()
@@ -57,3 +59,4 @@ for i in range(len(data)):
     print("\033[91m {}\033[00m" .format('skipping experience saving...'))
   print("\033[91m {}\033[00m" .format('---------------- QUERY_COST : $ {cost}---------------- MISTAKES LEARNED : {ct}-------------------- QUERY TOKENS : {tokens}-----------------'.format(cost = round(cb.total_cost, 5) , 
                                                                                                                                                                                             ct = ct, tokens = cb.total_tokens)))
+  

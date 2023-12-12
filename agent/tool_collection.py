@@ -12,7 +12,7 @@ from tools.prioritize_objects import Prioritize
 from tools.search_object_by_name import SearchObjectByName
 from tools.who_am_i import WhoAmI
 import ast 
-from backend_llm.utils import llm, small_llm
+from backend_llm.utils import llm
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from prompts import TOOL_RELEVENCY_TEMPLATE

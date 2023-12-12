@@ -190,7 +190,7 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
                 break
             if(type(arg_sample[1]) == bool):
                 continue
-            if "$" in arg_gt[1] and "$" in arg_sample[1]:
+            if "$" in str(arg_gt[1]) and "$" in str(arg_sample[1]):
                 index_gt     = int(arg_gt[1][7:-1])
                 index_sample = int(arg_sample[1][7:-1])
 

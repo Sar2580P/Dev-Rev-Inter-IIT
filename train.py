@@ -5,7 +5,7 @@ from langchain.docstore.document import Document
 from icecream import ic
 from langchain.callbacks import get_openai_callback
 
-data  = pd.read_excel('data\DEVREV Dataset 2.0.xlsx' , sheet_name='New_C+V').iloc[50:70, :]
+data  = pd.read_excel('data\DEVREV Dataset 2.0.xlsx' , sheet_name='New_C+V').iloc[55:70, :]
 agent_executor.train()
 
 ct = 0

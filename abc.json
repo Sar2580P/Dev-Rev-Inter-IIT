@@ -1,1 +1,115 @@
-{"thought": [{"thought": "Action: works_list", "tool": {"tool_name": "works_list", "arguments": [{"argument_name": "applies_to_part", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is \"applies_to_part\" and it expects a list of strings as the value, which is correctly specified in the query as \"$$PREV[0]\"."}, {"argument_name": "created_by", "argument_value": "\nNo, the value of the argument cannot be extracted from the query. The query does not contain any information about the name of the person who created the issue. Additionally, the argument type is a list of strings, which is not present in the query. Therefore, it is not possible to extract the value of the argument from the query."}, {"argument_name": "issue.priority", "argument_value": "\nArgument: issue.priority = \"p0\"\nArgument type: <class 'str'>"}, {"argument_name": "issue.rev_orgs", "argument_value": "\nNo, the value of argument cannot be extracted from the query. The query does not contain any information about organizations that reviewed the issue, and the argument expects a list of strings as its value."}, {"argument_name": "limit", "argument_value": "\nNo, the value of argument cannot be extracted from the query. The query does not contain any information about the maximum number of work-items to return. Additionally, the data type of the argument is an integer, while the query only contains string values."}, {"argument_name": "owned_by", "argument_value": "\nNo, the value of the argument cannot be extracted from the query. The query does not contain any information about the name of the person who owns the issue. Additionally, the argument type is a list of strings, which is not present in the query."}, {"argument_name": "stage.name", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is \"stage of issue\" and it is expecting a list of strings as the value. Therefore, the argument should be in the format of typing.List[str] before returning."}, {"argument_name": "ticket.needs_response", "argument_value": "\nThe argument can be extracted from the query, and the value is \"True\". The data type is <class 'bool'>."}, {"argument_name": "ticket.rev_org", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is a list of strings, and the value can be extracted from the \"applies_to_part\" part of the query, which is the first element in the list. The value is expected to be a list of strings, so it can be extracted and returned as a list of strings."}, {"argument_name": "ticket.severity", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is expected to be a list of strings, and the value \"p0\" can be extracted from the query as it is one of the possible values for the \"priority\" field."}, {"argument_name": "ticket.source_channel", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is a list of strings, and the value can be extracted from the \"applies_to_part\" part of the query, which is the first element in the list. The value is expected to be a list of strings, so it matches the data type of the argument."}, {"argument_name": "type", "argument_value": "\nArgument: applies_to_part = $$PREV[0]\nData type: typing.List[str]"}]}}], "output": [{"tool_name": "works_list", "arguments": [{"argument_name": "applies_to_part", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is \"applies_to_part\" and it expects a list of strings as the value, which is correctly specified in the query as \"$$PREV[0]\"."}, {"argument_name": "created_by", "argument_value": "\nNo, the value of the argument cannot be extracted from the query. The query does not contain any information about the name of the person who created the issue. Additionally, the argument type is a list of strings, which is not present in the query. Therefore, it is not possible to extract the value of the argument from the query."}, {"argument_name": "issue.priority", "argument_value": "\nArgument: issue.priority = \"p0\"\nArgument type: <class 'str'>"}, {"argument_name": "issue.rev_orgs", "argument_value": "\nNo, the value of argument cannot be extracted from the query. The query does not contain any information about organizations that reviewed the issue, and the argument expects a list of strings as its value."}, {"argument_name": "limit", "argument_value": "\nNo, the value of argument cannot be extracted from the query. The query does not contain any information about the maximum number of work-items to return. Additionally, the data type of the argument is an integer, while the query only contains string values."}, {"argument_name": "owned_by", "argument_value": "\nNo, the value of the argument cannot be extracted from the query. The query does not contain any information about the name of the person who owns the issue. Additionally, the argument type is a list of strings, which is not present in the query."}, {"argument_name": "stage.name", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is \"stage of issue\" and it is expecting a list of strings as the value. Therefore, the argument should be in the format of typing.List[str] before returning."}, {"argument_name": "ticket.needs_response", "argument_value": "\nThe argument can be extracted from the query, and the value is \"True\". The data type is <class 'bool'>."}, {"argument_name": "ticket.rev_org", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is a list of strings, and the value can be extracted from the \"applies_to_part\" part of the query, which is the first element in the list. The value is expected to be a list of strings, so it can be extracted and returned as a list of strings."}, {"argument_name": "ticket.severity", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is expected to be a list of strings, and the value \"p0\" can be extracted from the query as it is one of the possible values for the \"priority\" field."}, {"argument_name": "ticket.source_channel", "argument_value": "\nYes, the value of argument can be extracted from the query. The argument is a list of strings, and the value can be extracted from the \"applies_to_part\" part of the query, which is the first element in the list. The value is expected to be a list of strings, so it matches the data type of the argument."}, {"argument_name": "type", "argument_value": "\nArgument: applies_to_part = $$PREV[0]\nData type: typing.List[str]"}]}]}
+{
+    "thought": [
+        {
+            "thought": "Action: works_list",
+            "tool": {
+                "tool_name": "works_list",
+                "arguments": [
+                    {
+                        "argument_name": "applies_to_part",
+                        "argument_value": "PREV[0]"
+                    },
+                    {
+                        "argument_name": "created_by",
+                        "argument_value": "[\"PREV[0]\"]"
+                    },
+                    {
+                        "argument_name": "issue.priority",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "issue.rev_orgs",
+                        "argument_value": "['PREV[0]']"
+                    },
+                    {
+                        "argument_name": "limit",
+                        "argument_value": "0"
+                    },
+                    {
+                        "argument_name": "owned_by",
+                        "argument_value": "[\"PREV[0]\"]"
+                    },
+                    {
+                        "argument_name": "stage.name",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "ticket.needs_response",
+                        "argument_value": "True"
+                    },
+                    {
+                        "argument_name": "ticket.rev_org",
+                        "argument_value": "PREV[0]"
+                    },
+                    {
+                        "argument_name": "ticket.severity",
+                        "argument_value": "[\"blocker\"]"
+                    },
+                    {
+                        "argument_name": "ticket.source_channel",
+                        "argument_value": "PREV[0]"
+                    },
+                    {
+                        "argument_name": "type",
+                        "argument_value": "['issues']"
+                    }
+                ]
+            }
+        }
+    ],
+    "output": [
+        {
+            "tool_name": "works_list",
+            "arguments": [
+                {
+                    "argument_name": "applies_to_part",
+                    "argument_value": "PREV[0]"
+                },
+                {
+                    "argument_name": "created_by",
+                    "argument_value": "[\"PREV[0]\"]"
+                },
+                {
+                    "argument_name": "issue.priority",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "issue.rev_orgs",
+                    "argument_value": "['PREV[0]']"
+                },
+                {
+                    "argument_name": "limit",
+                    "argument_value": "0"
+                },
+                {
+                    "argument_name": "owned_by",
+                    "argument_value": "[\"PREV[0]\"]"
+                },
+                {
+                    "argument_name": "stage.name",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "ticket.needs_response",
+                    "argument_value": "True"
+                },
+                {
+                    "argument_name": "ticket.rev_org",
+                    "argument_value": "PREV[0]"
+                },
+                {
+                    "argument_name": "ticket.severity",
+                    "argument_value": "[\"blocker\"]"
+                },
+                {
+                    "argument_name": "ticket.source_channel",
+                    "argument_value": "PREV[0]"
+                },
+                {
+                    "argument_name": "type",
+                    "argument_value": "['issues']"
+                }
+            ]
+        }
+    ]
+}

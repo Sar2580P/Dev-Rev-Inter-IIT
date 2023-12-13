@@ -8,7 +8,7 @@ import re
 from utils.tool_output_parser import parser
 
 prompt = PromptTemplate(template=TOOLS_PROMPT_EXAMPLES , 
-                        input_variables=['function_signature' ,'arg_description','user_query','memory_examples'] ,
+                        input_variables=['argument_name','argument_type','arg_description' ,'user_query'] ,   # ,'memory_examples'
                         )
         
 signature_chain = LLMChain(llm = llm, prompt = prompt , verbose=True)

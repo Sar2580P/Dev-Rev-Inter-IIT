@@ -100,17 +100,19 @@ TOOLS_PROMPT_EXAMPLES = '''
 You are provided with a user query below :
 QUERY : {user_query}
 
-You need to chec whether the value of argument can be extracted from query based on argument description :
+You need to check whether the value of argument can be extracted from query based on argument description :
 ARGUMENT_DESCRIPTION : {arg_description}
 
 You are also provided the data-type of how the argument expects the value to be :
 ARGUMENT_TYPE : {argument_type}
 
+RETURN INSTRUCTIONS : 
 - Don't unnecessarily pollute the argument with unnecessary words. Stick to information provided in the user query.
 - Ensure that the argument is in correct data type before returning.
-- 
+- Don't include the reasoning or anything else in final output other than the argument value.
+- Simply return the argument value, nothing else to be returned.
 
-ANSWER : 
+ANSWER :
 '''
 
 #____________________________________________________________________________________________________________

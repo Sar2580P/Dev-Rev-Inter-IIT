@@ -6,6 +6,7 @@ from memory.tool_memory import retrieve_tool_experience
 from utils.prompts import TOOLS_PROMPT_EXAMPLES
 import re
 from utils.tool_output_parser import parser
+from icecream import ic
 
 prompt = PromptTemplate(template=TOOLS_PROMPT_EXAMPLES , 
                         input_variables=['function_signature' ,'arg_description','user_query','memory_examples'] ,
@@ -30,9 +31,15 @@ def fill_signature(query:str, function_signatures: dict , arg_description:dict, 
    
     extracted_args = {}
     for key in function_signatures.keys():
+        ic(tool_name)
+        ic(key)
         data_type = str(function_signatures[key])
+        ic(data_type)
         description = arg_description[key]
+        ic(description)
         x = signature_chain.run({'argument_type':data_type ,'arg_description' : description , 'user_query' : query})
+
+        # 
         x = re.sub(r'""', '"', x)
         x = re.sub('true','True',x)
         x = re.sub('false','False',x)

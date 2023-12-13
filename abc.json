@@ -7,60 +7,53 @@
                 "arguments": [
                     {
                         "argument_name": "applies_to_part",
-                        "argument_value": "\n['p0']"
+                        "argument_value": "PREV[0]"
                     },
                     {
                         "argument_name": "created_by",
-                        "argument_value": "\n['name of person who created the issue']"
+                        "argument_value": "[\"PREV[0]\"]"
                     },
                     {
                         "argument_name": "issue.priority",
-                        "argument_value": "\np0"
+                        "argument_value": "p0"
                     },
                     {
                         "argument_name": "issue.rev_orgs",
-                        "argument_value": "\n['orgs that reviewed issue']"
+                        "argument_value": "['PREV[0]']"
                     },
                     {
                         "argument_name": "limit",
-                        "argument_value": "\n0"
+                        "argument_value": "0"
                     },
                     {
                         "argument_name": "owned_by",
-                        "argument_value": "\n['p0']"
+                        "argument_value": "[\"PREV[0]\"]"
                     },
                     {
                         "argument_name": "stage.name",
-                        "argument_value": "\n['p0']"
+                        "argument_value": "p0"
                     },
                     {
                         "argument_name": "ticket.needs_response",
-                        "argument_value": "\nTrue"
+                        "argument_value": "True"
                     },
                     {
                         "argument_name": "ticket.rev_org",
-                        "argument_value": "['p0']"
+                        "argument_value": "PREV[0]"
                     },
                     {
                         "argument_name": "ticket.severity",
-                        "argument_value": "\np0"
+                        "argument_value": "[\"blocker\"]"
                     },
                     {
                         "argument_name": "ticket.source_channel",
-                        "argument_value": "\n['p0']"
+                        "argument_value": "PREV[0]"
                     },
                     {
                         "argument_name": "type",
-                        "argument_value": "\n['p0']"
+                        "argument_value": "['issues']"
                     }
                 ]
-            }
-        },
-        {
-            "thought": "Action: who_am_i",
-            "tool": {
-                "tool_name": "who_am_i",
-                "arguments": []
             }
         }
     ],
@@ -70,57 +63,53 @@
             "arguments": [
                 {
                     "argument_name": "applies_to_part",
-                    "argument_value": "\n['p0']"
+                    "argument_value": "PREV[0]"
                 },
                 {
                     "argument_name": "created_by",
-                    "argument_value": "\n['name of person who created the issue']"
+                    "argument_value": "[\"PREV[0]\"]"
                 },
                 {
                     "argument_name": "issue.priority",
-                    "argument_value": "\np0"
+                    "argument_value": "p0"
                 },
                 {
                     "argument_name": "issue.rev_orgs",
-                    "argument_value": "\n['orgs that reviewed issue']"
+                    "argument_value": "['PREV[0]']"
                 },
                 {
                     "argument_name": "limit",
-                    "argument_value": "\n0"
+                    "argument_value": "0"
                 },
                 {
                     "argument_name": "owned_by",
-                    "argument_value": "\n['p0']"
+                    "argument_value": "[\"PREV[0]\"]"
                 },
                 {
                     "argument_name": "stage.name",
-                    "argument_value": "\n['p0']"
+                    "argument_value": "p0"
                 },
                 {
                     "argument_name": "ticket.needs_response",
-                    "argument_value": "\nTrue"
+                    "argument_value": "True"
                 },
                 {
                     "argument_name": "ticket.rev_org",
-                    "argument_value": "['p0']"
+                    "argument_value": "PREV[0]"
                 },
                 {
                     "argument_name": "ticket.severity",
-                    "argument_value": "\np0"
+                    "argument_value": "[\"blocker\"]"
                 },
                 {
                     "argument_name": "ticket.source_channel",
-                    "argument_value": "\n['p0']"
+                    "argument_value": "PREV[0]"
                 },
                 {
                     "argument_name": "type",
-                    "argument_value": "\n['p0']"
+                    "argument_value": "['issues']"
                 }
             ]
-        },
-        {
-            "tool_name": "who_am_i",
-            "arguments": []
         }
     ]
 }

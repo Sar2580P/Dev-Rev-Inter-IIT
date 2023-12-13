@@ -106,13 +106,28 @@ ARGUMENT_DESCRIPTION : {arg_description}
 You are also provided the data-type of how the argument expects the value to be :
 ARGUMENT_TYPE : {argument_type}
 
-RETURN INSTRUCTIONS : 
-- Don't unnecessarily pollute the argument with unnecessary words. Stick to information provided in the user query.
-- Ensure that the argument is in correct data type before returning.
-- Don't include the reasoning or anything else in final output other than the argument value.
-- Simply return the argument value, nothing else to be returned.
+ARGUMENT_NAME : {argument_name}
 
-ANSWER :
+RETURN INSTRUCTIONS : 
+- Only extract the argument value if it is directly present in the query.
+- Return a dictionary with the following keys ,with no backticks:
+    - "argument_value" : The value of the argument extracted from the query
+    - "valid_argument" : 1 if the argument value is directly present in query, else 0
+
+Below I provide the few examples of how the argument value can be extracted from the query based on argument description and argument type:
+
+1-> QUERY_EXMAPLE : "Prioritize the $$PREV[0]"
+    ARGUMENT_NAME : "Prioritize"
+    ARGUMENT_DESCRIPTION : "the list of objects to be prioritized"
+    ARGUMENT_TYPE : "List"
+    RETURN : {"argument_value" : "$$PREV[0]" , "valid_argument" : 1}
+
+2-> QUERY_EXMAPLE : "List my p0 issues"
+    ARGUMENT_NAME : created_by
+    ARGUMENT_DESCRIPTION : "'name of person who created the issue'"
+    ARGUMENT_TYPE : "str"
+    RETURN : {"argument_value" : "" , "valid_argument" : 0}
+
 '''
 
 #____________________________________________________________________________________________________________

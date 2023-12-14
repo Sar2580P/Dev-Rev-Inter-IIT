@@ -13,7 +13,7 @@ chain = LLMChain(llm=llm, prompt=prompt)
 
 def choose_mistake(user_query, mistake):
     x = chain.run({'input':user_query,  'mistake': mistake.page_content})
-    y=  ast.literal_eval(x)        
+    y =  ast.literal_eval(x)        
     return y
 
 def analyse(user_query):

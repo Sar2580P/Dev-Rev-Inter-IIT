@@ -9,7 +9,7 @@ from chromadb.api.types import Documents, Embeddings
 
 #_________________________________________________________________________________________
 
-llm = OpenAI(temperature=0.0 ,frequency_penalty = 0.1 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
+llm = OpenAI(temperature=0.2 ,frequency_penalty = 0.1 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
 
 embedding_func = OpenAIEmbeddings()
 

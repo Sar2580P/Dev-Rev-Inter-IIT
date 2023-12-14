@@ -109,29 +109,95 @@ ARGUMENT_TYPE : {argument_type}
 ARGUMENT_NAME : {argument_name}
 
 RETURN INSTRUCTIONS : 
-- Only extract the argument value if it is directly present in the query.
-- Return a dictionary with the following keys ,with no backticks:
-    - "argument_value" : The value of the argument extracted from the query
-    - "valid_argument" : 1 if the argument value is directly present in query, else 0
+- Only extract the argument value if it is directly present in the query else output 'NONE'
 
-Below I provide the few examples of how the argument value can be extracted from the query based on argument description and argument type:
+Below are the few examples of how the argument value should be extracted from the query based on argument description and argument type:
 
-1-> QUERY_EXMAPLE : "Prioritize the $$PREV[0]"
-    ARGUMENT_NAME : "Prioritize"
-    ARGUMENT_DESCRIPTION : "the list of objects to be prioritized"
-    ARGUMENT_TYPE : "List"
-    RETURN : {"argument_value" : "$$PREV[0]" , "valid_argument" : 1}
+Example:
+    QUERY : "Prioritize the $$PREV[0]"
+    ARGUMENT_NAME = "Prioritize"
+    ARGUMENT_DESCRIPTION = "the list of objects to be prioritized"
+    ARGUMENT_TYPE = "List"
+    ARGUMENT_VALUE = "$$PREV[0]"
 
-2-> QUERY_EXMAPLE : "List my p0 issues"
-    ARGUMENT_NAME : created_by
-    ARGUMENT_DESCRIPTION : "'name of person who created the issue'"
-    ARGUMENT_TYPE : "str"
-    RETURN : {"argument_value" : "" , "valid_argument" : 0}
+Example:
+    QUERY = {user_query}
+    ARGUMENT_NAME = {argument_name}
+    ARGUMENT_TYPE = {argument_type}
+    ARGUMENT_DESCRIPTION = {arg_description}
+    ARGUMENT_VALUE =  
 
 '''
+# TOOLS_PROMPT_EXAMPLES = '''
+# You are provided with a user query below :
+# QUERY : {user_query}
 
+# You need to check whether the value of argument can be extracted from query based on argument description :
+# ARGUMENT_DESCRIPTION : {arg_description}
+
+# You are also provided the data-type of how the argument expects the value to be :
+# ARGUMENT_TYPE : {argument_type}
+
+# ARGUMENT_NAME : {argument_name}
+
+# RETURN INSTRUCTIONS : 
+# - Only extract the argument value if it is directly present in the query.
+# - Return a dictionary with the following keys ,with no backticks:
+#     - "argument_value" : The value of the argument extracted from the query
+#     - "valid_argument" : 1 if the argument value is directly present in query, else 0
+
+# Below are the few examples of how the argument value should be extracted from the query based on argument description and argument type:
+
+# Example 1:
+#     QUERY : "Prioritize the $$PREV[0]"
+#     ARGUMENT_NAME : "Prioritize"
+#     ARGUMENT_DESCRIPTION : "the list of objects to be prioritized"
+#     ARGUMENT_TYPE : "List"
+#     RETURN : "argument_value" = "$$PREV[0]" , "valid_argument" = 1
+
+# Example 2:
+#     QUERY_EXMAPLE : "List my p0 issues"
+#     ARGUMENT_NAME : "created_by"
+#     ARGUMENT_DESCRIPTION : "'name of person who created the issue'"
+#     ARGUMENT_TYPE : "str"
+#     Answer : "argument_value" = "" , "valid_argument" = 0 
+
+# '''
 #____________________________________________________________________________________________________________
 
+ARG_FILTER_PROMPT = '''
+You are good at deciding whether an argument_name is relevant to a user query or not.
+Below you are provided with the following information:
+
+You have to decide weather the argument is relevant to the query.
+
+FORMAT INSTRUCTION --> 
+  1) Don't return a dictionary. Only return 1 or 0.
+  2) Return 1 if the tool is relevant to the user query, else return 0.
+
+Example:
+   QUERY : "Prioritize the $$PREV[0]"
+   ARGUMENT_NAME = "Prioritize"
+   ARGUMENT_DESCRIPTION = "the list of objects to be prioritized"
+   ARGUMENT_TYPE = "List"
+   Valid Argument = 1
+
+Example:
+   QUERY_EXMAPLE = "List my p0 issues"
+   ARGUMENT_NAME = "created_by"
+   ARGUMENT_DESCRIPTION = "'name of person who created the issue'"
+   ARGUMENT_TYPE = "str"
+   Valid Argument = 0 
+
+Example:
+   QUERY_EXMAPLE = {query}
+   ARGUMENT_NAME = {arg_name}
+   ARGUMENT_DESCRIPTION = {arg_description}
+   ARGUMENT_TYPE = {arg_type}
+   Valid Argument =   
+
+'''
+#____________________________________________________________________________________________________________
 TOOL_RELEVENCY_TEMPLATE = '''
 You are good at deciding whether a tool is relevant to a user query or not.
 Below you are provided with the following information:

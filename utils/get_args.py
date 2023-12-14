@@ -3,7 +3,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from utils.llm_utility import llm
 from memory.tool_memory import retrieve_tool_experience
-from utils.prompts import TOOLS_PROMPT_EXAMPLES
+from utils.prompts import TOOLS_PROMPT_EXAMPLES, ARG_FILTER_PROMPT
 import re
 from utils.tool_output_parser import parser
 from icecream import ic
@@ -12,7 +12,13 @@ prompt = PromptTemplate(template=TOOLS_PROMPT_EXAMPLES ,
                         input_variables=['argument_name','argument_type','arg_description' ,'user_query'] ,   # ,'memory_examples'
                         )
         
+arg_filter_prompt = PromptTemplate(template=ARG_FILTER_PROMPT,
+                                   input_variables=['query', 'arg_name','arg_type', 'arg_description'],
+                                   )
+
 signature_chain = LLMChain(llm = llm, prompt = prompt , verbose=True)
+
+arg_filter = LLMChain(llm = llm, prompt = arg_filter_prompt , verbose=True)
 
 
 def fill_signature(query:str, function_signatures: dict , arg_description:dict, tool_name:str)->Dict[str, Union[List[str] , bool]] :
@@ -28,22 +34,40 @@ def fill_signature(query:str, function_signatures: dict , arg_description:dict, 
     # else:
     #     for example in memory_examples:
     #         formated_example += 'Example: \n{ex}\n'.format(ex = example.page_content)
+
+
+    filtered_args = {}
+    for key in function_signatures.keys():
+
+        is_relevant = arg_filter.run({'query':query, 'arg_name':key,'arg_type': str(function_signatures[key]), 'arg_description':arg_description})
+        filtered_args[key] = is_relevant
+
+
+    ic(filtered_args)
    
     extracted_args = {}
     for key in function_signatures.keys():
+
+        if(filtered_args[key] == '0'):
+            continue
+            
+        data_type = str(function_signatures[key])
+        description = arg_description[key]
+
         ic(tool_name)
         ic(key)
-        data_type = str(function_signatures[key])
         ic(data_type)
-        description = arg_description[key]
         ic(description)
-        x = signature_chain.run({'argument_type':data_type ,'arg_description' : description , 'user_query' : query})
 
-        # 
+        x = signature_chain.run({'argument_name':key, 'argument_type':data_type ,'arg_description' : description , 'user_query' : query})
+        
+        x = re.sub(r"'", '', x)
+        x = re.sub(r"    ", '', x)
         x = re.sub(r'""', '"', x)
         x = re.sub('true','True',x)
         x = re.sub('false','False',x)
         print('signature is : ' , x)
+
         extracted_args[key] = x
 
     return extracted_args

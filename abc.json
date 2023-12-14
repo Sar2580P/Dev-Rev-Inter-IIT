@@ -7,27 +7,27 @@
                 "arguments": [
                     {
                         "argument_name": "applies_to_part",
-                        "argument_value": "PREV[0]"
-                    },
-                    {
-                        "argument_name": "created_by",
-                        "argument_value": "[\"PREV[0]\"]"
-                    },
-                    {
-                        "argument_name": "issue.priority",
                         "argument_value": "p0"
                     },
                     {
+                        "argument_name": "created_by",
+                        "argument_value": "\nARGUMENT_VALUE = NONE"
+                    },
+                    {
+                        "argument_name": "issue.priority",
+                        "argument_value": "\np0"
+                    },
+                    {
                         "argument_name": "issue.rev_orgs",
-                        "argument_value": "['PREV[0]']"
+                        "argument_value": "\nARGUMENT_VALUE = [p0]"
                     },
                     {
                         "argument_name": "limit",
-                        "argument_value": "0"
+                        "argument_value": "\nARGUMENT_VALUE = 0"
                     },
                     {
                         "argument_name": "owned_by",
-                        "argument_value": "[\"PREV[0]\"]"
+                        "argument_value": "\nARGUMENT_VALUE = NONE"
                     },
                     {
                         "argument_name": "stage.name",
@@ -35,23 +35,135 @@
                     },
                     {
                         "argument_name": "ticket.needs_response",
-                        "argument_value": "True"
+                        "argument_value": "p0"
                     },
                     {
                         "argument_name": "ticket.rev_org",
-                        "argument_value": "PREV[0]"
+                        "argument_value": "\nNONE"
                     },
                     {
                         "argument_name": "ticket.severity",
-                        "argument_value": "[\"blocker\"]"
+                        "argument_value": "\np0"
                     },
                     {
                         "argument_name": "ticket.source_channel",
-                        "argument_value": "PREV[0]"
+                        "argument_value": "\np0"
                     },
                     {
                         "argument_name": "type",
-                        "argument_value": "['issues']"
+                        "argument_value": "\np0"
+                    }
+                ]
+            }
+        },
+        {
+            "thought": "Action: works_list",
+            "tool": {
+                "tool_name": "works_list",
+                "arguments": [
+                    {
+                        "argument_name": "applies_to_part",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "created_by",
+                        "argument_value": "NONE"
+                    },
+                    {
+                        "argument_name": "issue.priority",
+                        "argument_value": "\np0"
+                    },
+                    {
+                        "argument_name": "issue.rev_orgs",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "limit",
+                        "argument_value": "\nARGUMENT_VALUE = 0"
+                    },
+                    {
+                        "argument_name": "owned_by",
+                        "argument_value": "\nARGUMENT_VALUE = NONE"
+                    },
+                    {
+                        "argument_name": "stage.name",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "ticket.needs_response",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "ticket.rev_org",
+                        "argument_value": "\nARGUMENT_VALUE = p0"
+                    },
+                    {
+                        "argument_name": "ticket.severity",
+                        "argument_value": "\np0"
+                    },
+                    {
+                        "argument_name": "ticket.source_channel",
+                        "argument_value": "\np0"
+                    },
+                    {
+                        "argument_name": "type",
+                        "argument_value": "\nARGUMENT_VALUE = p0"
+                    }
+                ]
+            }
+        },
+        {
+            "thought": "Action: works_list",
+            "tool": {
+                "tool_name": "works_list",
+                "arguments": [
+                    {
+                        "argument_name": "applies_to_part",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "created_by",
+                        "argument_value": "\nNONE"
+                    },
+                    {
+                        "argument_name": "issue.priority",
+                        "argument_value": "\np0"
+                    },
+                    {
+                        "argument_name": "issue.rev_orgs",
+                        "argument_value": "\nNONE"
+                    },
+                    {
+                        "argument_name": "limit",
+                        "argument_value": "\nARGUMENT_VALUE = 0"
+                    },
+                    {
+                        "argument_name": "owned_by",
+                        "argument_value": "NONE"
+                    },
+                    {
+                        "argument_name": "stage.name",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "ticket.needs_response",
+                        "argument_value": "\nARGUMENT_VALUE = True"
+                    },
+                    {
+                        "argument_name": "ticket.rev_org",
+                        "argument_value": "p0"
+                    },
+                    {
+                        "argument_name": "ticket.severity",
+                        "argument_value": "\np0"
+                    },
+                    {
+                        "argument_name": "ticket.source_channel",
+                        "argument_value": "\np0"
+                    },
+                    {
+                        "argument_name": "type",
+                        "argument_value": "\np0"
                     }
                 ]
             }
@@ -63,27 +175,27 @@
             "arguments": [
                 {
                     "argument_name": "applies_to_part",
-                    "argument_value": "PREV[0]"
-                },
-                {
-                    "argument_name": "created_by",
-                    "argument_value": "[\"PREV[0]\"]"
-                },
-                {
-                    "argument_name": "issue.priority",
                     "argument_value": "p0"
                 },
                 {
+                    "argument_name": "created_by",
+                    "argument_value": "\nARGUMENT_VALUE = NONE"
+                },
+                {
+                    "argument_name": "issue.priority",
+                    "argument_value": "\np0"
+                },
+                {
                     "argument_name": "issue.rev_orgs",
-                    "argument_value": "['PREV[0]']"
+                    "argument_value": "\nARGUMENT_VALUE = [p0]"
                 },
                 {
                     "argument_name": "limit",
-                    "argument_value": "0"
+                    "argument_value": "\nARGUMENT_VALUE = 0"
                 },
                 {
                     "argument_name": "owned_by",
-                    "argument_value": "[\"PREV[0]\"]"
+                    "argument_value": "\nARGUMENT_VALUE = NONE"
                 },
                 {
                     "argument_name": "stage.name",
@@ -91,23 +203,129 @@
                 },
                 {
                     "argument_name": "ticket.needs_response",
-                    "argument_value": "True"
+                    "argument_value": "p0"
                 },
                 {
                     "argument_name": "ticket.rev_org",
-                    "argument_value": "PREV[0]"
+                    "argument_value": "\nNONE"
                 },
                 {
                     "argument_name": "ticket.severity",
-                    "argument_value": "[\"blocker\"]"
+                    "argument_value": "\np0"
                 },
                 {
                     "argument_name": "ticket.source_channel",
-                    "argument_value": "PREV[0]"
+                    "argument_value": "\np0"
                 },
                 {
                     "argument_name": "type",
-                    "argument_value": "['issues']"
+                    "argument_value": "\np0"
+                }
+            ]
+        },
+        {
+            "tool_name": "works_list",
+            "arguments": [
+                {
+                    "argument_name": "applies_to_part",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "created_by",
+                    "argument_value": "NONE"
+                },
+                {
+                    "argument_name": "issue.priority",
+                    "argument_value": "\np0"
+                },
+                {
+                    "argument_name": "issue.rev_orgs",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "limit",
+                    "argument_value": "\nARGUMENT_VALUE = 0"
+                },
+                {
+                    "argument_name": "owned_by",
+                    "argument_value": "\nARGUMENT_VALUE = NONE"
+                },
+                {
+                    "argument_name": "stage.name",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "ticket.needs_response",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "ticket.rev_org",
+                    "argument_value": "\nARGUMENT_VALUE = p0"
+                },
+                {
+                    "argument_name": "ticket.severity",
+                    "argument_value": "\np0"
+                },
+                {
+                    "argument_name": "ticket.source_channel",
+                    "argument_value": "\np0"
+                },
+                {
+                    "argument_name": "type",
+                    "argument_value": "\nARGUMENT_VALUE = p0"
+                }
+            ]
+        },
+        {
+            "tool_name": "works_list",
+            "arguments": [
+                {
+                    "argument_name": "applies_to_part",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "created_by",
+                    "argument_value": "\nNONE"
+                },
+                {
+                    "argument_name": "issue.priority",
+                    "argument_value": "\np0"
+                },
+                {
+                    "argument_name": "issue.rev_orgs",
+                    "argument_value": "\nNONE"
+                },
+                {
+                    "argument_name": "limit",
+                    "argument_value": "\nARGUMENT_VALUE = 0"
+                },
+                {
+                    "argument_name": "owned_by",
+                    "argument_value": "NONE"
+                },
+                {
+                    "argument_name": "stage.name",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "ticket.needs_response",
+                    "argument_value": "\nARGUMENT_VALUE = True"
+                },
+                {
+                    "argument_name": "ticket.rev_org",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "ticket.severity",
+                    "argument_value": "\np0"
+                },
+                {
+                    "argument_name": "ticket.source_channel",
+                    "argument_value": "\np0"
+                },
+                {
+                    "argument_name": "type",
+                    "argument_value": "\np0"
                 }
             ]
         }

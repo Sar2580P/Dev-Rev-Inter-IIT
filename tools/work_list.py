@@ -59,7 +59,7 @@ class WorkList(BaseTool):
             'ticket.source_channel': 'Filters for tickets with any of the provided source channels',
             'type': 'either of types : issues , ticket , task'
         }
-        column_args = fill_signature(query,function_signatures= signature , arg_description=arg_description,tool_name=self.name)
+        column_args = fill_signature(query = query, function_signatures = signature , arg_description = arg_description,tool_name = self.name)
         li = []
         for key, value in column_args.items():
           x = {

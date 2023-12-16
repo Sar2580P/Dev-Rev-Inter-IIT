@@ -1,5 +1,5 @@
 from flask import Flask, request
-from agent_executor.agent_executer import agent_executor
+from agent_executor.agent_executer import *
 
 # app = Flask(__name__)
 

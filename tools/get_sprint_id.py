@@ -9,7 +9,11 @@ from utils.get_args import fill_signature
 
 class GetSprintId(BaseTool):
     name = "get_sprint_id"
-    description = '''Returns the ID of the current sprint. '''
+    description = '''
+    USAGE :
+    - It will fetch you the ID of the current sprint.
+            '''
+    bag_of_words = set(["current sprint", "current sprint id", "sprint", "sprint id"])
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None

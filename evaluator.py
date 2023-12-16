@@ -116,11 +116,10 @@ def remove_digits(string):
     return re.sub(r'[0-9]+', '', string)
 
 def keep_digits(string):
-    print('&&&*' , string)
     return re.sub(r'[^\d]+', '', str(string)) 
 
 def top_nodes(data):
-    ic(data)
+    # ic(data)
     data = [{item['tool_name']: {'value': 1, 'arguments': item['arguments']}} for item in data]
     print()
 
@@ -174,8 +173,8 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
     
     for gt_node in common_nodes:
         gt_arguments = sorted([(argument['argument_name'], argument['argument_value']) for argument in gt_node['arguments']])
-        ic(gt_arguments)
-        ic(sample_arguments)
+        # ic(gt_arguments)
+        # ic(sample_arguments)
         if len(gt_arguments) != len(sample_arguments):
             if priority < 1:
                 if(len(sample_arguments) == 0):

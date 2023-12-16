@@ -12,9 +12,13 @@ from utils.llm_utility import llm
 
 class AddWorkItemsToSprint(BaseTool):
     name = "add_work_items_to_sprint"
-    description = '''Adds the given work items to the sprint. 
-    This tool needs to know the list of work_id and the sprint_id to which the work items should be added.
+    description = '''
+    USAGE :
+        - Adds the given work items to the sprint. 
+        - This tool needs to know the list of "work_id" and the "sprint_id" to which the work items should be added.
     '''
+
+    bag_of_words = set(["add work items to sprint", "add work items", "add to sprint", " add"])
 
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
@@ -29,15 +33,24 @@ class AddWorkItemsToSprint(BaseTool):
             'sprint_id': 'The ID of the sprint to which the work items should be added',
             
         }
-        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []
-        for key, value in column_args.items():
-            x = {
+        for key, value in signature.items():
+            arg_dtype = {
                 'argument_name': key,
                 'argument_value': value,
             }
-            li.append(x)
-        # ans = "The function returns add_work_items_to_sprint"
+            arg_descr = {
+                'argument_name': key,
+                'argument_value': arg_description[key],
+            }
+            x = fill_signature(query = query, arg_name = key , arg_dtype = arg_dtype , arg_descr = arg_descr, tool_name = self.name)
+            if x is not None:
+                li.append({
+                    'argument_name': key,
+                    'argument_value': x,
+                })
+       
+        print('Extracted arguments are : ',li)
         return   li
 
     async def _arun(

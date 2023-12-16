@@ -10,15 +10,11 @@ from utils.get_args import fill_signature
 class SearchObjectByName(BaseTool):
     name = "search_object_by_name"
     description = ''''
-    Given a search string, returns the id of a matching object in the system of record. If multiple matches are found, it
-    returns the one where the confidence is highest.
-
-    The tool requires the following arguments:
-        'query': 'The search string, could be for example customer’s name, part name, username.  
-    
+   - Given a search string, returns the id of a matching object in the system of record. 
+   - If multiple matches are found, it returns the one where the confidence is highest.  
     '''
 
-    
+    bag_of_words = set(["customer", "customer name", "username", "user", "part name"])
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
@@ -30,14 +26,24 @@ class SearchObjectByName(BaseTool):
         arg_description = {
             'query': 'customer name present in the query',
         }
-        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []
-        for key, value in column_args.items():
-            x = {
+        for key, value in signature.items():
+            arg_dtype = {
                 'argument_name': key,
                 'argument_value': value,
             }
-            li.append(x)
+            arg_descr = {
+                'argument_name': key,
+                'argument_value': arg_description[key],
+            }
+            x = fill_signature(query = query, arg_name = key , arg_dtype = arg_dtype , arg_descr = arg_descr, tool_name = self.name)
+            if x is not None:
+                li.append({
+                    'argument_name': key,
+                    'argument_value': x,
+                })
+       
+        print('Extracted arguments are : ',li)
         return   li
     
 

@@ -7,9 +7,19 @@ from datetime import datetime
 from langchain.embeddings import OpenAIEmbeddings
 from chromadb.api.types import Documents, Embeddings
 
+
+# session_group = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
+# wandb_callback = WandbCallbackHandler(
+#     job_type="inference",
+#     project="langchain_callback_demo",
+#     group=f"minimal_{session_group}",
+#     name="llm",
+#     tags=["test"],
+# )
+# callbacks = [StdOutCallbackHandler(), wandb_callback]
 #_________________________________________________________________________________________
 
-llm = OpenAI(temperature=0.2 ,frequency_penalty = 0.1 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
+llm = OpenAI(temperature=0.0 ,frequency_penalty = 0.1 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
 
 embedding_func = OpenAIEmbeddings()
 

@@ -13,12 +13,15 @@ from evaluator import *
 from memory.tool_memory import build_tool_experience
 import copy
 from utils.prompts import CRITIQUE_TEMPLATE
+from wandb.integration.langchain import WandbTracer
 
-# agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
-# agent_cls = AGENT_TO_CLASS[agent]
-# agent_obj = agent_cls.from_llm_and_tools(
-#             llm, task_tools,  
-#         )
+
+
+agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
+agent_cls = AGENT_TO_CLASS[agent]
+agent_obj = agent_cls.from_llm_and_tools(
+            llm, task_tools,  
+        )
 
 
 # critique = LLMChain(llm = llm , prompt=PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools']))
@@ -41,7 +44,6 @@ class CustomAgentExecutor(AgentExecutor):
 
     def get_tool_lists(self , ground_truth:str):
         ground_truth = json.loads(ground_truth)
-        # print(ground_truth)
         self.ground_truth = ground_truth
         self.true_tools = [tool['tool_name'] for tool in ground_truth]
     
@@ -83,12 +85,12 @@ class CustomAgentExecutor(AgentExecutor):
                                                                user_query=inputs['input'])
         
         while self._should_continue(iterations, time_elapsed):
-            if self.tool_count == 0:        # added by me
-                self.return_schema = []         # added by me
-                intermediate_steps = []    # added by me
-                self.correct_trajectory = []    # added by me
-                self.checkpoints = {}    # added by me
-                self.execution_chain = []    # added by me
+            if self.tool_count == 0:        
+                self.return_schema = []        
+                intermediate_steps = []   
+                self.correct_trajectory = []    
+                self.checkpoints = {}   
+                self.execution_chain = []    
 
             next_step_output = self._take_next_step(
                                                     name_to_tool_map,
@@ -98,9 +100,10 @@ class CustomAgentExecutor(AgentExecutor):
                                                     run_manager=run_manager,
                                                 )
             if isinstance(next_step_output, AgentFinish):
-                self.tool_count = 0             # added by me
+                self.tool_count = 0             
                 print("\033[1;35;40m {} \033[0m" .format('checkpoints ---> '))
                 print("\033[1;35;40m {} \033[0m" .format(self.checkpoints))
+
 
                 return self._return(
                     next_step_output, intermediate_steps, run_manager=run_manager
@@ -159,9 +162,7 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            print(output.log,"hereee")
-            index2=output.log.find("\n")
-            current_step={"thought":output.log[0:index2]}
+            ic(inputs , intermediate_steps , output , self.train_mode)
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
             if self.train_mode :   # added by me
                 if self.tool_count == len(self.true_tools):
@@ -176,10 +177,10 @@ class CustomAgentExecutor(AgentExecutor):
                         'arguments': [],
                     })
                     
-                    ic(self.ground_truth, current_schema[:-1], output.tool)
+                    # ic(self.ground_truth, current_schema[:-1], output.tool)
                     is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema[:-1], output.tool)  # added by me , evaluator
 
-                    ic(is_right_decision, analogy, correct_arg)
+                    # ic(is_right_decision, analogy, correct_arg)
 
                     if(is_right_decision == True):
                         analogy = ''
@@ -215,7 +216,6 @@ class CustomAgentExecutor(AgentExecutor):
                         'tool_input': output.tool_input,
                         'log': analogy+". "+ output.log.split('\n')[0]
                     })
-                    self.execution_chain.append(output.log)
                 
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):
@@ -256,8 +256,8 @@ class CustomAgentExecutor(AgentExecutor):
             return [(output, observation)]
         # If the tool chosen is the finishing tool, then we end and return.
         if isinstance(output, AgentFinish):
-            current_step["tool"] = self.return_schema
             return output
+        
         actions: List[AgentAction]
         if isinstance(output, AgentAction):
             actions = [output]
@@ -278,7 +278,7 @@ class CustomAgentExecutor(AgentExecutor):
                 # We then call the tool on the tool input to get an observation
                 arguments = tool.run(
                     agent_action.tool_input,
-                    verbose=self.verbose,
+                    verbose=False,
                     color=color,
                     callbacks=run_manager.get_child() if run_manager else None,
                     **tool_run_kwargs,
@@ -286,7 +286,7 @@ class CustomAgentExecutor(AgentExecutor):
                 observation = "$$PREV[{i}]".format(i=self.tool_count)
                
                 #==============================================================================================================
-                tool_schema = {                         # added by me
+                tool_schema = {                        
                     'tool_name': tool.name,
                     'arguments': arguments,
                 }
@@ -298,12 +298,7 @@ class CustomAgentExecutor(AgentExecutor):
                         tool_schema["arguments"] = correct_arguments
 
                 self.return_schema.append(tool_schema)
-                current_step["tool"]=tool_schema
-                self.execution_chain.append(current_step)
-                ic(self.return_schema)
-                      # added by me
-                # print('observation: ', observation)
-                # ic(type(arguments))
+
                 #==============================================================================================================
 
             else:
@@ -324,9 +319,11 @@ class CustomAgentExecutor(AgentExecutor):
     def reset_mistakes(self):
         pass
     
+from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
+
 #____________________________________________________________________________________________________
 agent_obj = PersonalAgent.from_llm_and_tools(
-            llm = llm, tools = task_tools, 
+            llm = llm, tools = task_tools, output_parser=ReActSingleInputOutputParser()
             )
 agent_executor = CustomAgentExecutor(
                                 agent=agent_obj ,
@@ -335,50 +332,52 @@ agent_executor = CustomAgentExecutor(
                                 return_intermediate_steps=True,
                                 handle_parsing_errors=True,
                                 )
+
+
 #____________________________________________________________________________________________________
 
-# ground = '''
-# [ 
-#  { 
-#  "tool_name":  "search_object_by_name", 
-#  "arguments":  [ 
-#  { 
-#  "argument_name":  "query", 
-#  "argument_value":  "UltimateCustomer" 
-#  } 
-# ] 
-#  }, 
-#  { 
-#  "tool_name":  "works_list", 
-#  "arguments":  [ 
-#  { 
-#  "argument_name":  "ticket.rev_org", 
-#  "argument_value":  "$$PREV[0]" 
-#  } 
-#  ] 
-#  }, 
-#  { 
-#  "tool_name":  "summarize_objects", 
-#  "arguments":  [ 
-#  { 
-#  "argument_name":  "objects", 
-#  "argument_value":  "$$PREV[1]" 
-#  } 
-#  ] 
-#  } 
-#  ]
-# '''
-# from langchain.callbacks import get_openai_callback
+ground = '''
+[ 
+ { 
+ "tool_name":  "search_object_by_name", 
+ "arguments":  [ 
+ { 
+ "argument_name":  "query", 
+ "argument_value":  "UltimateCustomer" 
+ } 
+] 
+ }, 
+ { 
+ "tool_name":  "works_list", 
+ "arguments":  [ 
+ { 
+ "argument_name":  "ticket.rev_org", 
+ "argument_value":  "$$PREV[0]" 
+ } 
+ ] 
+ }, 
+ { 
+ "tool_name":  "summarize_objects", 
+ "arguments":  [ 
+ { 
+ "argument_name":  "objects", 
+ "argument_value":  "$$PREV[1]" 
+ } 
+ ] 
+ } 
+ ]
+'''
+from langchain.callbacks import get_openai_callback
 
-# # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-# agent_executor.train()
-# agent_executor.get_tool_lists(ground)
-# with get_openai_callback() as cb:
+# "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
+agent_executor.eval()
+agent_executor.get_tool_lists(ground)
+with get_openai_callback() as cb:
 
-#     x = agent_executor({"input":'Prioritize my p0 issues.'})
-#     print(x)
-#     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+    x = agent_executor({"input":'Prioritize my P0 issues and add them to the current sprint'})
+    print(x)
+    print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
 
-#     print('\n\n\n\n\n' ,cb.total_cost)
+    print('\n\n\n\n\n' ,cb.total_cost)
 
 

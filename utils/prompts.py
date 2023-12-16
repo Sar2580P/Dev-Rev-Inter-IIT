@@ -6,14 +6,45 @@ Before proceeding further, below I have mentioned common mistakes made by you wh
 
 !! PLEASE GO THROUGH THEM CAREFULLY AND AVOID MAKING SIMILAR MISTAKES.
 '''
-SUFFIX = """Begin!
+
+SUFFIX = """
+ALERT !!!
+  - whenever $$PREV[i] is shown as a tool output, it is a symbolic representation of the output and is NOT THE ACTUAL OUTPUT
+  - DO NOT PASS INVALID REPRESENTATION LIKE "$$PREV" OR "$$PREV[]"
+  - Always use it as $$PREV[i] where i is the index of the output you want to use 
+  
+Begin!
 
 Question: {input}
 Thought:{agent_scratchpad}
 
 """
 
+#____________________________________________________________________________________________________________
+FORMAT_INSTRUCTIONS = """
+Use the following format:
 
+Question: the input question you must answer
+
+Thought : explain your thought process behind the action you are going to take, in less than 40
+Action : the Tool to take, should be one of [{tool_names}]
+Action Input:  the input to the Tool
+
+Observation : the result of the Tool
+... (this Thought/Action/Action Input/Observation can repeat N times)
+
+
+Thought : I now know the final answer
+Final Answer: 
+
+"""
+
+# NOTE : 
+#   
+
+# NOTE:
+# - The Tool you choose along with your Action Input and Tool description will be passed to another agent that will have to fill the arguments for the tool
+  # Hence ensure that the Action Input is comprehensive enough for the other agent to fill the tool arguments
 # ____________________________________________________________________________________________________________
 
 MISTAKE_SELECTION =  '''
@@ -95,125 +126,55 @@ tool_reasoning : {log}\n
 
 #____________________________________________________________________________________________________________
 
-
 TOOLS_PROMPT_EXAMPLES = '''
+
+Your task is to extract the argument value from user query based on argument description and argument type.
+
+Below you are provided the data-type of how the argument expects the value to be :
+{arg_dtype}
+
+Below is the meaning of argument to help you assist in extracting the argument value from the query:
+{arg_description}
+
+The above mentioned arguments have their values present in the query. You need to extract the argument value from the query.
+Don't pollute the information, stick to information provided in the user query.
+
+ALERT !!!
+- If the Query contains specific keywords like $$PREV[i], where i is the index of the output you want to use, then it is a symbolic representation of the output and is NOT THE ACTUAL OUTPUT
+- use $$PREV[i] as whole and don't pass invalid representation like "$$PREV" OR "$$PREV[]" or i
+
 You are provided with a user query below :
 QUERY : {user_query}
 
-You need to check whether the value of argument can be extracted from query based on argument description :
-ARGUMENT_DESCRIPTION : {arg_description}
+FORMAT INSTRUCTIONS --->
+  - Don't return anything else other than the argument value.
+  - Ensure that the argument value is in correct data type before returning.
+  - If the argument value is not explicitly present in the query, then return "NONE".
 
-You are also provided the data-type of how the argument expects the value to be :
-ARGUMENT_TYPE : {argument_type}
-
-ARGUMENT_NAME : {argument_name}
-
-RETURN INSTRUCTIONS : 
-- Only extract the argument value if it is directly present in the query else output 'NONE'
-
-Below are the few examples of how the argument value should be extracted from the query based on argument description and argument type:
-
-Example:
-    QUERY : "Prioritize the $$PREV[0]"
-    ARGUMENT_NAME = "Prioritize"
-    ARGUMENT_DESCRIPTION = "the list of objects to be prioritized"
-    ARGUMENT_TYPE = "List"
-    ARGUMENT_VALUE = "$$PREV[0]"
-
-Example:
-    QUERY = {user_query}
-    ARGUMENT_NAME = {argument_name}
-    ARGUMENT_TYPE = {argument_type}
-    ARGUMENT_DESCRIPTION = {arg_description}
-    ARGUMENT_VALUE =  
-
+ANSWER :
 '''
-# TOOLS_PROMPT_EXAMPLES = '''
-# You are provided with a user query below :
-# QUERY : {user_query}
 
-# You need to check whether the value of argument can be extracted from query based on argument description :
-# ARGUMENT_DESCRIPTION : {arg_description}
-
-# You are also provided the data-type of how the argument expects the value to be :
-# ARGUMENT_TYPE : {argument_type}
-
-# ARGUMENT_NAME : {argument_name}
-
-# RETURN INSTRUCTIONS : 
-# - Only extract the argument value if it is directly present in the query.
-# - Return a dictionary with the following keys ,with no backticks:
-#     - "argument_value" : The value of the argument extracted from the query
-#     - "valid_argument" : 1 if the argument value is directly present in query, else 0
-
-# Below are the few examples of how the argument value should be extracted from the query based on argument description and argument type:
-
-# Example 1:
-#     QUERY : "Prioritize the $$PREV[0]"
-#     ARGUMENT_NAME : "Prioritize"
-#     ARGUMENT_DESCRIPTION : "the list of objects to be prioritized"
-#     ARGUMENT_TYPE : "List"
-#     RETURN : "argument_value" = "$$PREV[0]" , "valid_argument" = 1
-
-# Example 2:
-#     QUERY_EXMAPLE : "List my p0 issues"
-#     ARGUMENT_NAME : "created_by"
-#     ARGUMENT_DESCRIPTION : "'name of person who created the issue'"
-#     ARGUMENT_TYPE : "str"
-#     Answer : "argument_value" = "" , "valid_argument" = 0 
-
-# '''
 #____________________________________________________________________________________________________________
 
 ARG_FILTER_PROMPT = '''
-You are good at deciding whether an argument_name is relevant to a user query or not.
-Below you are provided with the following information:
+You need to work as a filter to filter out the arguments which are not relevant to the user query.
 
-You have to decide weather the argument is relevant to the query.
+Below is the argument name:
+ARGUMENT_NAME : {arg_name}
 
-FORMAT INSTRUCTION --> 
-  1) Don't return a dictionary. Only return 1 or 0.
-  2) Return 1 if the tool is relevant to the user query, else return 0.
+Below is the argument description:
+ARGUMENT_DESCRIPTION : {arg_description}
 
-Example:
-   QUERY : "Prioritize the $$PREV[0]"
-   ARGUMENT_NAME = "Prioritize"
-   ARGUMENT_DESCRIPTION = "the list of objects to be prioritized"
-   ARGUMENT_TYPE = "List"
-   Valid Argument = 1
+Below is the user query:
+QUERY : {query}
 
-Example:
-   QUERY_EXMAPLE = "List my p0 issues"
-   ARGUMENT_NAME = "created_by"
-   ARGUMENT_DESCRIPTION = "'name of person who created the issue'"
-   ARGUMENT_TYPE = "str"
-   Valid Argument = 0 
-
-Example:
-   QUERY_EXMAPLE = {query}
-   ARGUMENT_NAME = {arg_name}
-   ARGUMENT_DESCRIPTION = {arg_description}
-   ARGUMENT_TYPE = {arg_type}
-   Valid Argument =   
-
-'''
-#____________________________________________________________________________________________________________
-TOOL_RELEVENCY_TEMPLATE = '''
-You are good at deciding whether a tool is relevant to a user query or not.
-Below you are provided with the following information:
-
-Query --> 
-{query}
-
-Tool_name --> 
-{tool_name}
-
-Tool_description -->
-{tool_description}
-
-FORMAT INSTRUCTION --> 
-  1) Don't return a dictionary. Only return 1 or 0.
-  2) Return 1 if the tool is relevant to the user query, else return 0.
+FORMAT INSTRUCTIONS --->
+  0) If the argument value is not explicitly present in the query, then return 0.
+  1) Stick to information provided in the user query while filtering the argument.
+  2) Return 1 if the argument is relevant to the user query, else return 0.
+  3) Don't return anything else other than 1 or 0.
+  
+ANSWER :
 '''
 #____________________________________________________________________________________________________________
 VAR_ARGS_LOGIC_TOOL = '''
@@ -293,3 +254,7 @@ REASON :
 
 # You are also provided the dataypes of arguments present in the user query:
 # {function_signature}
+
+
+# ["red" , ""$$PREV[0]"]
+

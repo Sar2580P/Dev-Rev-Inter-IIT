@@ -9,8 +9,12 @@ from utils.get_args import fill_signature
 
 class CreateActionableTasksFromText(BaseTool):
     name = "create_actionable_tasks_from_text"
-    description = '''Given a text, extracts actionable insights, and creates tasks for them, which are kind of a work item. '''
+    description = '''
+
+    USAGE : 
+     - Given a text, extracts actionable insights, and creates tasks for them, which are kind of a work item. '''
     
+    bag_of_words = set(["create actionable tasks", "create tasks", "create insights", "plan tasks", "create tasks from text"])
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
@@ -22,17 +26,25 @@ class CreateActionableTasksFromText(BaseTool):
         arg_description = {
             'text': 'The text from which the actionable insights need to be created.',
         }
-        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []
-        # for key, value in column_args.items():
-        #     x = {
-        #         'argument_name': key,
-        #         'argument_value': value,
-        #     }
-        #     li.append(x)
-        li.append({'argument_name': 'text', 'argument_value': query})
+        for key, value in signature.items():
+            arg_dtype = {
+                'argument_name': key,
+                'argument_value': value,
+            }
+            arg_descr = {
+                'argument_name': key,
+                'argument_value': arg_description[key],
+            }
+            x = fill_signature(query = query, arg_name = key , arg_dtype = arg_dtype , arg_descr = arg_descr, tool_name = self.name)
+            if x is not None:
+                li.append({
+                    'argument_name': key,
+                    'argument_value': x,
+                })
+       
+        print('Extracted arguments are : ',li)
         return   li
-    
 
     async def _arun(
         self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None

@@ -23,7 +23,7 @@ def analyse(user_query):
     mistaken_tool_set = set()
     
     if isinstance(mistakes , str) or mistakes == []:
-        return 'No mistakes found'
+        return 'No mistakes found  relevant to this query'
     final_mistakes = [] 
     i=0
     for mistake in mistakes:

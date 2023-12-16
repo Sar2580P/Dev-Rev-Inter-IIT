@@ -9,9 +9,13 @@ from utils.get_args import fill_signature
 
 class GetSimilarWorkItems(BaseTool):
     name = "get_similar_work_items"
-    description = '''Use this tool when you want to get work_items similar to the current work_item.
-    This tool returns a list of similar work_items for the given work_id. 
+    description = '''
+    
+    USAGE :
+        - Use this tool when you want to get work_items similar to the current work_item.
+        - This tool returns a list of similar work_items for the given work_id. 
     '''
+    bag_of_words = set(["similar","similar items", "similar work_items", "similar work"])
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
@@ -23,14 +27,24 @@ class GetSimilarWorkItems(BaseTool):
         arg_description = {
             'work_id': 'The ID of the work item for which you want to find similar items',
         }
-        column_args = fill_signature(query,function_signatures= signature ,arg_description=arg_description, tool_name = self.name)
         li = []
-        for key, value in column_args.items():
-            x = {
+        for key, value in signature.items():
+            arg_dtype = {
                 'argument_name': key,
                 'argument_value': value,
             }
-            li.append(x)
+            arg_descr = {
+                'argument_name': key,
+                'argument_value': arg_description[key],
+            }
+            x = fill_signature(query = query, arg_name = key , arg_dtype = arg_dtype , arg_descr = arg_descr, tool_name = self.name)
+            if x is not None:
+                li.append({
+                    'argument_name': key,
+                    'argument_value': x,
+                })
+       
+        print('Extracted arguments are : ',li)
         return   li
     
 

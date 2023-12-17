@@ -41,7 +41,7 @@ class PersonalAgent(ZeroShotAgent):
         if user_query == '':
             mistakes = ''
         #________________________________________________________________________________
-        tools = get_relevant_tools(user_query)
+        # tools = get_relevant_tools(user_query)
 
         tool_strings = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
         tool_names = ", ".join([tool.name for tool in tools])

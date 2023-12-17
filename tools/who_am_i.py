@@ -14,7 +14,7 @@ class WhoAmI(BaseTool):
     - This tool will return the user_id which can be used by other tools.
     
     '''
-    bag_of_words = set(["my", "me", "mine", "i", "myself", "who am i", "whoami"])
+    bag_of_words = set(["my", "me", "mine", " i ", "myself", "who am i", "whoami"])
 
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None

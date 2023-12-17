@@ -44,7 +44,7 @@ def get_relevant_tools(query: str ) -> List[BaseTool]:
 
         tool_bag_of_words = tool.bag_of_words
         for word in tool_bag_of_words:
-            if word.strip() in query.lower().strip():
+            if word in query.lower().strip():
                 relevant_tools.append(tool)
                 break
 
@@ -52,6 +52,6 @@ def get_relevant_tools(query: str ) -> List[BaseTool]:
 
 
 
-# x = get_relevant_tools('Get all my work items with status as "In Progress" and add them to sprint')
+x = get_relevant_tools("Summarize all tickets needing a response in the 'support' rev organization.")
 
-# print(x)
+print(x)

@@ -17,14 +17,22 @@ from wandb.integration.langchain import WandbTracer
 
 
 
-agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
-agent_cls = AGENT_TO_CLASS[agent]
-agent_obj = agent_cls.from_llm_and_tools(
-            llm, task_tools,  
-        )
+# agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
+# agent_cls = AGENT_TO_CLASS[agent]
+# agent_obj = agent_cls.from_llm_and_tools(
+#             llm, task_tools,  
+#         )
 
 
-# critique = LLMChain(llm = llm , prompt=PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools']))
+response_schemas = [
+    ResponseSchema(name="answer", description="Return 1 if user query can be answered by the available tools, else 0."),
+    ResponseSchema(name="reason", description="Reason why available tools can/ cannot answer the user query based on tool descriptions.")
+]
+output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
+format_instructions = output_parser.get_format_instructions()
+
+critique = LLMChain(llm = llm , prompt=PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools'], 
+                                                      partial_variables={'format_instructions' : output_parser.get_format_instructions()}))
 
 class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
@@ -367,17 +375,17 @@ ground = '''
  } 
  ]
 '''
-from langchain.callbacks import get_openai_callback
+# from langchain.callbacks import get_openai_callback
 
 # "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-agent_executor.eval()
-agent_executor.get_tool_lists(ground)
-with get_openai_callback() as cb:
+# agent_executor.eval()
+# agent_executor.get_tool_lists(ground)
+# with get_openai_callback() as cb:
 
-    x = agent_executor({"input":'Prioritize my P0 issues and add them to the current sprint'})
-    print(x)
-    print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+#     x = agent_executor({"input":'Prioritize my P0 issues and add them to the current sprint'})
+#     print(x)
+#     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
 
-    print('\n\n\n\n\n' ,cb.total_cost)
+#     print('\n\n\n\n\n' ,cb.total_cost)
 
 

@@ -13,6 +13,7 @@ ALERT !!!
   - DO NOT PASS INVALID REPRESENTATION LIKE "$$PREV" OR "$$PREV[]"
   - Always use it as $$PREV[i] where i is the index of the output you want to use 
   
+
 Begin!
 
 Question: {input}
@@ -22,6 +23,10 @@ Thought:{agent_scratchpad}
 
 #____________________________________________________________________________________________________________
 FORMAT_INSTRUCTIONS = """
+ALERT !!!
+ - Don't use one tool as action input to another tool. 
+ - If you feel that a particular tool needs to be used before the specific tool, then use it first as seperate step.
+
 Use the following format:
 
 Question: the input question you must answer
@@ -227,9 +232,22 @@ CRITIQUE_TEMPLATE = '''
 Below you are provided the tools available in toolkit and their description :
 {tools}
 
-- You need to judge whether the query can be answered by the tools available in toolkit or not, ALONG WITH REASON.
-- Return 1 if the query can be answered by the tools available in toolkit, else return 0 , ALONG WITH REASON.
-- Nothing else should be returned.
+FORMAT INSTRUCTIONS :
+{format_instructions}
+
+Hint :
+  - Philosophical , emotional (joy, sadness, life related) questions cannot be answered with available tools
+
+QUERY : {query}
+'''
+
+# You are also provided the dataypes of arguments present in the user query:
+# {function_signature}
+
+
+# ["red" , ""$$PREV[0]"]
+
+'''
 
 QUERY_EXAMPLE : "What is the use of life?"
 ANSWER : 0
@@ -247,14 +265,6 @@ QUERY_EXAMPLE : "Create a excel file of work items in the current sprint"
 ANSWER : 0
 REASON : no tool is present to create excel file.
 
-QUERY : {query}
 ANSWER : 
 REASON :
 '''
-
-# You are also provided the dataypes of arguments present in the user query:
-# {function_signature}
-
-
-# ["red" , ""$$PREV[0]"]
-

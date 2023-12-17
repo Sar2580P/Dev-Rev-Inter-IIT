@@ -6,8 +6,9 @@ from memory.agent_memory import *
 from langchain.docstore.document import Document
 from langchain.callbacks import get_openai_callback
 import time 
+import json
 
-data  = pd.read_csv('data\multi_class2_full.csv').iloc[10:100 , ]
+data  = pd.read_csv('data\multi_class2_full.csv').iloc[:50, ]
 
 path = 'prediction_data/multi_class2_full.csv'
 if not os.path.exists(path):
@@ -29,7 +30,9 @@ for i in range(len(data)):
     start = time.time()
     x = agent_executor(inputs={"input": query})
     try: 
-      predict_json = agent_executor.return_schema
+      predict_json = json.dumps(agent_executor.return_schema)
+      print(type(predict_json))
+
       latency = time.time() - start 
       query_cost = cb.total_cost
       query_tokens = cb.total_tokens

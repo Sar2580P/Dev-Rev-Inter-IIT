@@ -6,6 +6,7 @@ from langchain.callbacks.manager import (
 )
 from utils.get_args import fill_signature, arg_filter
 from utils.llm_utility import llm
+from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 
 class WorkList(BaseTool):
     name = "works_list"
@@ -66,7 +67,7 @@ class WorkList(BaseTool):
                     'owned_by': List[str] ,
                     'ticket.needs_response': bool ,
                     'ticket.rev_org': List[str] ,
-                    'ticket.source_channel': List[str] ,
+                    'ticket.source_channel': str ,
                    }
         
         arg_description = {

@@ -6,3 +6,4 @@ database
 .vscode
 __pycache__
 backend_llm/__pycache__
+agent_executor/__pycache__

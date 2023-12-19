@@ -14,11 +14,14 @@ class AddWorkItemsToSprint(BaseTool):
     name = "add_work_items_to_sprint"
     description = '''
     USAGE :
-        - Adds the given work items to the sprint. 
-        - This tool needs to know the list of "work_id" and the "sprint_id" to which the work items should be added.
+        - Adds or assigns the given work items to the sprint. 
+        - Need to fill the following arguments available for tool usage -->
+                - "sprint_id" : the id of current sprint
+                - "work_ids" : list of work-items to add to sprint
+
     '''
 
-    bag_of_words = set(["add work items to sprint", "add work items", "add to sprint", " add"])
+    bag_of_words = set(["add work items to sprint", "add work items", "add to sprint", " add", "assign", "assigning"])
 
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None

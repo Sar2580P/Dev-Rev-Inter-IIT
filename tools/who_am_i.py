@@ -10,8 +10,9 @@ from utils.get_args import fill_signature
 class WhoAmI(BaseTool):
     name = "who_am_i"
     description = '''
-    - Use this tool only when specific keywords like "me", "I", "mine", etc. are present explicitly in the query.
-    - This tool will return the user_id which can be used by other tools.
+    - Use this tool when person uses personal pronouns like "my", "mine" ,"I" , "his" , "her", "him" in the query 
+    - This tool returns the user_id of the person being referred in query with personal pronoun.
+    - The user_id can then be used by other tools like works_list
     
     '''
     bag_of_words = set(["my", "me", "mine", " i ", "myself", "who am i", "whoami"])

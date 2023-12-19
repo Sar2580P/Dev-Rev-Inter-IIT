@@ -11,27 +11,21 @@ from tools.get_sprint_id import GetSprintId
 from tools.prioritize_objects import Prioritize
 from tools.search_object_by_name import SearchObjectByName
 from tools.who_am_i import WhoAmI
-import ast 
 from utils.llm_utility import llm
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
 from tools.logic_tool import LogicalTool
-from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 import icecream as ic
 
 task_tools = [
-  
     WhoAmI(),
     SearchObjectByName(),
     GetSprintId(),
+    AddWorkItemsToSprint(),
+    GetSimilarWorkItems(),
     WorkList() , 
     Summarize() ,
-    AddWorkItemsToSprint(),
     # LogicalTool(),
     CreateActionableTasksFromText(),
-    GetSimilarWorkItems(),
-    Prioritize(),
-    
+    Prioritize(), 
 ]
 
 def get_relevant_tools(query: str ) -> List[BaseTool]:
@@ -52,6 +46,6 @@ def get_relevant_tools(query: str ) -> List[BaseTool]:
 
 
 
-x = get_relevant_tools("Summarize all tickets needing a response in the 'support' rev organization.")
+# x = get_relevant_tools("Summarize all tickets needing a response in the 'support' rev organization.")
 
-print(x)
+# print(x)

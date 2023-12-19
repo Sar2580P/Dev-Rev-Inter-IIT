@@ -19,7 +19,7 @@ from chromadb.api.types import Documents, Embeddings
 # callbacks = [StdOutCallbackHandler(), wandb_callback]
 #_________________________________________________________________________________________
 
-llm = OpenAI(temperature=0.0 ,frequency_penalty = 0.1 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
+llm = OpenAI(temperature=0.00 ,frequency_penalty = 0.1 ,n = 5 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
 
 embedding_func = OpenAIEmbeddings()
 

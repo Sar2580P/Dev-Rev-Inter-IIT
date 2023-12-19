@@ -1,38 +1,25 @@
 from langchain.agents.agent import *
 import sys, os
 sys.path.append(os.getcwd())
-import ast
 from utils.llm_utility import *
 from agent.tool_collection import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
-import json
-from agent_executor.auxiliary_executor import *
-from agent.agent import PersonalAgent
+import json, copy
 from evaluator import *
 from memory.tool_memory import build_tool_experience
-import copy
-from utils.prompts import CRITIQUE_TEMPLATE
 from wandb.integration.langchain import WandbTracer
-
-
+from utils.llm_utility import llm
+from utils.chains import *
+from utils.parsers import critique_parser
+from agent.agent import agent_obj
+from langchain.output_parsers import OutputFixingParser
 
 # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 # agent_cls = AGENT_TO_CLASS[agent]
 # agent_obj = agent_cls.from_llm_and_tools(
 #             llm, task_tools,  
 #         )
-
-
-response_schemas = [
-    ResponseSchema(name="answer", description="Return 1 if user query can be answered by the available tools, else 0."),
-    ResponseSchema(name="reason", description="Reason why available tools can/ cannot answer the user query based on tool descriptions.")
-]
-output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
-format_instructions = output_parser.get_format_instructions()
-
-critique = LLMChain(llm = llm , prompt=PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools'], 
-                                                      partial_variables={'format_instructions' : output_parser.get_format_instructions()}))
 
 class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
@@ -42,7 +29,7 @@ class CustomAgentExecutor(AgentExecutor):
     true_tools : List[str] = None                 # added by me
     correct_trajectory : List[Dict] = []            # added by me
     ground_truth : List[Dict] = []
-    execution_chain : List[Dict] = []   # added by me
+    thought_execution_chain : List[Dict] = []   # added by me
     
     #_______________________________________________________________________________________________
     def eval(self):
@@ -64,15 +51,15 @@ class CustomAgentExecutor(AgentExecutor):
         
         """Run text through and get agent response."""
 
-        # is_query_valid = critique.run({'query' : inputs['input'] , 'tools' : "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])})
-        # print('Critique output: {s}\n'.format(s = is_query_valid))
-        # if '0' in is_query_valid:
-        #     print("hi")
-        #     return self._return(
-        #             output=AgentFinish(return_values = {'output':'dvdvsdd'} ,
-        #                                  log ='I now know the final answer.\nFinal Answer : sarvagya'),
-        #                                  intermediate_steps = [] , run_manager=run_manager
-        #     )
+        # Check if the query is valid
+        answerable_with_tools = self._check_if_answerable_with_tools(inputs['input'])
+        if not answerable_with_tools :
+            next_step_output = AgentFinish(return_values = {'output':'dvdvsdd'} ,
+                                         log ='I now know the final answer.\nFinal Answer : sarvagya'),
+            return self._return(
+                    next_step_output, [], run_manager=run_manager
+                )                             
+        
         
         # Construct a mapping of tool name to tool for easy lookup
         name_to_tool_map = {tool.name: tool for tool in self.tools}
@@ -98,7 +85,7 @@ class CustomAgentExecutor(AgentExecutor):
                 intermediate_steps = []   
                 self.correct_trajectory = []    
                 self.checkpoints = {}   
-                self.execution_chain = []    
+                self.thought_execution_chain = []    
 
             next_step_output = self._take_next_step(
                                                     name_to_tool_map,
@@ -135,6 +122,44 @@ class CustomAgentExecutor(AgentExecutor):
         )
         return self._return(output, intermediate_steps, run_manager=run_manager)
     #_______________________________________________________________________________________________
+    def _check_if_answerable_with_tools(self , query:str) -> bool:
+        is_query_valid = llm_critique.run({'query' : query , 'tools' : "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])})
+        print('CRITIQUE : ' , is_query_valid)
+
+        try : 
+            output = critique_parser.parse(is_query_valid)
+            if int(output['answer']) ==1 :
+                return True
+            return False
+
+        except OutputParserException as e:
+            print('CRTIQUE ERROR : failed to check query validity')
+            return True
+
+    #________________________________________________________________________________________________
+    def create_sub_task(self, input):
+        '''
+        On train mode, if agent executor picks wrong tool, we replace its choice with the correct one.
+        This function decides what should become the tool input for the correct tool provided to agent in case of wrong choice.
+        '''
+        # print(input)
+
+        answer = sub_task_chain.run({'query': input['query'] , "intermediate_steps" : input['intermediate_thoughts'] ,  
+                                     "tool_name" : input["correct_tool"] , "tool_description" : input["correct_tool_description"]})
+        # print('sub_task :' ,answer)
+        print("\033[91m {}\033[00m" .format('sub_task (auxiliary_executor)'))
+        
+        try :
+            new_subtask = sub_task_parser.parse(answer)
+            return new_subtask
+        except Exception as e :
+            new_parser = OutputFixingParser.from_llm(parser=sub_task_parser, llm=llm)
+
+            new_subtask = new_parser.parse(answer)
+            # new_subtask = {"tool_input" : '' , "reason" : 'Failed to create sub-task for correct picked tool ...'}
+            return new_subtask
+    #_________________________________________________________________________________________________
+
     def _return(
         self,
         output: AgentFinish,
@@ -172,12 +197,14 @@ class CustomAgentExecutor(AgentExecutor):
             )
             ic(inputs , intermediate_steps , output , self.train_mode)
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
-            if self.train_mode :   # added by me
-                if self.tool_count == len(self.true_tools):
-                    output = AgentFinish(return_values = {'output':'User query successfully answered'} ,
-                                         log ='I now know the final answer.\nFinal Answer : sarvagya')
-                if isinstance(output ,AgentAction):
 
+            if self.train_mode :   # added by me
+
+                if self.tool_count == len(self.true_tools):
+                    output = AgentFinish(return_values = {'output':'Agent trying to use more tools than in ground truth.\nHence, Aborting Agent Execution ...'} ,
+                                         log ='I now know the final answer.\nFinal Answer : sarvagya')
+                    
+                if isinstance(output ,AgentAction):
                 #==============================================================================================================
                     current_schema = copy.deepcopy(self.return_schema)
                     current_schema.append({                        
@@ -185,13 +212,7 @@ class CustomAgentExecutor(AgentExecutor):
                         'arguments': [],
                     })
                     
-                    # ic(self.ground_truth, current_schema[:-1], output.tool)
                     is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema[:-1], output.tool)  # added by me , evaluator
-
-                    # ic(is_right_decision, analogy, correct_arg)
-
-                    if(is_right_decision == True):
-                        analogy = ''
 
                 #==============================================================================================================
                     if not is_right_decision:
@@ -208,23 +229,35 @@ class CustomAgentExecutor(AgentExecutor):
                             'correct_tool' : self.true_tools[self.tool_count] ,
                             'correct_tool_description' : name_to_tool_map[self.true_tools[self.tool_count]].description ,
                             'query' : inputs['input'] ,
-                            'intermediate_steps' : intermediate_steps ,
+                            'intermediate_thoughts' : self.thought_execution_chain ,
                         }
+
                         print("\033[1;35;40m {} \033[0m".format('\ncalling auxiliary_executor ...\nCreating sub task for tool : {} '.format(self.true_tools[self.tool_count])))
-                        answer = sub_task(input)   
+                        answer = self.create_sub_task(input)   
                         tool_input, log = answer['tool_input'], answer['reason']                     
-              
+                        
+                        if tool_input == '':
+                            print('^^^^^^^^^^^^^^^^^^')
+                            return AgentFinish(
+                                return_values = {'output':'Stopping Further Agent Execution ...'} ,
+                                         log ='I now know the final answer.\nFinal Answer : sarvagya'
+                            )
+                        
+                        # updating the next tool, tool_input and log with that provided by auxiliary llm
                         output.tool = self.true_tools[self.tool_count]
                         output.tool_input = tool_input
-                        output.log = log+"\nAction: {tool}\nAction Input:{tool_input}".format(tool=output.tool, 
+                        # ic(output.tool , output.tool_input)
+                        output.log = log + "\n" + analogy +"\nAction: {tool}\nAction Input:{tool_input}".format(tool=output.tool, 
                                                                                               tool_input=output.tool_input)
                     
                     self.correct_trajectory.append({
                         'tool_name': output.tool,
                         'tool_input': output.tool_input,
-                        'log': analogy+". "+ output.log.split('\n')[0]
+                        'log': output.log.split('\n')[0]
                     })
-                
+                    print('#############################' , output.tool , output.tool_input)
+            self.thought_execution_chain.append(output.log)
+            
         except OutputParserException as e:
             if isinstance(self.handle_parsing_errors, bool):
                 raise_error = not self.handle_parsing_errors
@@ -324,15 +357,10 @@ class CustomAgentExecutor(AgentExecutor):
             result.append((agent_action, observation))
         return result
     
-    def reset_mistakes(self):
-        pass
     
-from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
 
 #____________________________________________________________________________________________________
-agent_obj = PersonalAgent.from_llm_and_tools(
-            llm = llm, tools = task_tools, output_parser=ReActSingleInputOutputParser()
-            )
+
 agent_executor = CustomAgentExecutor(
                                 agent=agent_obj ,
                                 tools=task_tools,
@@ -375,17 +403,16 @@ ground = '''
  } 
  ]
 '''
-# from langchain.callbacks import get_openai_callback
+from langchain.callbacks import get_openai_callback
 
-# "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-# agent_executor.eval()
-# agent_executor.get_tool_lists(ground)
-# with get_openai_callback() as cb:
+"For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
+agent_executor.train()
+agent_executor.get_tool_lists(ground)
+with get_openai_callback() as cb:
 
-#     x = agent_executor({"input":'Prioritize my P0 issues and add them to the current sprint'})
-#     print(x)
-#     print('\n\n\n\n\n\n\n\n' , agent_executor.return_schema)
+    x = agent_executor({"input":'Summarize high severity tickets from the customer UltimateCustomer'})
+    print(x)
+    print('\n\n\n\n' , agent_executor.return_schema)
 
-#     print('\n\n\n\n\n' ,cb.total_cost)
-
+    print('\n\n\n\n\n' ,cb.total_cost)
 

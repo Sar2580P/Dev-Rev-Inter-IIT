@@ -9,7 +9,7 @@ sys.path.append(os.getcwd())
 from utils.llm_utility import llm
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from utils.prompts import VAR_ARGS_LOGIC_TOOL, LOGICAL_TEMPLATE
+from utils.templates_prompts import VAR_ARGS_LOGIC_TOOL, LOGICAL_TEMPLATE
 import ast
 
 prompt = PromptTemplate(

@@ -5,7 +5,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from utils.llm_utility import llm
 from memory.tool_memory import retrieve_tool_experience
-from utils.prompts import TOOLS_PROMPT_EXAMPLES, ARG_FILTER_PROMPT
+from utils.templates_prompts import TOOLS_PROMPT_EXAMPLES, ARG_FILTER_PROMPT
 import re, ast
 from utils.tool_output_parser import parser
 from icecream import ic

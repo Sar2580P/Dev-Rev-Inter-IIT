@@ -11,23 +11,23 @@ from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 class WorkList(BaseTool):
     name = "works_list"
     description = '''
-    - This tool can handle all queries related to work items.
+    - This tool can search and return the relevant work-items on the basis of various search filters.
+    - Below are the arguments present which can be used to filter the work-items .
+    - Whenever the query contains below arguments as keywords, give this tool a try.
     
-    Some salient features of this tool are :
-\   - Can enquire about creators , owners of work items, issues, tickets, tasks, etc.
-    - Can serch for work items applied to a specific part.
-    - Can limit the number of work items to be returned.
-    - Can filter work items on the basis of issue 
-            - priority  : p0 , p1 , p2
-            - rev_orgs  : list of rev_orgs
-    - Can filter work items on the basis of ticket
-            - severity  : blocker , high , medium , low
-            - rev_org   : list of rev_orgs
-            - source_channel : list of source_channels
-            - needs_response : True , False
-    - Can filter work items on the basis of stage
-            - name : list of stage names
-    - Can filter work items on the basis of type : issues , ticket , task
+    Following are the possible arguments with their description that the tool can take -->
+        - 'applies_to_part': for accessing work items applicable to a particular part of the project.
+        - 'created_by': for accessing the work items created by a particular person.
+        - 'issue.priority': For accessing work_items with issues of a particular priority. Can be either of types --> "p0" , "p1" , "p2".
+        - 'issue.rev_orgs': For accessing the work-items with issues of provided rev_orgs.
+        - 'limit' : Limitig the maximum no. of work itmes to return back, DEFAULT : "all" 
+        - 'owned_by': Accessing the work items owned by a particular user id
+        - 'stage.name': Accessing work items belonging to a particular stage
+        - 'ticket.needs_response': Accessing work_items with tickets that needs response or not, must be either True or False,
+        - 'ticket.rev_org': Accessing work_items with ticket belonging to a particular rev_org
+        - 'ticket.severity': Accessing work items on the basis of ticket severity. MUST BE ONE OF --> 'blocker' , 'high' , 'medium' , 'low',
+        - 'ticket.source_channel': Accessing the work-items with tickets belonging to the provided source channel
+        - 'type': Accessing work-items on the basis of type, MUST BE one of --> 'issues', 'ticket' , 'task'
     '''
 
     def _run(
@@ -71,18 +71,18 @@ class WorkList(BaseTool):
                    }
         
         arg_description = {
-            'applies_to_part': "specific keywords should be present --> 'part to which issue applies' , 'applies' , 'part/s'",
-            'created_by': 'name of person who created the issue',
-            'issue.priority': '''can be either of types : "p0" , "p1" , "p2". Nothing else is allowed''',
-            'issue.rev_orgs': 'orgs that reviewed issue',
-            'limit' : 'maximum number of work-items to return. Specific keyword must be present --> "limit"' , 
-            'owned_by': 'name of person who owns the issue',
-            'stage.name': 'stage of issue',
-            'ticket.needs_response': 'Filters for tickets that need a response, either of types : "True" , "False"',
-            'ticket.rev_org': 'Filters for tickets associated with any of the provided Rev organizations ',
-            'ticket.severity': 'either of types : blocker , high , medium , low',
-            'ticket.source_channel': 'Filters for tickets with any of the provided source channels',
-            'type': 'either of types : issues , ticket , task'
+            'applies_to_part': 'for accessing work items applicable to a particular part of the project.',
+         'created_by': 'for accessing the work items created by a particular person.',
+         'issue.priority':' For accessing work_items with issues of a particular priority. Can be either of types --> "p0" , "p1" , "p2".' ,
+         'issue.rev_orgs': 'For accessing the work-items with issues of provided rev_orgs.',
+         'limit' : 'Limitig the maximum no. of work itmes to return back, DEFAULT : "all" ',
+         'owned_by': 'Accessing the work items owned by a particular user id',
+         'stage.name':' Accessing work items belonging to a particular stage',
+         'ticket.needs_response': 'Accessing work_items with tickets that needs response or not, must be either "True" or "False"',
+         'ticket.rev_org':' Accessing work_items with ticket belonging to a particular rev_org',
+         'ticket.severity': "Accessing work items on the basis of ticket severity. MUST BE ONE OF --> 'blocker' , 'high' , 'medium' , 'low'," ,
+         'ticket.source_channel':' Accessing the work-items with tickets belonging to the provided source channel',
+         'type': "Accessing work-items on the basis of type, MUST BE one of --> 'issues', 'ticket' , 'task'"
         }
 
         filtered_signature = {}

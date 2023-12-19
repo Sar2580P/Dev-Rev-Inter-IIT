@@ -2,13 +2,12 @@ import pandas as pd
 import sys, os
 sys.path.append(os.getcwd())
 from agent_executor.agent_executer import agent_executor
-from memory.agent_memory import *
 from langchain.docstore.document import Document
 from langchain.callbacks import get_openai_callback
 import time 
 import json
 
-data  = pd.read_csv('data\multi_class2_full.csv').iloc[:50, ]
+data  = pd.read_csv('data\multi_class2_full.csv').iloc[30:50, ]
 
 path = 'prediction_data/multi_class2_full.csv'
 if not os.path.exists(path):

@@ -3,10 +3,11 @@ from utils.llm_utility import llm
 from langchain.chains import LLMChain
 from typing import List, Union
 from langchain.docstore.document import Document
-from memory.agent_memory import mistake_memory
 import ast
-from utils.prompts import MISTAKE_SELECTION
-
+import sys, os
+sys.path.append(os.getcwd())
+from utils.templates_prompts import MISTAKE_SELECTION
+from memory.memory import mistake_memory
 
 prompt = PromptTemplate(template=MISTAKE_SELECTION, input_variables=["input", "mistake"])
 chain = LLMChain(llm=llm, prompt=prompt)

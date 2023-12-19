@@ -1,16 +1,18 @@
 from typing import List, Optional, Sequence, Any
 from langchain.callbacks.base import BaseCallbackManager
 from langchain.schema.language_model import BaseLanguageModel
-from langchain.agents.mrkl.prompt import PREFIX, SUFFIX
+from langchain.agents.mrkl.prompt import SUFFIX
 from langchain.prompts import PromptTemplate
 from langchain.tools.base import BaseTool
 from agent.tool_collection import *
-from utils.llm_utility import llm 
 from langchain.agents.mrkl.base import ZeroShotAgent
 from agent.mistakes_selection import *
 from langchain.agents.agent import Agent, AgentOutputParser
-from utils.prompts import PAST_MISTAKES , FORMAT_INSTRUCTIONS
+from utils.templates_prompts import PAST_MISTAKES ,PREFIX, FORMAT_INSTRUCTIONS
 from agent.tool_collection import get_relevant_tools
+
+from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
+
 
 class PersonalAgent(ZeroShotAgent):
     
@@ -29,7 +31,7 @@ class PersonalAgent(ZeroShotAgent):
         print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
         
         past_mistakes = analyse(user_query)
-
+        
         formatted_mistakes = ''
         if past_mistakes == 'No mistakes found  relevant to this query' or past_mistakes == []:
             formatted_mistakes = 'No mistakes found  relevant to this query'
@@ -41,7 +43,7 @@ class PersonalAgent(ZeroShotAgent):
         if user_query == '':
             mistakes = ''
         #________________________________________________________________________________
-        # tools = get_relevant_tools(user_query)
+        tools = get_relevant_tools(user_query)
 
         tool_strings = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
         tool_names = ", ".join([tool.name for tool in tools])
@@ -50,7 +52,7 @@ class PersonalAgent(ZeroShotAgent):
 
 
 
-        template = "\n\n".join([prefix, tool_strings, format_instructions, "", suffix])
+        template = "\n\n".join([prefix, tool_strings, format_instructions, mistakes,  suffix])
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         
@@ -97,6 +99,8 @@ class PersonalAgent(ZeroShotAgent):
             output_parser=_output_parser,
             **kwargs,
         )
-    
-    
 
+#________________________________________________________________________________________________________________________________   
+agent_obj = PersonalAgent.from_llm_and_tools(
+            llm = llm, tools = task_tools, output_parser=ReActSingleInputOutputParser()
+            )

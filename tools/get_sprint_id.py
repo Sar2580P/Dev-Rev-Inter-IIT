@@ -11,7 +11,8 @@ class GetSprintId(BaseTool):
     name = "get_sprint_id"
     description = '''
     USAGE :
-    - It will fetch you the ID of the current sprint.
+    - This tool is used when we want to know the id of current sprint.
+    - Think of using it when user query contains keywords like "sprint"
             '''
     bag_of_words = set(["current sprint", "current sprint id", "sprint", "sprint id"])
     

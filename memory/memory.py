@@ -1,5 +1,7 @@
 from queue import Queue
 from langchain.docstore.document import Document
+from langchain.vectorstores.chroma import Chroma
+from utils.llm_utility import * 
 
 class Memory():
     def __init__(self,vector_db, k=5) -> None:
@@ -30,3 +32,9 @@ class Memory():
         '''
 
         self.queue = Queue(maxsize=10)
+
+
+V_db = Chroma(embedding_function = embedding_func, persist_directory= 'database/agent_mistakes_db' , 
+                                relevance_score_fn='similarity_search_with_score')
+
+mistake_memory:Memory = Memory(k=5,vector_db=V_db)

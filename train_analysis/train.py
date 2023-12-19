@@ -2,18 +2,31 @@ import pandas as pd
 import sys, os
 sys.path.append(os.getcwd())
 from agent_executor.agent_executer import agent_executor
-from memory.agent_memory import *
 from langchain.docstore.document import Document
 from icecream import ic
 from langchain.callbacks import get_openai_callback
+from utils.chains import *
+from memory.memory import mistake_memory
+
 
 data  = pd.read_csv('data\multi_class2_full.csv' ).iloc[16:40 , :]
 # print(data.shape)
 
+#___________________________________________________________________________________________
 
 agent_executor.train()
 
+def build_experience(x):
+    thoughts_action = '\n'.join(x['intermediate_thoughts'])
+    y = create_tool_experience_chain.run({"query": x['query'] , "agent_scratchpad" : thoughts_action , 
+                "tool_name": x['correct_tool'] ,"tool_description": x['correct_tool_description'], 
+                })
+
+    return y.strip('\n').strip()
+
+#___________________________________________________________________________________________
 ct = 0
+
 for i in range(len(data)):
   print("\033[1;32m {}\033[00m" .format('QUERY COUNT : {i}'.format(i=i)))
   query, ground_json = data.iloc[i , 0] , data.iloc[i , 1]
@@ -24,7 +37,7 @@ for i in range(len(data)):
   
   with get_openai_callback() as cb:
     x = agent_executor(inputs={"input": query})
-    correct_trajectory , checkpoints = agent_executor.correct_trajectory , agent_executor.checkpoints
+    thought_execution_chain , checkpoints = agent_executor.thought_execution_chain , agent_executor.checkpoints
 
     for tool_index, value in checkpoints.items():
       x = {
@@ -33,7 +46,7 @@ for i in range(len(data)):
         "wrong_tool" : value['wrong_tool'] ,
         "wrong_tool_description" : value['wrong_tool_description'] ,
         "correct_tool_description" :value['correct_tool_description'] , 
-        "correct_trajectory" : correct_trajectory[:tool_index]
+        "intermediate_thoughts" : thought_execution_chain[:tool_index]
       }
 
       human_eval = 'n'
@@ -43,7 +56,7 @@ for i in range(len(data)):
       else :
         experience = input("This has been the mistake summary : \n\t{x}. \nPlease write the correct reasoning :".format(x=x))
       
-      learning  = '- PAST_QUERY : {a}\n- PAST_MISTAKE : {b}\n'.format(a = x['query'] , b = experience)
+      learning  = '- MISTAKE_HIGHLIGHT : {b}\n'.format(b = experience)
       metadata = {
         # 'query': x['query'],
         'correct_tool': x['correct_tool'],
@@ -59,9 +72,11 @@ for i in range(len(data)):
   if user_decision.lower() == 'y':
     ct+= mistake_memory.queue.qsize()
     mistake_memory.push()
+
   else:
     mistake_memory.clear()
     print("\033[91m {}\033[00m" .format('skipping experience saving...'))
+
   print("\033[91m {}\033[00m" .format('---------------- QUERY_COST : $ {cost}---------------- MISTAKES LEARNED : {ct}-------------------- QUERY TOKENS : {tokens}-----------------'.format(cost = round(cb.total_cost, 5) , 
                                                                                                                                                                                             ct = ct, tokens = cb.total_tokens)))
   

@@ -9,7 +9,7 @@ from utils.chains import *
 from memory.memory import mistake_memory
 
 
-data  = pd.read_csv('data\multi_class2_full.csv' ).iloc[16:40 , :]
+data  = pd.read_csv('data\multi_class2_full.csv' ).iloc[:1 , :]
 # print(data.shape)
 
 #___________________________________________________________________________________________

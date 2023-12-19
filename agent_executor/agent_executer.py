@@ -403,16 +403,16 @@ ground = '''
  } 
  ]
 '''
-from langchain.callbacks import get_openai_callback
+# from langchain.callbacks import get_openai_callback
 
-"For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
-agent_executor.train()
-agent_executor.get_tool_lists(ground)
-with get_openai_callback() as cb:
+# "For customer 'CustomerA', summarize all high-severity issues and check if similar issues exist in other parts."
+# agent_executor.train()
+# agent_executor.get_tool_lists(ground)
+# with get_openai_callback() as cb:
 
-    x = agent_executor({"input":'Summarize high severity tickets from the customer UltimateCustomer'})
-    print(x)
-    print('\n\n\n\n' , agent_executor.return_schema)
+#     x = agent_executor({"input":'Summarize high severity tickets from the customer UltimateCustomer'})
+#     print(x)
+#     print('\n\n\n\n' , agent_executor.return_schema)
 
-    print('\n\n\n\n\n' ,cb.total_cost)
+#     print('\n\n\n\n\n' ,cb.total_cost)
 

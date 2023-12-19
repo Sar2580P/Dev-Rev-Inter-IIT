@@ -38,7 +38,8 @@ arg_filter = LLMChain(llm = llm, prompt = arg_filter_prompt , verbose=False)
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
 def fill_signature(query:str, arg_name:str , arg_dtype: dict , arg_descr :dict, tool_name:str)->Dict[str,Any] :
-
+    if len(query.strip().split(''))==1 :
+        return query
     extracted_args = signature_chain.run({'arg_description':arg_descr,'arg_dtype':arg_dtype, 'user_query':query})
     return extracted_args.strip('\n').strip(' ')
     

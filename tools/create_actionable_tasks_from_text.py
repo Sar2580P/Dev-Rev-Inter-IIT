@@ -14,7 +14,7 @@ class CreateActionableTasksFromText(BaseTool):
     USAGE : 
      - Given a text, extracts actionable insights, and creates tasks for them, which are kind of a work item. '''
     
-    bag_of_words = set(["create actionable tasks", "create tasks", "create insights", "plan tasks", "create tasks from text"])
+    bag_of_words = set(["create actionable tasks", "create tasks", "create insights", "plan tasks", "create tasks from text", "create"])
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:

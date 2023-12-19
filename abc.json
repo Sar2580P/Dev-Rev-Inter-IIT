@@ -1,28 +1,17 @@
 {
     "thought": [
-        "The reason for picking the tool is to get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them.\n\nAction: get_similar_work_items\n\nAction Input: work_id = \"TKT-123\"\n",
-        "Action: summarize_objects\n\nAction Input: $$PREV[0]\n",
-        "Action: works_list\n\nAction Input: 'type': 'issues', 'ticket.rev_org': 'ABC Corp'\n",
-        "Action: summarize_objects\n\nAction Input: $$PREV[2]\n",
-        "Action: prioritize_objects\n\nAction Input: $$PREV[3]\n",
-        "Final Answer: The final answer is to prioritize the issues that are similar to TKT-123 and belong to the rev_org \"ABC Corp\"."
+        " I need to find high severity tickets from customer abc123 and generate a summary. The search_object_by_name tool is crucial for this task as it can accurately find the most confident match for the customer name and return the ticket id.\nAction: search_object_by_name\nAction Input: customer name = \"abc123\"",
+        " Now that I have the ticket id, I can use the works_list tool to filter the work items based on ticket severity and source channel.\nAction: works_list\nAction Input: 'ticket.severity' = 'high', 'ticket.source_channel' = 'slack'",
+        " I now have a list of high severity tickets coming in from slack from customer abc123. To generate a summary, I can use the summarize_objects tool.\nAction: summarize_objects\nAction Input: list of ticket ids from $$PREV[1]",
+        " I now have a summary of the high severity tickets coming in from slack from customer abc123.\nFinal Answer: $$PREV[2]"
     ],
     "output": [
         {
-            "tool_name": "get_similar_work_items",
+            "tool_name": "search_object_by_name",
             "arguments": [
                 {
-                    "argument_name": "work_id",
-                    "argument_value": "TKT-123"
-                }
-            ]
-        },
-        {
-            "tool_name": "summarize_objects",
-            "arguments": [
-                {
-                    "argument_name": "objects",
-                    "argument_value": "$$PREV[0]"
+                    "argument_name": "query",
+                    "argument_value": "abc123"
                 }
             ]
         },
@@ -31,15 +20,15 @@
             "arguments": [
                 {
                     "argument_name": "type",
-                    "argument_value": "'issues'"
+                    "argument_value": "['ticket']"
                 },
                 {
-                    "argument_name": "ticket.rev_org",
-                    "argument_value": "ABC Corp"
+                    "argument_name": "ticket.severity",
+                    "argument_value": "'high'"
                 },
                 {
-                    "argument_name": "issue.rev_orgs",
-                    "argument_value": "['ABC Corp']"
+                    "argument_name": "ticket.source_channel",
+                    "argument_value": "'slack'"
                 }
             ]
         },
@@ -48,16 +37,7 @@
             "arguments": [
                 {
                     "argument_name": "objects",
-                    "argument_value": "$$PREV[2]"
-                }
-            ]
-        },
-        {
-            "tool_name": "prioritize_objects",
-            "arguments": [
-                {
-                    "argument_name": "objects",
-                    "argument_value": "$$PREV[3]"
+                    "argument_value": "$$PREV[1]"
                 }
             ]
         }

@@ -35,7 +35,10 @@ def get_relevant_tools(query: str ) -> List[BaseTool]:
         if tool.name == 'works_list':
             relevant_tools.append(tool)
             continue
-
+        # if tool.name == 'search_object_by_name':
+        #     relevant_tools.append(tool)
+        #     continue
+        
         tool_bag_of_words = tool.bag_of_words
         for word in tool_bag_of_words:
             if word in query.lower().strip():

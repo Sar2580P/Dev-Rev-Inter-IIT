@@ -9,6 +9,7 @@ Before proceeding further, below I have mentioned common mistakes made by you wh
 {mistakes}
 
 !! PLEASE GO THROUGH THEM CAREFULLY AND AVOID MAKING SIMILAR MISTAKES.
+
 '''
 PREFIX = """
 Below are the tools in your tool-kit along with their description to help you decide on tool choice.
@@ -44,18 +45,30 @@ Final Answer:
 # ===================================================================================================================================================================================================
 # ===================================================================================================================================================================================================
 
-MISTAKE_SELECTION =  '''
+# MISTAKE_SELECTION =  '''
 
-Below you are provided with one of the past mistakes made by another AI agent on some other user query :
+# Below you are provided with one of the past mistakes made by another AI agent on some other user query :
+# {mistake}
+
+# Below you are provided with the current user query :
+# CURRENT_USER_QUERY : {input}
+
+# Check diligently if the current user query is similar to the past query, in terms of the vulnerability of the AI agent to make the same mistake.
+# If there are some chances of making the same or similar mistake on the current user query, return 1 else return 0.
+
+# ANSWER : 
+# '''
+
+MISTAKE_SELECTION =  '''
+Below you are provided with the current user query :
+
+- Do not to do the same mistake again and use the following context to choose a tool!!
+
+CURRENT_USER_QUERY : {input}
+Below you are provided with one of the past mistakes made on other user query :
 {mistake}
 
-Below you are provided with the current user query :
-CURRENT_USER_QUERY : {input}
-
-Check diligently if the current user query is similar to the past query, in terms of the vulnerability of the AI agent to make the same mistake.
-If there are some chances of making the same or similar mistake on the current user query, return 1 else return 0.
-
-ANSWER : 
+- ANSWER : 
 '''
 
 # ===================================================================================================================================================================================================
@@ -152,21 +165,19 @@ You are also provided with the sequence of thoughts and actions taken by the age
 AGENT_SCRATCHPAD :
 {agent_scratchpad}
 
-TOOL_NAME : {tool_name}
-
+CORRECT_TOOL_NAME : {correct_tool_name}
 TOOL_DESCRIPTION : {tool_description}
 
 USER_QUERY : {query}
 
-
 - You need to provide an eye-catchy insight of why that tool should not be missed for the given query based on the user query and tool description. 
-- You insight will help the agent to learn from its mistakes. Don't be super-specific to user query, be generic and provide a general insight.
-- Keep your insight within 20 words and at least 7 words. Present answer in a paragraph.
+- You insight will help the agent to learn from its mistakes. Don't be super-specific to user query, keep the tool description in consideration. 
+- Keep your insight within 20 words and at least 9 words. Present answer in a paragraph.
 
 ANSWER : 
 '''
 
-missed_tool_prompt = PromptTemplate(template=MISSED_TOOL_TEMPLATE, input_variables=['agent_scratchpad','query' ,'tool_name' , 'tool_description'])
+missed_tool_prompt = PromptTemplate(template=MISSED_TOOL_TEMPLATE, input_variables=['agent_scratchpad','query' ,'correct_tool_name' , 'tool_description'])
 
 # ===================================================================================================================================================================================================
 # ===================================================================================================================================================================================================

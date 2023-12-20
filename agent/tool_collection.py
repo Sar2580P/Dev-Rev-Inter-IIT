@@ -23,7 +23,7 @@ task_tools = [
     GetSimilarWorkItems(),
     WorkList() , 
     Summarize() ,
-    # LogicalTool(),
+    LogicalTool(),
     CreateActionableTasksFromText(),
     Prioritize(), 
 ]
@@ -32,7 +32,7 @@ def get_relevant_tools(query: str ) -> List[BaseTool]:
     """Returns the list of relevant tools for the query."""
     relevant_tools = []
     for tool in task_tools:
-        if tool.name == 'works_list':
+        if not hasattr(tool, "bag_of_words"):
             relevant_tools.append(tool)
             continue
         # if tool.name == 'search_object_by_name':

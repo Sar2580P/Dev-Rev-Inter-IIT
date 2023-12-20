@@ -31,7 +31,7 @@ class PersonalAgent(ZeroShotAgent):
         format_instructions: str = FORMAT_INSTRUCTIONS,
         input_variables: Optional[List[str]] = None,
     ) -> PromptTemplate:
-        print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
+        # print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
         
 
         if tool_task == '':
@@ -60,12 +60,12 @@ class PersonalAgent(ZeroShotAgent):
 
 
         template = "\n\n".join([prefix, tool_strings,mistakes, format_instructions,  suffix])
-        ic(template)
+        # ic(template)
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         
         prompt =  PromptTemplate(template=template, input_variables=input_variables)
-        print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
+        # print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
         return prompt
     #________________________________________________________________________________________________________________________________
     @classmethod

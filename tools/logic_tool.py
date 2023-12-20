@@ -23,7 +23,7 @@ generate_code = LLMChain(llm = llm , prompt=generate_code_prompt)
 class LogicalTool(BaseTool):
     name = "logic_tool"
     description = '''
-    Prioritize the use of this tool over the llm reasoning capabilities to answer logical queries. 
+    THIS TOOL REQUIRES OUTPUTS OF OTHER TOOLS, I.E. IT MUST BE USED ONLY AFTER OTHER TOOLS HAVE BEEN CALLED!!!! 
     This tool is specialised to perform logical operations on its inputs like:
     conditional statements, while loops, addition, subtraction, iterate over lists etc.    
     '''
@@ -46,21 +46,3 @@ class LogicalTool(BaseTool):
     ) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("custom_search does not support async")
-
-
-# def fff(query):
-    
-    
-#     print('\ninside logic_tool tool...')
-#     argument_types = extract_var_args.run(query)
-#     print("\033[96m {}\033[00m" .format("Logic Argument Type: \n{i}".format(i=argument_types)))
-#     code = generate_code.run({'query' : query , 'language' : 'java'})
-#     print("\033[97m {}\033[00m" .format('Generated Code : \n{i}'.format(i=code)))
-#     li = []
-#     li.append({
-#         'code' : code,
-#     })
-#     return   li
-
-
-# fff('sum all items in $$PREV[7] ')

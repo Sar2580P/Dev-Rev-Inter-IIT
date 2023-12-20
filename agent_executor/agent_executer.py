@@ -211,13 +211,13 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            ic(inputs , intermediate_steps , output , self.train_mode)
+            # ic(inputs , intermediate_steps , output , self.train_mode)
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
 
 
             ## Added:
-            ic(self.tool_gate)
-            ic(self.agent.llm_chain.prompt)
+            # ic(self.tool_gate)
+            # ic(self.agent.llm_chain.prompt)
 
             if not self.train_mode and not isinstance(output,AgentFinish):
                 self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
@@ -248,7 +248,7 @@ class CustomAgentExecutor(AgentExecutor):
                     except:
                         is_right_decision, analogy = self.true_tools[self.tool_count] == output.tool, " "  # added by me , evaluator
 
-                    ic(is_right_decision)
+                    # ic(is_right_decision)
                 #==============================================================================================================
                     if not is_right_decision:
                         print("\033[1;35;40m {} \033[0m" .format('agent planned wrongly, picked tool : {} ...'.format(output.tool)))
@@ -260,7 +260,7 @@ class CustomAgentExecutor(AgentExecutor):
                                     'thought': output.log.split('\n')[0]
                             }
                         print("======================================================================")
-                        ic(output.tool,self.true_tools[self.tool_count])
+                        # ic(output.tool,self.true_tools[self.tool_count])
                         self.checkpoints[self.tool_count] = curr_step
                         
                         input = {
@@ -278,7 +278,7 @@ class CustomAgentExecutor(AgentExecutor):
                             print('^^^^^^^^^^^^^^^^^^')
                             return AgentFinish(
                                 return_values = {'output':'Stopping Further Agent Execution ...'} ,
-                                         log ='I now know the final answer.\nFinal Answer : sarvagya'
+                                         log ='I now know the final answer.\nFinal Answer : None'
                             )
                         
                         # updating the next tool, tool_input and log with that provided by auxiliary llm

@@ -29,7 +29,7 @@ Thought : The reason of picking the tool in process of answering user query.
 
 Action : the Tool to take , should be one of [{tool_names}]
 
-Action Input: the input to the tool
+Action Input: Your selected tool will need get its arguments filled by another agent. This agent does not have access to the query or the current output chain. PRECISELY TELL THIS AGENT HOW YOU WANT IT TO FILL THE ARGUMENTS, in natural language
 
 Observation : the result of the Tool
 ... (this Thought/Action/Action Input/Observation can repeat N times)
@@ -188,17 +188,16 @@ TOOLS_PROMPT_EXAMPLES = '''
 
 Your task is to extract the argument value from user query based on argument description and argument type.
 
-Below you are provided the data-type of how the argument expects the value to be :
-{arg_dtype}
+The datatype is {arg_dtype}
 
-Below is the meaning of argument to help you assist in extracting the argument value from the query:
+The argument description is:
 {arg_description}
 
 The above mentioned arguments have their values present in the query. You need to extract the argument value from the query.
 Don't pollute the information, stick to information provided in the user query.
 
-You are provided with a user query below :
-QUERY : {user_query}
+Your query is:
+{user_query}
 
 FORMAT INSTRUCTIONS --->
   - Don't return anything else other than the argument value.
@@ -257,27 +256,37 @@ Below I provide a sample dictionary of arguments as keys and their data types as
 #____________________________________________________________________________________________________________
 
 LOGICAL_TEMPLATE = '''
-
-You will be provided with the following user query:
-{query}
-
-You need to return a code block executing the above user query in the given programming language.
-Create a function with the name "sum" with proper variables and call that function with the above provided arguments.
-
+You need to return a code block executing the above user query in the python.
 
 Below I provide an example code block in python so that you know the desired output format:
+Example 1:
 ```
-def sum(arg1 , arg2 , arg3):
-    return arg1+arg2+arg3
-    
-sum($$PREV[0] , $$PREV[6] , 123)
+### Query: Calculate the difference in count between P1 and P2 issues
+
+def count_difference(p1_issues, p2_issues):
+    return len(p1_issues) - len(p2_issues)
+count_difference("$$PREV[0]", "$$PREV[1]")
 ```
-you may devise any function of your own using a combination of sum, variables, loops, if-else statements etc.
+
+Example 2:
+```
+### Query: Extract the first five tasks from the list of all tasks.
+
+def first_five_tasks(tasks):
+    return tasks[:5]
+
+first_five_tasks("$$PREV[0]")
+```
+(note that there were other tool calls before this as well that were ommitted)
+
+You may devise any function of your own using a combination of sum, variables, loops, if-else statements etc.
 
 - Make sure that the code is in correct syntax before returning.
 - Don't return anything else other than the code block. 
 - Simply return the code block, nothing else to be returned
 
+You have the following user query:
+{query}
 '''
 # ===================================================================================================================================================================================================
 # ===================================================================================================================================================================================================

@@ -74,7 +74,7 @@ class WorkList(BaseTool):
                    }
         
         arg_description = {
-            'applies_to_part': 'for accessing work items applicable to a particular part of the project.',
+         'applies_to_part': 'for accessing work items applicable to a particular part of the project.',
          'created_by': 'for accessing the work items created by a particular person.',
          'issue.priority':' For accessing work_items with issues of a particular priority. Can be either of types --> "p0" , "p1" , "p2".' ,
          'issue.rev_orgs': 'For accessing the work-items with issues of provided rev_orgs.',

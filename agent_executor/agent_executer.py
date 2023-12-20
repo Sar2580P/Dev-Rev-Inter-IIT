@@ -293,7 +293,7 @@ class CustomAgentExecutor(AgentExecutor):
                         'tool_input': output.tool_input,
                         'log': output.log.split('\n')[0]
                     })
-                    print('#############################' , output.tool , output.tool_input)
+    
             self.thought_execution_chain.append(output.log)
             
         except OutputParserException as e:

@@ -4,11 +4,13 @@ from utils.parsers import *
 
 PAST_MISTAKES ='''
 
-Before proceeding further, below I have mentioned common mistakes made by you while using the tools.
+Below I have mentioned common mistakes made by you while using the tools.
 
 {mistakes}
 
 !! PLEASE GO THROUGH THEM CAREFULLY AND AVOID MAKING SIMILAR MISTAKES.
+Note that the context of above mistakes are different AND INDEPENDENT FROM CURRENT USER QUERY.
+DO  NOT TAKE CONTEXT FROM ABOVE QUERIES.
 
 '''
 PREFIX = """
@@ -32,7 +34,7 @@ Action : the Tool to take , should be one of [{tool_names}]
 Action Input: Your selected tool will need get its arguments filled by another agent. This agent does not have access to the query or the current output chain. PRECISELY TELL THIS AGENT HOW YOU WANT IT TO FILL THE ARGUMENTS, in natural language
 
 Observation : the result of the Tool
-... (this Thought/Action/Action Input/Observation can repeat N times)
+... (this Thought/Action/Action Input/Observation must ONLY OCCUR ONCE)
 
 
 Thought : I now know the final answer
@@ -60,15 +62,22 @@ Final Answer:
 # '''
 
 MISTAKE_SELECTION =  '''
-Below you are provided with the current user query :
+As a person learns to perform a task correctly by acknowledging his mistakes, similarly an AI agent can also learn to perform a task correctly by acknowledging its mistakes.
 
-- Do not to do the same mistake again and use the following context to choose a tool!!
+Below is the user query AI agent is trying to solve:
+USER_QUERY : {input}
 
-CURRENT_USER_QUERY : {input}
-Below you are provided with one of the past mistakes made on other user query :
-{mistake}
+Below is one of the past mistake made by AI agent on some other user query:
+MISTAKE : {mistake}
 
-- ANSWER : 
+- You need to check if the above mistake is relevant to the current user query or not. 
+- Whether the AI agent should use this mistake as experience while solving the current user query or not.
+
+FORMAT_INSTRUCTIONS :
+- Return 1 if the above mistake is relevant to the current user query, else return 0.
+- Stick to the above information provided, decide importance of mistake judiciously, don't pollute the information.
+
+ANSWER :
 '''
 
 # ===================================================================================================================================================================================================
@@ -215,24 +224,20 @@ ANSWER :
 #____________________________________________________________________________________________________________
 
 ARG_FILTER_PROMPT = '''
-You need to work as a filter to filter out the arguments which are not relevant to the user query.
+I want to use a tool which has a lots of arguments. I want to filter out only those arguments which can surely be extracted from the user query.
 
-Below is the argument name:
-ARGUMENT_NAME : {arg_name}
+Below I provide the arguments that the tool can take along with their description:
+{arg_description}
 
-Below is the argument description:
-ARGUMENT_DESCRIPTION : {arg_description}
+{format_instructions}
 
-Below is the user query:
+Below I provide the query, which needs to be referenced whiele deciding which arguments to filter out:
 QUERY : {query}
 
-FORMAT INSTRUCTIONS --->
-  - Return 1 if argument name mentioned above can be filled with a value extracted from user query, else return 0.
-  - Stick to the information provided in user-query and argument description.
-  - DO NOT pollute the information or your decision with any assumptions.
-  
-  
-ANSWER :
+ALERT !!!
+- If the Query contains specific keywords like $$PREV[i], then take it as a whole.
+- Stick to information provided in the user query and description of arguments.
+- Don't pollute the argument filtering with any assumptions.
 '''
 #____________________________________________________________________________________________________________
 VAR_ARGS_LOGIC_TOOL = '''

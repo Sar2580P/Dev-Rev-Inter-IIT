@@ -19,30 +19,16 @@ import json
 cot = 0
 
 def predict_function(query):
+  agent_executor.eval()
+  print('response_schema : ' , agent_executor.return_schema)
+  x = agent_executor(inputs={"input": query})
+  predict_json = agent_executor.return_schema
+  # json.dump(predict_json, open('predict.json', 'w'))
+  thought_action_observations = agent_executor.thought_execution_chain
 
-    agent_executor.eval()
-    print('response_schema : ' , agent_executor.return_schema)
-
-    start_time = time.time()
-    with get_openai_callback() as cb:
-        x = agent_executor(inputs={"input": query})
-    end_time = time.time()
-
-    elapsed_time = end_time - start_time
-
-    predict_json = agent_executor.return_schema
-    # json.dump(predict_json, open('predict.json', 'w'))
-    web_sc={
-          'thought':agent_executor.thought_execution_chain[-1].split('\n')[0] + f"\n Total cost: ${round(cb.total_cost,5)} , time-taken: {round(elapsed_time*1000,4)}ms",
-          'tool':predict_json
-    }
-    agent_executor.web_schema.append(web_sc)
-    #a =  {'thought': thought_action_observations ,'output': predict_json , }
-    a=agent_executor.web_schema
-    global cot 
-    json.dump(a, open(f"abc{cot}.json", 'w'), indent = 4)
-    cot = cot + 1
-    return a
+  a =  {'thought': thought_action_observations ,'output': predict_json , }
+  json.dump(a, open('abc.json', 'w'), indent = 4)
+  return a
 
 # if __name__ == '__main__':
 #   app.run()

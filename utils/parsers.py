@@ -14,3 +14,8 @@ sub_task_response_schemas = [
 ]
 sub_task_parser = StructuredOutputParser.from_response_schemas(sub_task_response_schemas)
 
+#_______________________________________________________________________________________________________________________________________________________________
+arg_filter_response_schemas = [
+    ResponseSchema(name="Arguments", description="The list of filtered arguments whose value is available in the user query"),
+]
+arg_filter_parser = StructuredOutputParser.from_response_schemas(arg_filter_response_schemas)

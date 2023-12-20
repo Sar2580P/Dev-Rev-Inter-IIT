@@ -9,9 +9,11 @@ from utils.templates_prompts import TOOLS_PROMPT_EXAMPLES, ARG_FILTER_PROMPT
 import re, ast
 from utils.tool_output_parser import parser
 from icecream import ic
-
+from utils.parsers import arg_filter_parser
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 from langchain.output_parsers import OutputFixingParser
+from langchain.output_parsers import RetryWithErrorOutputParser
+
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 # response_schemas = [
@@ -30,9 +32,10 @@ signature_chain = LLMChain(llm = llm, prompt = arg_extraction_prompt , verbose=F
 
 
 arg_filter_prompt = PromptTemplate(template=ARG_FILTER_PROMPT,
-                                   input_variables=['query', 'arg_name', 'arg_description'],
+                                   input_variables=['query', 'arg_description'],
+                                   partial_variables={"format_instructions": arg_filter_parser.get_format_instructions()}
                                    )
-arg_filter = LLMChain(llm = llm, prompt = arg_filter_prompt , verbose=False)
+arg_filter_chain = LLMChain(llm = llm, prompt = arg_filter_prompt , verbose=False)
 # new_parser = OutputFixingParser.from_llm(parser=output_parser, llm=llm)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -41,5 +44,35 @@ def fill_signature(query:str, arg_name:str , arg_dtype: dict , arg_descr :dict, 
     if(len(query.split()) == 1):
         return query
     extracted_args = signature_chain.run({'arg_description':arg_descr,'arg_dtype':arg_dtype, 'user_query':query})
-    return extracted_args.strip('\n').strip(' ')
     
+    extracted_args =  extracted_args.strip('\n').strip(' ')
+    extracted_args = re.sub(r'""', '"',extracted_args)
+    
+
+    if arg_dtype['argument_value'] == List[str]:
+        if extracted_args[0] != '[':
+            extracted_args = '['+extracted_args+']'
+
+    if arg_dtype['argument_value'] == str:
+        if extracted_args[0]=='[':
+            extracted_args= extracted_args[1:-1]
+
+    return extracted_args.strip('\n').strip(' ')
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+def filter_arguments(query:str, arg_name , arg_descr :dict)->List[str] :
+    argument_input = '\n'.join(['{name} : {descr}'.format(name = arg , descr = arg_descr[arg]) for arg in arg_name])
+    response = arg_filter_chain.run({'query':query, 'arg_description':argument_input})
+    try : 
+        output = arg_filter_parser.parse(response)
+        print(output)
+        return output
+    except Exception as e:
+        new_parser = OutputFixingParser.from_llm(parser=parser, llm=llm)
+        output = new_parser.parse(response)
+        print(output)
+        return output
+
+
+
+ 

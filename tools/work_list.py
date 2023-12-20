@@ -4,9 +4,10 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
-from utils.get_args import fill_signature, arg_filter
+from utils.get_args import *
 from utils.llm_utility import llm
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
+
 
 class WorkList(BaseTool):
     name = "works_list"
@@ -125,12 +126,10 @@ class WorkList(BaseTool):
 
         remaining_arguments = set(arguments) - x
 
-        # filtering remaining arguments semantically using llm
+        remaining_arguments =  filter_arguments(query, remaining_arguments, arg_description)
         for arg in remaining_arguments:
-            ans = arg_filter.run({'query':query,'arg_description':arg_description[arg] , 'arg_name' : arg})
-            if '1' in ans.strip() :
-                filtered_signature[arg] = signature[arg]
-                filtered_arg_description[arg] = arg_description[arg]
+            filtered_signature[arg] = signature[arg]
+            filtered_arg_description[arg] = arg_description[arg]
 
         return filtered_signature, filtered_arg_description
 

@@ -21,9 +21,10 @@ class PersonalAgent(ZeroShotAgent):
     @classmethod
     def create_prompt(
         cls,
-        tool_task: str,
+        
         user_query: str ,
         tools: Sequence[BaseTool] ,
+        tool_task: str ,
         wrong_tool_name: str =  None,
         prefix: str = PREFIX,
         suffix: str = SUFFIX,
@@ -31,16 +32,23 @@ class PersonalAgent(ZeroShotAgent):
         format_instructions: str = FORMAT_INSTRUCTIONS,
         input_variables: Optional[List[str]] = None,
     ) -> PromptTemplate:
-        print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
-        
 
         if tool_task == '':
             mistakes = ''
 
         else:
             # past_mistakes = analyse(user_query,wrong_tool_name)
+            print("\033[91m {}\033[00m" .format('Attaching past mistakes to the prompt... (agent) for \ntool_task : {tool_task}'.format(tool_task=tool_task )))
+
+            tool_task = tool_task.strip('\n').strip()
+            if '\n' in tool_task:
+                tool_task = tool_task.split('\n')[0]
+
+
+            
             past_mistakes = analyse(user_query=user_query,wrong_tool_name=wrong_tool_name, tool_task=tool_task)
             formatted_mistakes = ''
+            
             if past_mistakes == 'No mistakes found  relevant to this query' or past_mistakes == []:
                 formatted_mistakes = 'No mistakes found  relevant to this query'
             else :
@@ -48,7 +56,7 @@ class PersonalAgent(ZeroShotAgent):
                     formatted_mistakes += mistake.metadata['learning'] 
     
             mistakes = mistakes.format(mistakes = formatted_mistakes)
-            print(mistakes)
+            # print(mistakes)
         #________________________________________________________________________________
         tools = get_relevant_tools(user_query)
 
@@ -60,12 +68,14 @@ class PersonalAgent(ZeroShotAgent):
 
 
         template = "\n\n".join([prefix, tool_strings,mistakes, format_instructions,  suffix])
-        ic(template)
+        # ic(template)
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         
         prompt =  PromptTemplate(template=template, input_variables=input_variables)
-        print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
+        if tool_task != '':
+            print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
+            print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
         return prompt
     #________________________________________________________________________________________________________________________________
     @classmethod

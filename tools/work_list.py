@@ -49,6 +49,9 @@ class WorkList(BaseTool):
                 'argument_value': filtered_arg_description[key],
             }
             x = fill_signature(query = query, arg_name = key , arg_dtype = arg_dtype , arg_descr = arg_descr, tool_name = self.name)
+            if filtered_signature[key] == List[str]:
+                if x[0] != '[':
+                    x = '[' + x + ']'
             if x.strip('\n').strip() != 'NONE':
                 li.append({
                     'argument_name': key,

@@ -22,7 +22,6 @@ from langchain.output_parsers import RetryWithErrorOutputParser
 # ]
 # output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 
-
 arg_extraction_prompt = PromptTemplate(template=TOOLS_PROMPT_EXAMPLES , 
                         input_variables=['arg_description','arg_dtype' ,'user_query'] ,   # ,'memory_examples'
                         # partial_variables= {"format_instructions" : output_parser.get_format_instructions()}
@@ -41,7 +40,7 @@ arg_filter_chain = LLMChain(llm = llm, prompt = arg_filter_prompt , verbose=Fals
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
 def fill_signature(query:str, arg_name:str , arg_dtype: dict , arg_descr :dict, tool_name:str)->Dict[str,Any] :
-    if(len(query.split()) == 1):
+    if(len(query.strip('\n').strip().split()) == 1):
         return query
     extracted_args = signature_chain.run({'arg_description':arg_descr,'arg_dtype':arg_dtype, 'user_query':query})
     

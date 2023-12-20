@@ -1,6 +1,91 @@
 [
     {
-        "thought": "Final Answer: I have completed the task of prioritizing and adding P0 issues to the current sprint.",
-        "tool": []
+        "thought": " I need to get similar work items for TKT-123, summarize them, create issues from the summary and prioritize them to answer the user query.",
+        "tool": {
+            "tool_name": "get_similar_work_items",
+            "arguments": [
+                {
+                    "argument_name": "work_id",
+                    "argument_value": "TKT-123"
+                }
+            ]
+        }
+    },
+    {
+        "thought": " I need to summarize the work items returned by get_similar_work_items tool to provide a concise summary.",
+        "tool": {
+            "tool_name": "summarize_objects",
+            "arguments": [
+                {
+                    "argument_name": "objects",
+                    "argument_value": "$$PREV[0]"
+                }
+            ]
+        }
+    },
+    {
+        "thought": " The summarized work items need to be converted into issues to provide a comprehensive solution.",
+        "tool": {
+            "tool_name": "create_actionable_tasks_from_text",
+            "arguments": [
+                {
+                    "argument_name": "text",
+                    "argument_value": "$$PREV[1]"
+                }
+            ]
+        }
+    },
+    {
+        "thought": " The created issues need to be prioritized based on P1 issues and rev_orgs, as requested in the user query.",
+        "tool": {
+            "tool_name": "prioritize_objects",
+            "arguments": [
+                {
+                    "argument_name": "objects",
+                    "argument_value": "$$PREV[2]"
+                }
+            ]
+        }
+    },
+    {
+        "thought": " I now have the final answer to the user query.\n Total cost: $0.01821 , time-taken: 28153.1456ms",
+        "tool": [
+            {
+                "tool_name": "get_similar_work_items",
+                "arguments": [
+                    {
+                        "argument_name": "work_id",
+                        "argument_value": "TKT-123"
+                    }
+                ]
+            },
+            {
+                "tool_name": "summarize_objects",
+                "arguments": [
+                    {
+                        "argument_name": "objects",
+                        "argument_value": "$$PREV[0]"
+                    }
+                ]
+            },
+            {
+                "tool_name": "create_actionable_tasks_from_text",
+                "arguments": [
+                    {
+                        "argument_name": "text",
+                        "argument_value": "$$PREV[1]"
+                    }
+                ]
+            },
+            {
+                "tool_name": "prioritize_objects",
+                "arguments": [
+                    {
+                        "argument_name": "objects",
+                        "argument_value": "$$PREV[2]"
+                    }
+                ]
+            }
+        ]
     }
 ]

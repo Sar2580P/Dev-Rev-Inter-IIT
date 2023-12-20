@@ -12,7 +12,7 @@ sub_task_response_schemas = [
     ResponseSchema(name="tool_input", description="The next consecutive sub-task in intermediate steps for the above tool based on above user_query and tool description"),
     ResponseSchema(name="reason", description="Reason why the tool should be chosen as next consecutive tool in intermediate steps based on tool_description and user_query, at max 20 words and atleast 15 words")
 ]
-sub_task_parser = StructuredOutputParser.from_response_schemas(sub_task_response_schemas)
+sub_task_parser = StructuredOutputParser.from_response_schemas(sub_task_response_schemas) 
 
 #_______________________________________________________________________________________________________________________________________________________________
 arg_filter_response_schemas = [

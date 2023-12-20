@@ -206,10 +206,6 @@ Below is the meaning of argument to help you assist in extracting the argument v
 The above mentioned arguments have their values present in the query. You need to extract the argument value from the query.
 Don't pollute the information, stick to information provided in the user query.
 
-ALERT !!!
-- If the Query contains specific keywords like $$PREV[i], where i is the index of the output you want to use, then it is a symbolic representation of the output and is NOT THE ACTUAL OUTPUT
-- use $$PREV[i] as whole and don't pass invalid representation like "$$PREV" OR "$$PREV[]" or i
-
 You are provided with a user query below :
 QUERY : {user_query}
 
@@ -217,6 +213,11 @@ FORMAT INSTRUCTIONS --->
   - Don't return anything else other than the argument value.
   - Ensure that the argument value is in correct data type before returning.
   - If the argument value is not explicitly present in the query, then return "NONE".
+
+ALERT !!!
+- If the Query contains specific keywords like $$PREV[i], where i is the index of the output you want to use, 
+          then it is a symbolic representation of the output and is NOT THE ACTUAL OUTPUT
+- use $$PREV[i] as whole and don't pass invalid representation like "$$PREV" OR "$$PREV[]" or i
 
 ANSWER :
 '''
@@ -319,7 +320,7 @@ QUERY_EXAMPLE : "What is the use of life?"
 ANSWER : 0
 REASON : The available tools are not useful to answer the query.
 
-QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint"
+QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint"
 ANSWER : 1
 REASON : The available tools are useful to answer the query.
 

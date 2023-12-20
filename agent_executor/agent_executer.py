@@ -31,6 +31,7 @@ class CustomAgentExecutor(AgentExecutor):
     ground_truth : List[Dict] = []
     thought_execution_chain : List[Dict] = []   # added by me
     tool_gate : int = 0
+    web_schema: List[Dict] = []
     
     #_______________________________________________________________________________________________
     def eval(self):
@@ -51,12 +52,20 @@ class CustomAgentExecutor(AgentExecutor):
     ) -> Dict[str, Any]:
         
         """Run text through and get agent response."""
+        if self.tool_count == 0:        
+            self.return_schema = []        
+            intermediate_steps = []   
+            self.correct_trajectory = []    
+            self.checkpoints = {}   
+            self.thought_execution_chain = []  
+            self.web_schema = []  
 
         # Check if the query is valid
-        answerable_with_tools = self._check_if_answerable_with_tools(inputs['input'])
+        answerable_with_tools, reason = self._check_if_answerable_with_tools(inputs['input'])
         if not answerable_with_tools :
+            self.thought_execution_chain.append(reason)
             next_step_output = AgentFinish(return_values = {'output':'dvdvsdd'} ,
-                                         log ='I now know the final answer.\nFinal Answer : sarvagya'),
+                                         log ='I now know the final answer.\nFinal Answer : sarvagya')
             return self._return(
                     next_step_output, [], run_manager=run_manager
                 )                             
@@ -90,13 +99,7 @@ class CustomAgentExecutor(AgentExecutor):
             if(self.tool_gate&1 != 0):
                 self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
                                                                user_query=inputs['input'] , tool_task = '')
-            if self.tool_count == 0:        
-                self.return_schema = []        
-                intermediate_steps = []   
-                self.correct_trajectory = []    
-                self.checkpoints = {}   
-                self.thought_execution_chain = []    
-
+            
             next_step_output = self._take_next_step(
                                                     name_to_tool_map,
                                                     color_mapping,
@@ -142,12 +145,12 @@ class CustomAgentExecutor(AgentExecutor):
         try : 
             output = critique_parser.parse(is_query_valid)
             if int(output['answer']) ==1 :
-                return True
-            return False
+                return True, output['reason']
+            return False, output['reason']
 
         except OutputParserException as e:
             print('CRTIQUE ERROR : failed to check query validity')
-            return True
+            return True, None
 
     #________________________________________________________________________________________________
     def create_sub_task(self, input):
@@ -240,9 +243,11 @@ class CustomAgentExecutor(AgentExecutor):
                         'tool_name': output.tool,
                         'arguments': [],
                     })
-                    
-                    is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema[:-1], output.tool)  # added by me , evaluator
-                    # is_right_decision, analogy = self.true_tools[self.tool_count] == output.tool, " "  # added by me , evaluator
+                    try:
+                        is_right_decision, analogy, correct_arg = validate(self.ground_truth, current_schema[:-1], output.tool)  # added by me , evaluator
+                    except:
+                        is_right_decision, analogy = self.true_tools[self.tool_count] == output.tool, " "  # added by me , evaluator
+
                     ic(is_right_decision)
                 #==============================================================================================================
                     if not is_right_decision:
@@ -360,18 +365,26 @@ class CustomAgentExecutor(AgentExecutor):
                 observation = "$$PREV[{i}]".format(i=self.tool_count)
                
                 #==============================================================================================================
-                tool_schema = {                        
+                tool_schema = {      
                     'tool_name': tool.name,
-                    'arguments': arguments,
+                    'arguments': arguments,       
+                }
+                web_schema = {      
+                    'thought': output.log.split('\n')[0] ,
+                    'tool': {
+                        'tool_name': tool.name,
+                        'arguments': arguments,
+                    }                 
                 }
 
-                if self.train_mode :
-                    print("\033[1;35;40m {} \033[0m".format('Checking Argument Correctness... (agent_executor)'))
-                    response, correct_arguments = build_tool_experience(self.ground_truth, self.return_schema+[tool_schema])
-                    if response is False:
-                        tool_schema["arguments"] = correct_arguments
+                # if self.train_mode :
+                #     print("\033[1;35;40m {} \033[0m".format('Checking Argument Correctness... (agent_executor)'))
+                #     response, correct_arguments = build_tool_experience(self.ground_truth, self.return_schema+[tool_schema])
+                #     if response is False:
+                #         tool_schema["arguments"] = correct_arguments
 
                 self.return_schema.append(tool_schema)
+                self.web_schema.append(web_schema)
 
                 #==============================================================================================================
 

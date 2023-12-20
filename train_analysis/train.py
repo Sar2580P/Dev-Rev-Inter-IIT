@@ -9,55 +9,57 @@ from utils.chains import *
 from memory.memory import mistake_memory
 
 
-# data  = pd.read_csv('DATA_DEVREV_72_tt_splitted/combined_train.csv' ).iloc[:2]
+data  = pd.read_csv('DATA_DEVREV_72_tt_splitted/reducd_combined_train.csv' ).iloc[41:,:]
 
-query = 'List all high severity tickets coming in from slack from customer abc123 and generate a summary of them.'
-ground_json = '''
-[
-    {
-        "tool_name": "search_object_by_name",
-        "arguments": [
-            {
-                "argument_name": "query",
-                "argument_value": "Cust123"
-            }
-        ]
+# print(data)
 
-    },
+# query = 'List all high severity tickets coming in from slack from customer abc123 and generate a summary of them.'
+# ground_json = '''
+# [
+#     {
+#         "tool_name": "search_object_by_name",
+#         "arguments": [
+#             {
+#                 "argument_name": "query",
+#                 "argument_value": "Cust123"
+#             }
+#         ]
 
-    {
-        "tool_name": "works_list",
-        "arguments": [
-            {
-                "argument_name": "ticket.rev_org",
-                "argument_value": "$$PREV[0]"
-            },
-            {
-                "argument_name": "ticket.severity",
-                "argument_value": ["high"]
-            },
-            {
-                "argument_name": "ticket.source_channel",
-                "argument_value": ["slack"]
-            },
-            {
-                "argument_name": "type",
-                "argument_value": ["ticket"]
-            }
-        ]
-    },
-    {
-        "tool_name": "summarize_objects",
-        "arguments": [
-            {
-                "argument_name": "objects",
-                "argument_value": "$$PREV[1]"
-            }
-        ]
-    }
-]
-'''
-data = [(query , ground_json)]
+#     },
+
+#     {
+#         "tool_name": "works_list",
+#         "arguments": [
+#             {
+#                 "argument_name": "ticket.rev_org",
+#                 "argument_value": "$$PREV[0]"
+#             },
+#             {
+#                 "argument_name": "ticket.severity",
+#                 "argument_value": ["high"]
+#             },
+#             {
+#                 "argument_name": "ticket.source_channel",
+#                 "argument_value": ["slack"]
+#             },
+#             {
+#                 "argument_name": "type",
+#                 "argument_value": ["ticket"]
+#             }
+#         ]
+#     },
+#     {
+#         "tool_name": "summarize_objects",
+#         "arguments": [
+#             {
+#                 "argument_name": "objects",
+#                 "argument_value": "$$PREV[1]"
+#             }
+#         ]
+#     }
+# ]
+# '''
+# data = [(query , ground_json)]
 
 # print(data.shape)
 
@@ -80,8 +82,8 @@ ct = 0
 
 for i in range(len(data)):
   print("\033[1;32m {}\033[00m" .format('QUERY COUNT : {i}'.format(i=i)))
-#   query, ground_json = data.iloc[i,0], data.iloc[i,1]
-  query, ground_json = data[0][0] , data[0][1]
+  query, ground_json = data.iloc[i,0], data.iloc[i,1]
+#   query, ground_json = data[0][0] , data[0][1]
   print("\033[1;32m {}\033[00m" .format('QUERY : ') , "\033[93m {}\033[00m" .format(query))
   print("\033[1;32m {}\033[00m" .format('Ground JSON :') , "\033[93m {}\033[00m" .format(ground_json))
 

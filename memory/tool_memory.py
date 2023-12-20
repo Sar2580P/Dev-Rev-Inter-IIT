@@ -16,7 +16,11 @@ tool_mistake_memory = Memory(k=2, vector_db=tool_database)
 
 def build_tool_experience(correct_tool, llm_tool):
     
+    # try:
     response, analogy, correct_arguments = validate(correct_tool, llm_tool)
+    # except:
+        # response, analogy, correct_arguments = self.true_tools[self.tool_count] == output.tool, " ", " "
+
     if response is not True:
         print("\033[91m {}\033[00m" .format('Tool Arguments are not correct... (tool_memory)'))
         print("\033[91m {}\033[00m" .format('Staging tool experience in Memory... (tool_memory)'))

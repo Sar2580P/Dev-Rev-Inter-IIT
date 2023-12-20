@@ -157,8 +157,9 @@ sub_task_prompt = FewShotPromptTemplate(
 # ===================================================================================================================================================================================================
 
 MISSED_TOOL_TEMPLATE = '''
+
 There is an AI agent which is picking up tools under ReAct framework to solve user queries.
-It misses picking up correct tool, being unable to reason out its usage from the given query.
+It misses picking up correct tool, being unable to reason out its usage for the given query.
 
 You are also provided with the sequence of thoughts and actions taken by the agent till now to solve the query.
 

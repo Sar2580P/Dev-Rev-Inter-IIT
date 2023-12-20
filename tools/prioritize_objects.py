@@ -38,7 +38,7 @@ class Prioritize(BaseTool):
             query = query.strip('\n').strip()
             ans = query    ## $$PREV[*] is a special keyword that means "use the previous value of this argument"
 
-            if  len(query) !=9:
+            if  len(query) != 9:
                 ans = fill_signature(query = query, arg_name = key , arg_dtype = arg_dtype , arg_descr = arg_descr, tool_name = self.name)
                 
             if ans.strip('\n').strip() != 'NONE':

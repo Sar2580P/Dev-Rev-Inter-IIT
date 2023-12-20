@@ -41,6 +41,18 @@ def fill_signature(query:str, arg_name:str , arg_dtype: dict , arg_descr :dict, 
     if(len(query.strip('\n').strip().split()) == 1):
         return query
     extracted_args = signature_chain.run({'arg_description':arg_descr,'arg_dtype':arg_dtype, 'user_query':query})
+    
     extracted_args =  extracted_args.strip('\n').strip(' ')
-    return re.sub(r'""', '"', extracted_args)
+    extracted_args = re.sub(r'""', '"',extracted_args)
+    
+
+    if arg_dtype['argument_value'] == List[str]:
+        if extracted_args[0] != '[':
+            extracted_args = '['+extracted_args+']'
+
+    if arg_dtype['argument_value'] == str:
+        if extracted_args[0]=='[':
+            extracted_args= extracted_args[1:-1]
+
+    return extracted_args.strip('\n').strip(' ')
     

@@ -12,6 +12,7 @@ from utils.templates_prompts import PAST_MISTAKES ,PREFIX, FORMAT_INSTRUCTIONS
 from agent.tool_collection import get_relevant_tools
 
 from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
+from icecream import ic
 
 
 class PersonalAgent(ZeroShotAgent):
@@ -20,8 +21,10 @@ class PersonalAgent(ZeroShotAgent):
     @classmethod
     def create_prompt(
         cls,
+        tool_task: str,
         user_query: str ,
         tools: Sequence[BaseTool] ,
+        wrong_tool_name: str =  None,
         prefix: str = PREFIX,
         suffix: str = SUFFIX,
         mistakes :str = PAST_MISTAKES,
@@ -30,18 +33,22 @@ class PersonalAgent(ZeroShotAgent):
     ) -> PromptTemplate:
         print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
         
-        past_mistakes = analyse(user_query)
-        
-        formatted_mistakes = ''
-        if past_mistakes == 'No mistakes found  relevant to this query' or past_mistakes == []:
-            formatted_mistakes = 'No mistakes found  relevant to this query'
-        else :
-            for mistake in past_mistakes:
-                formatted_mistakes += mistake.page_content 
-    
-        mistakes = mistakes.format(mistakes = formatted_mistakes)
-        if user_query == '':
+
+        if tool_task == '':
             mistakes = ''
+
+        else:
+            # past_mistakes = analyse(user_query,wrong_tool_name)
+            past_mistakes = analyse(user_query=user_query,wrong_tool_name=wrong_tool_name, tool_task=tool_task)
+            formatted_mistakes = ''
+            if past_mistakes == 'No mistakes found  relevant to this query' or past_mistakes == []:
+                formatted_mistakes = 'No mistakes found  relevant to this query'
+            else :
+                for mistake in past_mistakes:
+                    formatted_mistakes += mistake.metadata['learning'] 
+    
+            mistakes = mistakes.format(mistakes = formatted_mistakes)
+            print(mistakes)
         #________________________________________________________________________________
         tools = get_relevant_tools(user_query)
 
@@ -52,7 +59,8 @@ class PersonalAgent(ZeroShotAgent):
 
 
 
-        template = "\n\n".join([prefix, tool_strings, format_instructions, mistakes,  suffix])
+        template = "\n\n".join([prefix, tool_strings,mistakes, format_instructions,  suffix])
+        ic(template)
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         
@@ -84,6 +92,8 @@ class PersonalAgent(ZeroShotAgent):
             suffix=suffix,
             format_instructions=format_instructions,
             input_variables=input_variables,
+            wrong_tool_name = None,
+            tool_task = '',
         )
         llm_chain = LLMChain(
             llm=llm,

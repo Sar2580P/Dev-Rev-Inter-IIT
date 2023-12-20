@@ -3,113 +3,114 @@ from icecream import ic
 import re
 import copy
 
-GT = [{'arguments': [{'argument_name': 'created_by', 'argument_value': ['User123']},
-                                  {'argument_name': 'owned_by', 'argument_value': ['User123']},
-                                  {'argument_name': 'ticket_severity',
-                                   'argument_value': ['Critical']},
-                                  {'argument_name': 'type', 'argument_value': ['works_list']}],
-                    'tool_name': 'works_list'}]
+# GT = [{'arguments': [{'argument_name': 'created_by', 'argument_value': ['User123']},
+#                                   {'argument_name': 'owned_by', 'argument_value': ['User123']},
+#                                   {'argument_name': 'ticket_severity',
+#                                    'argument_value': ['Critical']},
+#                                   {'argument_name': 'type', 'argument_value': ['works_list']}],
+#                     'tool_name': 'works_list'}]
 
-SP = [{'arguments': [{'argument_name': 'issue.severity',
-                             'argument_value': 'Critical'},
-                            {'argument_name': 'owned_by', 'argument_value': 'User123'}],
-              'tool_name': 'works_list'}]
-
-# # GT = json.loads(GT)
-# # SP = json.loads(SP)
-# ground_truth = [
-#     {
-#         "tool_name": "whoami",
-#         "arguments": []
-#     },
-#     {
-#         "tool_name": "works_list",
-#         "arguments": [
-#             {
-#                 "argument_name": "issue.priority",
-#                 "argument_value": "p0"
-#             },
-#             {
-#                 "argument_name": "owned_by",
-#                 "argument_value": "$$PREV[0]"
-#             }
-#         ]
-#     },
-#     {
-#         "tool_name": "prioritize_objects",
-#         "arguments": [
-#             {
-#                 "argument_name": "objects",
-#                 "argument_value": "$$PREV[1]"
-#             }
-#         ]
-#     },
-#     {
-#         "tool_name": "get_sprint_id",
-#         "arguments": []
-#     },
-#     {
-#         "tool_name": "add_work_items_to_sprint",
-#         "arguments": [
-#             {
-#                 "argument_name": "work_ids",
-#                 "argument_value": "$$PREV[2]"
-#             },
-#             {
-#                 "argument_name": "sprint_id",
-#                 "argument_value": "$$PREV[3]"
-#             }
-#         ]
-#     }
-# ]
-
-# sample = [
-#     {
-#         "tool_name": "whoami",
-#         "arguments": []
-#     },
-#     {
-#         "tool_name": "works_list",
-#         "arguments": [
-#             {
-#                 "argument_name": "issue.priority",
-#                 "argument_value": "p0"
-#             },
-#             {
-#                 "argument_name": "owned_by",
-#                 "argument_value": "$$PREV[0]"
-#             }
-#         ]
-#     },
-#     {
-#         "tool_name": "prioritize_objects",
-#         "arguments": [
-#             {
-#                 "argument_name": "objects",
-#                 "argument_value": "$$PREV[1]"
-#             }
-#         ]
-#     },
-#     {
-#         "tool_name": "get_sprint_id",
-#         "arguments": []
-#     },
-#     {
-#         "tool_name": "add_work_items_to_sprint",
-#         "arguments": [
-#             # {
-#             #     "argument_name": "work_ids",
-#             #     "argument_value": "$$PREV[2]"
-#             # },
-#             # {
-#             #     "argument_name": "sprint_id",
-#             #     "argument_value": "$$PREV[0]",
-#             # }
-#         ]
-#     }
-# ]
+# SP = [{'arguments': [{'argument_name': 'issue.severity',
+#                              'argument_value': 'Critical'},
+#                             {'argument_name': 'owned_by', 'argument_value': 'User123'}],
+#               'tool_name': 'works_list'}]
 
 
+GT = [
+    {
+        "tool_name": "whoami",
+        "arguments": []
+    },
+    {
+        "tool_name": "works_list",
+        "arguments": [
+            {
+                "argument_name": "issue.priority",
+                "argument_value": "p0"
+            },
+            {
+                "argument_name": "owned_by",
+                "argument_value": "$$PREV[0]"
+            }
+        ]
+    },
+    {
+        "tool_name": "prioritize_objects",
+        "arguments": [
+            {
+                "argument_name": "objects",
+                "argument_value": "$$PREV[1]"
+            }
+        ]
+    },
+    {
+        "tool_name": "get_sprint_id",
+        "arguments": []
+    },
+    {
+        "tool_name": "add_work_items_to_sprint",
+        "arguments": [
+            {
+                "argument_name": "work_ids",
+                "argument_value": "$$PREV[2]"
+            },
+            {
+                "argument_name": "sprint_id",
+                "argument_value": "$$PREV[3]"
+            }
+        ]
+    }
+]
+
+SP = [
+    {
+        "tool_name": "whoami",
+        "arguments": []
+    },
+    {
+        "tool_name": "works_list",
+        "arguments": [
+            {
+                "argument_name": "issue.priority",
+                "argument_value": "p0"
+            },
+            {
+                "argument_name": "owned_by",
+                "argument_value": "$$PREV[0]"
+            }
+        ]
+    },
+    {
+        "tool_name": "prioritize_objects",
+        "arguments": [
+            {
+                "argument_name": "objects",
+                "argument_value": "$$PREV[1]"
+            }
+        ]
+    },
+    {
+        "tool_name": "get_sprint_id",
+        "arguments": []
+    },
+    {
+        "tool_name": "add_work_items_to_sprint",
+        "arguments": [
+            # {
+            #     "argument_name": "work_ids",
+            #     "argument_value": "$$PREV[2]"
+            # },
+            # {
+            #     "argument_name": "sprint_id",
+            #     "argument_value": "$$PREV[0]",
+            # }
+        ]
+    }
+]
+
+
+# GT = json.loads(GT)
+# SP = json.loads(SP)
 
 
 def remove_digits(string):
@@ -121,7 +122,6 @@ def keep_digits(string):
 def top_nodes(data):
     # ic(data)
     data = [{item['tool_name']: {'value': 1, 'arguments': item['arguments']}} for item in data]
-    print()
 
     for i in range(0, len(data)):
         current_tool_name = next(iter(data[i]))
@@ -160,6 +160,7 @@ def format_arg(arg_list: list):
     return s
 
 def search_similar_node(check_node_index, check_node, top_ground_truth, ground_truth, sample):
+    # ic(check_node, top_ground_truth)
     common_nodes = [gt_node for gt_node in top_ground_truth if check_node["tool_name"] == gt_node["tool_name"]]
     # ic(check_node)
     sample_arguments = sorted([(argument['argument_name'], argument['argument_value']) for argument in check_node['arguments']])
@@ -226,6 +227,7 @@ def search_similar_node(check_node_index, check_node, top_ground_truth, ground_t
             ind = keep_digits(val)
             correct_args[i]["argument_value"] = f"$$PREV[{ind}]"
     print(reason)
+    print("-------------------------------------------------------------------")
     return (False, ("Tool use was correct but "+reason, correct_args))
 
 
@@ -235,24 +237,31 @@ def validate(ground_truth, sample, additional_tool=None):
     current_ground_truth = ground_truth.copy()
     current_sample = sample.copy()
     # ic(ground_truth, sample)
+    # ic(ground_truth)
+    # ic(sample)
+
     for i, sample_node in enumerate(sample):
         # ic("Ground Truth")
         top_ground_truth = top_nodes(current_ground_truth)
+        # ic(top_ground_truth)
         # ic("Return Schema")
         top_sample = top_nodes(current_sample)
-        # ic(sample_node)
-        # ic(sample_node)
+        # ic(top_sample)
+
+        # ic(sample_node, top_sample)
+        
         if sample_node not in top_sample:
             # return (False, f"Tool is dependant on other tools that have not been called yet")
             return (False, f"Tool \'{sample_node['tool_name']}\'  with arguments: {', '.join([arg['argument_name']+':'+str(arg['argument_value']) for arg in sample_node['arguments']])} is dependant on other tools that have not been called yet", [])
             
         found, (gt_node, correct_args) = search_similar_node(i, sample_node, top_ground_truth, ground_truth, sample)
+        # ic(found, gt_node, correct_args)
         if not found:
 ##            return (False, f"No match found for tool. Reason: {gt_node[0]}", gt_node[1])
             return (False, f"No match found for tool \'{sample_node['tool_name']}\'. Reason: {gt_node}", correct_args)
 
         current_sample.remove(sample_node)
-        modified_sample_node = sample_node.copy()
+        modified_sample_node = sample_node.copy()   
         modified_sample_node['tool_name'] += str(i)
         sample[i] = modified_sample_node
 
@@ -273,3 +282,7 @@ def validate(ground_truth, sample, additional_tool=None):
             
     return (True, "", [])
 
+
+
+
+# validate(GT, SP)

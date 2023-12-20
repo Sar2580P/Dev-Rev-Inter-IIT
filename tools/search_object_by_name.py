@@ -10,7 +10,7 @@ from utils.get_args import fill_signature
 class SearchObjectByName(BaseTool):
     name = "search_object_by_name"
     description = ''''
-   - Given a search string, returns the id of a matching object in the system of record. 
+   - Given a search string, returns the identity (id) of a matching object or name in the system of a record. 
    - If multiple matches are found, it returns the one where the confidence is highest.  
     '''
 
@@ -24,7 +24,7 @@ class SearchObjectByName(BaseTool):
                     }
 
         arg_description = {
-            'query': 'customer name present in the query',
+            'query': 'object or customer name present in the query',
         }
         li = []
         for key, value in signature.items():

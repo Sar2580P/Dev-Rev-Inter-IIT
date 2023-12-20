@@ -32,11 +32,6 @@ class PersonalAgent(ZeroShotAgent):
         format_instructions: str = FORMAT_INSTRUCTIONS,
         input_variables: Optional[List[str]] = None,
     ) -> PromptTemplate:
-<<<<<<< HEAD
-        # print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
-        
-=======
->>>>>>> 5f516336342c6fd86b86fce98fc5db6b4c3765c5
 
         if tool_task == '':
             mistakes = ''

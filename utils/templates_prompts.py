@@ -31,16 +31,17 @@ Thought : The reason of picking the tool in process of answering user query.
 
 Action : the Tool to take , should be one of [{tool_names}]
 
-Action Input: Your selected tool will need get its arguments filled by another agent. This agent does not have access to the query or the current output chain. PRECISELY TELL THIS AGENT HOW YOU WANT IT TO FILL THE ARGUMENTS, in natural language
+Action Input: - Your selected tool will need get its arguments filled by another agent. This agent does not have access to the query or the current output chain. PRECISELY TELL THIS AGENT HOW YOU WANT IT TO FILL THE ARGUMENTS, in natural language
+              - IF you feel that this tool should needs output of other tools, you can infer their output stored in format $$PREV[i], where i is the index of the output you want to use.
 
-Observation : the result of the Tool
-... (this Thought/Action/Action Input/Observation must ONLY OCCUR ONCE)
+... (this Thought/Action/Action Input must ONLY OCCUR ONCE)
 
 
-Thought : I now know the final answer
-Final Answer: 
-
-  
+Note that it is possible that the query has been successfully answered and no further tool calls are required
+In this case return:
+Thought: Task has been completed
+Action: NONE
+Action Input: Task complete
 """
 
 # ===================================================================================================================================================================================================
@@ -166,43 +167,35 @@ sub_task_prompt = FewShotPromptTemplate(
 # ===================================================================================================================================================================================================
 
 MISSED_TOOL_TEMPLATE = '''
-
 There is an AI agent which is picking up tools under ReAct framework to solve user queries.
 It misses picking up correct tool, being unable to reason out its usage for the given query.
 
 I provide you some few shots how to reason out the mistake highlight of a tool based on the user query and tool description:
 
 Example_Query : "Prioritize my p0 issues"
-Example_Tool_Name : "who_am_i"
-Example_Tool_Description : "This tool is used to get the user id of the user who is currently logged in."
+Tools missed: 
+Incorrect tool uses:
 Example_MISTAKE : "The tool 'who_am_i' is useful as there is a keyword 'my' which hints towards the user currently logged in. So, this tool can get the user id of the user currently logged in." 
 
 Example_Query : "Summarize high severity tickets from the customer UltimateCustomer"
-Example_Tool_Name : "search_object_by_name"
-Example_Tool_Description : "Given a search string, returns the id of a matching object in the system of record. If multiple matches are found, it returns the one where the confidence is highest."
+Tools missed:
+Incorrect tool uses:
 Example_MISTAKE :"We need to find the id of the object, so we must use the tool 'search_object_by_name' tool which searches for the object id based on the name of the object."
 
 
 Example_Query : "What are my all issues in the triage stage under part FEAT-123? Summarize them"
-Example_Tool_Name : "work_list"
-Example_Tool_Description : "Given a search string, returns the id of a matching object in the system of record. If multiple matches are found, it returns the one where the confidence is highest."
+Tools missed:
+Incorrect tool uses:
 Example_MISTAKE :"We need to find the id of the object, so we must use the tool 'search_object_by_name' tool which searches for the object id based on the name of the object."
-
-
-
-
-
-
-CORRECT_TOOL_NAME : {correct_tool_name}
-TOOL_DESCRIPTION : {tool_description}
-
-USER_QUERY : {query}
 
 - You need to provide an eye-catchy insight of why that tool should not be missed for the given query based on the user query and tool description. 
 - You insight will help the agent to learn from its mistakes. Don't be super-specific to user query, keep the tool description in consideration. 
 - Keep your insight within 20 words and at least 9 words. Present answer in a paragraph.
 
-ANSWER : 
+USER_QUERY : {query}
+Tools missed : {tools_missed}
+Incorrect tool uses : {incorrect_tool_uses}
+Agent_MISTAKE : 
 '''
 
 missed_tool_prompt = PromptTemplate(template=MISSED_TOOL_TEMPLATE, input_variables=['agent_scratchpad','query' ,'correct_tool_name' , 'tool_description'])
@@ -257,6 +250,8 @@ ALERT !!!
 - If the Query contains specific keywords like $$PREV[i], then take it as a whole.
 - Stick to information provided in the user query and description of arguments.
 - Don't pollute the argument filtering with any assumptions.
+- Make sure that there are no parsing errors.
+
 '''
 
 #____________________________________________________________________________________________________________
@@ -307,23 +302,26 @@ FORMAT INSTRUCTIONS :
 
 Here are a few examples of sample outputs:
 
-QUERY_EXAMPLE : "What is the use of life?"
-OUTPUT :" {{'answer' : 0 , 'reason' : "The available tools are not useful to answer the query."}}"
+QUERY_EXAMPLE : What is the use of life?
+OUTPUT : {{"answer" : 0 , "reason" : "The available tools are not useful to answer the query."}}
 
-QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint"
-OUTPUT : "{{'answer' : 1 , 'reason' : "We can use get_similar_items, prioritize_objects, get_sprint_id, add_work_items_to_sprint to solve query."}}"
-
-
-QUERY_EXAMPLE : "Search for youtube videos of user id DEVU-67"
-OUTPUT :" {{'answer' : 0 ,'reason' : "no tool is present to search for youtube videos"}}"
+QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint
+OUTPUT : {{"answer" : 1 , "reason" : "We can use get_similar_items, prioritize_objects, get_sprint_id, add_work_items_to_sprint to solve query."}}
 
 
-QUERY_EXAMPLE : "Create a excel file of work items in the current sprint"
-OUTPUT : "{{'answer' : 0 , 'reason' : "no tool is present to create excel file"}}"
+QUERY_EXAMPLE : Search for youtube videos of user id DEVU-67
+OUTPUT : {{"answer" : 0 ,'reason' : "no tool is present to search for youtube videos"}}
+
+
+QUERY_EXAMPLE : "Create a excel file of work items in the current sprint
+OUTPUT : {{"answer" : 0 , "reason" : "no tool is present to create excel file"}}
 
 Give a similar answer, reason pair for the below query. If answer is 1, tell me what all tools you would use
 
 QUERY : {query}
+
+ALERT !!
+- Make sure that there are no parsing errors.
 
 '''
 

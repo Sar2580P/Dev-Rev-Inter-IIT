@@ -49,9 +49,9 @@ def predict_function(query):
 # predict_function('Prioritize my P0 issues and add them to the current sprint')
 # predict_function('Summarize high severity tickets from the customer UltimateCustomer')
 # predict_function('What are my all issues in the triage stage under part FEAT-123? Summarize them.')
-# predict_function('List all high severity tickets coming in from slack from customer Cust123 and generate a summary of them.')
+predict_function('List all high severity tickets coming in from slack from customer Cust123 and generate a summary of them.')
 # predict_function('Given a customer meeting transcript T, create action items and add them to my current sprint')
-predict_function('MANGO MOO about my MEOW')
+# predict_function('MANGO MOO about my MEOW')
 
 
 # predict_function('Prioritize my P0 issues and what is the meaning of life')

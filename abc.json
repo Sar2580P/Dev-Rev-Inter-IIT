@@ -1,27 +1,47 @@
 {
     "thought": [
-        "I want to prioritize the p0 issues in the project. I think using the tool \"works_list\" with argument \"issue.priority\" will help me filter the work-items with p0 priority. \n\nAction: works_list\n\nAction Input: issue.priority = 'p0'\n",
-        "I now know the final answer\nFinal Answer: The tool \"works_list\" with argument \"issue.priority\" helped me filter the work-items with p0 priority."
+        "Thought: To list all high severity tickets from a specific customer coming in from Slack, I need to identify the customer's user_id first. The customer's name \"Cust123\" is mentioned, so I will use the search_object_by_name tool to find the customer's user_id.\n\nAction: search_object_by_name\n\nAction Input: Search for the user_id of the customer named \"Cust123\".\n",
+        "Thought: Now that I have the user_id of the customer, I can use the works_list tool to filter and list all high severity tickets coming in from Slack for this specific customer.\n\nAction: works_list\n\nAction Input: Use the works_list tool to filter work items with the following criteria: 'ticket.severity' should be 'high', 'ticket.source_channel' should be 'slack', and 'owned_by' should be the user_id obtained from the previous step ($$PREV[0]).\n",
+        "Thought: With the list of high severity tickets from Slack for the customer obtained, I need to generate a summary of these tickets. The summarize_objects tool is designed for summarizing purposes and is the appropriate choice for this task.\n\nAction: summarize_objects\n\nAction Input: Summarize the list of high severity tickets from Slack for the customer Cust123 using the output from the previous step ($$PREV[1]).\n",
+        "Thought: I now know the final answer.\nFinal Answer: The summary of all high severity tickets coming in from Slack for customer Cust123 is: $$PREV[2]."
     ],
     "output": [
+        {
+            "tool_name": "search_object_by_name",
+            "arguments": [
+                {
+                    "argument_name": "query",
+                    "argument_value": "Cust123"
+                }
+            ]
+        },
         {
             "tool_name": "works_list",
             "arguments": [
                 {
-                    "argument_name": "issue.priority",
-                    "argument_value": "'p0'"
+                    "argument_name": "type",
+                    "argument_value": "['ticket']"
                 },
                 {
-                    "argument_name": "issue.rev_orgs",
-                    "argument_value": "['p0']"
+                    "argument_name": "ticket.severity",
+                    "argument_value": "[high]"
                 },
                 {
                     "argument_name": "ticket.source_channel",
-                    "argument_value": "p0"
+                    "argument_value": "slack"
                 },
                 {
-                    "argument_name": "ticket.rev_org",
-                    "argument_value": "['p0']"
+                    "argument_name": "owned_by",
+                    "argument_value": "[$$PREV[0]]"
+                }
+            ]
+        },
+        {
+            "tool_name": "summarize_objects",
+            "arguments": [
+                {
+                    "argument_name": "objects",
+                    "argument_value": "Cust123"
                 }
             ]
         }

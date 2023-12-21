@@ -3,7 +3,7 @@ sys.path.append(os.getcwd())
 from typing import List, Union, Any, Dict
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from utils.llm_utility import llm
+from utils.llm_utility import llm, small_llm
 from memory.tool_memory import retrieve_tool_experience
 from utils.templates_prompts import TOOLS_PROMPT_EXAMPLES, ARG_FILTER_PROMPT
 import re, ast
@@ -27,14 +27,14 @@ arg_extraction_prompt = PromptTemplate(template=TOOLS_PROMPT_EXAMPLES ,
                         # partial_variables= {"format_instructions" : output_parser.get_format_instructions()}
                         )
 
-signature_chain = LLMChain(llm = llm, prompt = arg_extraction_prompt , verbose=False)
+signature_chain = LLMChain(llm = small_llm, prompt = arg_extraction_prompt , verbose=False)
 
 
 arg_filter_prompt = PromptTemplate(template=ARG_FILTER_PROMPT,
                                    input_variables=['query', 'arg_description'],
                                    partial_variables={"format_instructions": arg_filter_parser.get_format_instructions()}
                                    )
-arg_filter_chain = LLMChain(llm = llm, prompt = arg_filter_prompt , verbose=False)
+arg_filter_chain = LLMChain(llm = small_llm, prompt = arg_filter_prompt , verbose=False)
 # new_parser = OutputFixingParser.from_llm(parser=output_parser, llm=llm)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -74,9 +74,13 @@ def filter_arguments(query:str, arg_name , arg_descr :dict)->List[str] :
         x =  output['Arguments']
 
     final_args = []
+    if type(x) is str:
+        x = x.split(',')
     for arg in x:
+        arg = arg.strip().strip('\n')
         if arg in arg_name:
             final_args.append(arg)
+
     return final_args
 
 

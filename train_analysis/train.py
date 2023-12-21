@@ -9,7 +9,7 @@ from utils.chains import *
 from memory.memory import mistake_memory
 
 
-data  = pd.read_csv('DATA_DEVREV_72_tt_splitted/reducd_combined_train.csv' ).iloc[41:,:]
+data  = pd.read_csv('DATA_DEVREV_72_tt_splitted/reducd_combined_train.csv' ).iloc[:1,:]
 
 # print(data)
 
@@ -103,6 +103,7 @@ for i in range(len(data)):
         "intermediate_thoughts" : thought_execution_chain[:tool_index],
         "tool_thought": value['thought']
       }
+
 
       human_eval = 'n'
       # human_eval = input("Do you want to correct the reasoning? (y/n) :")

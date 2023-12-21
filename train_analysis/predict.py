@@ -7,9 +7,9 @@ from langchain.callbacks import get_openai_callback
 import time 
 import json
 
-data  = pd.read_csv('data\multi_class2_full.csv').iloc[30:50, ]
+data  = pd.read_csv('DATA_DEVREV_72_tt_splitted/test_DATA_multi_class_3.csv').iloc[:10,: ]
 
-path = 'prediction_data/multi_class2_full.csv'
+path = 'prediction_data/test_DATA_multi_class_3.csv'
 if not os.path.exists(path):
   prediction_df = pd.DataFrame(columns=['query' , 'groundJson' , 'predicted_json' , 'latency (in seconds)' , 'queryCost' , 'queryTokens'])
   prediction_df.to_csv(path, index=False)

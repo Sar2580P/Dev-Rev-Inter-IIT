@@ -75,7 +75,7 @@ class PersonalAgent(ZeroShotAgent):
         prompt =  PromptTemplate(template=template, input_variables=input_variables)
         if tool_task != '':
             print("\033[91m {}\033[00m" .format('create_prompt (agent)'))
-            # print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
+            print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
         return prompt
     #________________________________________________________________________________________________________________________________
     @classmethod
@@ -112,7 +112,7 @@ class PersonalAgent(ZeroShotAgent):
         )
         tool_names = [tool.name for tool in tools]
         _output_parser = output_parser or cls._get_default_output_parser()
-        print(_output_parser)
+
         return cls(
             llm_chain=llm_chain,
             allowed_tools=tool_names,

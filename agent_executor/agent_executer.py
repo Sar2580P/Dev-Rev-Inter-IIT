@@ -65,7 +65,7 @@ class CustomAgentExecutor(AgentExecutor):
         if not answerable_with_tools :
             self.thought_execution_chain.append(reason)
             next_step_output = AgentFinish(return_values = {'output':'dvdvsdd'} ,
-                                         log ='I now know the final answer.\nFinal Answer : sarvagya')
+                                         log ='I now know the final answer.\nFinal Answer : porwal')
             return self._return(
                     next_step_output, [], run_manager=run_manager
                 )                             
@@ -212,21 +212,25 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            # ic(inputs , intermediate_steps , output , self.train_mode)
+            ic(inputs , intermediate_steps , output , self.train_mode)
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
 
+
+            if output.tool == "NONE":
+                output = AgentFinish(return_values = {'output':'Agent trying to use more tools than in ground truth.\nHence, Aborting Agent Execution ...'} ,
+                                         log ='I now know the final answer.\nFinal Answer : sarvagya')
 
             ## Added:
             # ic(self.tool_gate)
             # ic(self.agent.llm_chain.prompt)
 
-            if not self.train_mode and not isinstance(output,AgentFinish):
-                self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
-                                                                user_query=inputs['input'], tool_task = output.log, wrong_tool_name=output.tool)
+            # if not self.train_mode and not isinstance(output,AgentFinish):
+            #     self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
+            #                                                     user_query=inputs['input'], tool_task = output.log, wrong_tool_name=output.tool)
 
-                if(self.tool_gate&1 != 0):
-                    # print("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
-                    return None
+            #     if(self.tool_gate&1 != 0):
+            #         # print("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
+            #         return None
 
 
 

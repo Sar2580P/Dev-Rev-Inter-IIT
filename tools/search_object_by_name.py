@@ -9,8 +9,9 @@ from utils.get_args import fill_signature
 
 class SearchObjectByName(BaseTool):
     name = "search_object_by_name"
-    description = ''''
-   - Given a search string,it is used to return the identity (id), whenever a name of an object/user/person is present.
+    description = '''
+    - This tool is useful for searching an object by its name. It returns the id of the object.
+   - Given a search string,it is used to return the identity (id), whenever a name of a customer/user/person is present.
    - If multiple matches are found, it returns the one where the confidence is highest.  
     '''
 

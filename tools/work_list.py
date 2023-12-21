@@ -49,14 +49,17 @@ class WorkList(BaseTool):
                 'argument_value': filtered_arg_description[key],
             }
             x = fill_signature(query = query, arg_name = key , arg_dtype = arg_dtype , arg_descr = arg_descr, tool_name = self.name)
-            if filtered_signature[key] == List[str]:
-                if x[0] != '[':
-                    x = '[' + x + ']'
-            if x.strip('\n').strip() != 'NONE':
-                li.append({
-                    'argument_name': key,
-                    'argument_value': x,
-                })
+            if 'NONE' in x:
+                continue
+            # if filtered_signature[key] == List[str]:
+            #     print('ooooooooooooooooooooo')
+            #     if x[0] != '[':
+            #         x = '[' + x + ']'
+            # if x.strip('\n').strip() != 'NONE':
+            li.append({
+                'argument_name': key,
+                'argument_value': x,
+            })
         
         print('Extracted arguments are : ',li)
         return   li
@@ -115,10 +118,15 @@ class WorkList(BaseTool):
             filtered_signature['stage.name'] = List[str]
             filtered_arg_description['stage.name'] = arg_description['stage.name']
 
+        if 'channel' in query.lower():
+            filtered_signature['ticket.source_channel'] = str
+            filtered_arg_description['ticket.source_channel'] = arg_description['ticket.source_channel']
+
 
         x = set(filtered_signature.keys())
         x.add('issue.priority')
         x.add('limit')
+        x.add('ticket.source_channel')
         x.add('type')
         x.add('ticket.severity')
         x.add('stage.name')
@@ -130,6 +138,7 @@ class WorkList(BaseTool):
             filtered_signature[arg] = signature[arg]
             filtered_arg_description[arg] = arg_description[arg]
 
+        print(filtered_arg_description)
         return filtered_signature, filtered_arg_description
 
 #____________________________________________________________________________________________________________________________________

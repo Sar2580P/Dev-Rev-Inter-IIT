@@ -64,8 +64,8 @@ class CustomAgentExecutor(AgentExecutor):
         answerable_with_tools, reason = self._check_if_answerable_with_tools(inputs['input'])
         if not answerable_with_tools :
             self.thought_execution_chain.append(reason)
-            next_step_output = AgentFinish(return_values = {'output':'dvdvsdd'} ,
-                                         log ='I now know the final answer.\nFinal Answer : porwal')
+            next_step_output = AgentFinish(return_values = {'output':''} ,
+                                         log ='I now know the final answer.\nFinal Answer : Set of tools not feasible to answer the query!!')
             return self._return(
                     next_step_output, [], run_manager=run_manager
                 )                             
@@ -218,19 +218,17 @@ class CustomAgentExecutor(AgentExecutor):
 
             if output.tool == "NONE":
                 output = AgentFinish(return_values = {'output':'Agent trying to use more tools than in ground truth.\nHence, Aborting Agent Execution ...'} ,
-                                         log ='I now know the final answer.\nFinal Answer : sarvagya')
+                                         log ='I now know the final answer.\nFinal Answer : Consecutive same tool calls , so aborting thought...')
 
             ## Added:
             # ic(self.tool_gate)
             # ic(self.agent.llm_chain.prompt)
 
-            # if not self.train_mode and not isinstance(output,AgentFinish):
-            #     self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
-            #                                                     user_query=inputs['input'], tool_task = output.log, wrong_tool_name=output.tool)
-
-            #     if(self.tool_gate&1 != 0):
-            #         # print("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
-            #         return None
+            if not self.train_mode and not isinstance(output,AgentFinish):
+                self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
+                                                                user_query=inputs['input'], tool_task = output.log, wrong_tool_name=output.tool)
+                if(self.tool_gate&1 != 0):
+                    return None
 
 
 
@@ -239,7 +237,7 @@ class CustomAgentExecutor(AgentExecutor):
 
                 if self.tool_count == len(self.true_tools):
                     output = AgentFinish(return_values = {'output':'Agent trying to use more tools than in ground truth.\nHence, Aborting Agent Execution ...'} ,
-                                         log ='I now know the final answer.\nFinal Answer : sarvagya')
+                                         log ='I now know the final answer.\nFinal Answer : In train mode, tool picking reached limit...')
                     
                 if isinstance(output ,AgentAction):
                 #==============================================================================================================

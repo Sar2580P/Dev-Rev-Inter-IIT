@@ -42,3 +42,14 @@ for i in range(len(data)):
                                                                                                                                              tokens = cb.total_tokens)))
   prediction_df.to_csv(path, index=False)
 
+
+import pandas as pd
+
+# df1 = pd.read_csv('prediction_data/test_DATA_multi_class_1.csv')
+# df2 = pd.read_csv('prediction_data/test_DATA_multi_class_2.csv')
+# df3 = pd.read_csv('prediction_data/test_DATA_multi_class_3.csv')
+# df4 = pd.read_csv('prediction_data/test_DATA_single.csv')
+
+# df = pd.concat([df1, df2, df3, df4], axis = 0)
+# print(df.shape)
+# df.to_csv('prediction_data/FINAL_CSV.csv')

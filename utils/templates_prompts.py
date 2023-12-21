@@ -31,7 +31,7 @@ Thought : The reason of picking the tool in process of answering user query.
 
 Action : the Tool to take , should be one of [{tool_names}]
 
-Action Input: the input to the tool
+Action Input: Your selected tool will need get its arguments filled by another agent. This agent does not have access to the query or the current output chain. PRECISELY TELL THIS AGENT HOW YOU WANT IT TO FILL THE ARGUMENTS, in natural language
 
 Observation : the result of the Tool
 ... (this Thought/Action/Action Input/Observation must ONLY OCCUR ONCE)
@@ -215,17 +215,16 @@ TOOLS_PROMPT_EXAMPLES = '''
 
 Your task is to extract the argument value from user query based on argument description and argument type.
 
-Below you are provided the data-type of how the argument expects the value to be :
-{arg_dtype}
+The datatype is {arg_dtype}
 
-Below is the meaning of argument to help you assist in extracting the argument value from the query:
+The argument description is:
 {arg_description}
 
 The above mentioned arguments have their values present in the query. You need to extract the argument value from the query.
 Don't pollute the information, stick to information provided in the user query.
 
-You are provided with a user query below :
-QUERY : {user_query}
+Your query is:
+{user_query}
 
 FORMAT INSTRUCTIONS --->
   - Don't return anything else other than the argument value.
@@ -254,53 +253,46 @@ Below I provide the query, which needs to be referenced whiele deciding which ar
 QUERY : {query}
 
 ALERT !!!
+- Don't create any new argument from user query, make sure that filtered argument have correct name.
 - If the Query contains specific keywords like $$PREV[i], then take it as a whole.
 - Stick to information provided in the user query and description of arguments.
 - Don't pollute the argument filtering with any assumptions.
-'''
-#____________________________________________________________________________________________________________
-VAR_ARGS_LOGIC_TOOL = '''
-You will be provided with the following user query:
-{query}
-
-You need to infer the probable arguments and also their data types from the user query.
-You need to return the following dictionary of arguments as keys and their data types as values:
-
-Below I provide a sample dictionary of arguments as keys and their data types as values:
-"arg1":"str"
-"arg2":"int"
-"arg3" : "List"
-
-- Use your knowledge if argument types of certain arguments can't be inferred from the user query.
-- Don't pollute the dictionary with unnecessary arguments. Stick to information provided in the user query.
-- Ensure that the arguments are in correct data types before returning the dictionary.
-- Simply return the dictionary of arguments with keys as argument names and values as their data types, with no backticks.
 '''
 
 #____________________________________________________________________________________________________________
 
 LOGICAL_TEMPLATE = '''
-
-You will be provided with the following user query:
-{query}
-
-You need to return a code block executing the above user query in the given programming language.
-Create a function with the name "sum" with proper variables and call that function with the above provided arguments.
-
+You need to return a code block executing the above user query in the python.
 
 Below I provide an example code block in python so that you know the desired output format:
+Example 1:
 ```
-def sum(arg1 , arg2 , arg3):
-    return arg1+arg2+arg3
-    
-sum($$PREV[0] , $$PREV[6] , 123)
+### Query: Calculate the difference in count between P1 and P2 issues
+
+def count_difference(p1_issues, p2_issues):
+    return len(p1_issues) - len(p2_issues)
+count_difference("$$PREV[0]", "$$PREV[1]")
 ```
-you may devise any function of your own using a combination of sum, variables, loops, if-else statements etc.
+
+Example 2:
+```
+### Query: Extract the first five tasks from the list of all tasks.
+
+def first_five_tasks(tasks):
+    return tasks[:5]
+
+first_five_tasks("$$PREV[0]")
+```
+(note that there were other tool calls before this as well that were ommitted)
+
+You may devise any function of your own using a combination of sum, variables, loops, if-else statements etc.
 
 - Make sure that the code is in correct syntax before returning.
 - Don't return anything else other than the code block. 
 - Simply return the code block, nothing else to be returned
 
+You have the following user query:
+{query}
 '''
 # ===================================================================================================================================================================================================
 # ===================================================================================================================================================================================================
@@ -313,10 +305,26 @@ Below you are provided the tools available in toolkit and their description :
 FORMAT INSTRUCTIONS :
 {format_instructions}
 
-Hint :
-  - Philosophical , emotional (joy, sadness, life related) questions cannot be answered with available tools
+Here are a few examples of sample outputs:
+
+QUERY_EXAMPLE : "What is the use of life?"
+OUTPUT :" {{'answer' : 0 , 'reason' : "The available tools are not useful to answer the query."}}"
+
+QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint"
+OUTPUT : "{{'answer' : 1 , 'reason' : "We can use get_similar_items, prioritize_objects, get_sprint_id, add_work_items_to_sprint to solve query."}}"
+
+
+QUERY_EXAMPLE : "Search for youtube videos of user id DEVU-67"
+OUTPUT :" {{'answer' : 0 ,'reason' : "no tool is present to search for youtube videos"}}"
+
+
+QUERY_EXAMPLE : "Create a excel file of work items in the current sprint"
+OUTPUT : "{{'answer' : 0 , 'reason' : "no tool is present to create excel file"}}"
+
+Give a similar answer, reason pair for the below query. If answer is 1, tell me what all tools you would use
 
 QUERY : {query}
+
 '''
 
 critique_prompt = PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools'], 
@@ -331,25 +339,3 @@ critique_prompt = PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['q
 
 
 # ["red" , ""$$PREV[0]"]
-
-'''
-
-QUERY_EXAMPLE : "What is the use of life?"
-ANSWER : 0
-REASON : The available tools are not useful to answer the query.
-
-QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint"
-ANSWER : 1
-REASON : The available tools are useful to answer the query.
-
-QUERY_EXAMPLE : "Search for youtube videos of user id DEVU-67"
-ANSWER : 0
-REASON : no tool is present to search for youtube videos.
-
-QUERY_EXAMPLE : "Create a excel file of work items in the current sprint"
-ANSWER : 0
-REASON : no tool is present to create excel file.
-
-ANSWER : 
-REASON :
-'''

@@ -41,3 +41,54 @@ def predict_function(query):
 # predict_function('Prioritize all tickets from the support channel "Email"')
 # predict_function('Prioritise my p0 issues')
 
+
+# Dataset Queries:
+
+# predict_function('Summarize issues similar to don:core:dvrv-us-1:devo/0:issue/1') 
+# predict_function('What is the meaning of life?')
+# predict_function('Prioritize my P0 issues and add them to the current sprint')
+# predict_function('Summarize high severity tickets from the customer UltimateCustomer')
+# predict_function('What are my all issues in the triage stage under part FEAT-123? Summarize them.')
+# predict_function('List all high severity tickets coming in from slack from customer Cust123 and generate a summary of them.')
+# predict_function('Given a customer meeting transcript T, create action items and add them to my current sprint')
+predict_function('MANGO MOO about my MEOW')
+
+
+# predict_function('Prioritize my P0 issues and what is the meaning of life')
+
+
+def keep_digits(string):
+    return re.sub(r'[^\d]+', '', string)
+
+def parser(arguments_dict,function_signatures):
+
+    for key,values in arguments_dict.copy().items():
+        if key not in function_signatures.keys():
+            continue
+        if values==[]:
+            del arguments_dict[key]
+            continue
+        if values==False and key=='ticket_needs_response':
+            del arguments_dict[key]
+            continue
+        if type(values)==list:
+            for i,value in enumerate(values):
+
+                if type(value)==str:
+                    if "PREV" in value:
+                        arguments_dict[key][i]=f"$$PREV[{keep_digits(value)}]"
+
+                    if function_signatures[key]==str:
+                        arguments_dict[key]=value
+                    else:
+                        arguments_dict[key][i].replace(arguments_dict[key][i],value)
+        else:
+            if type(values)==str:
+                    if "PREV" in values:
+                        arguments_dict[key]=f"$$PREV[{keep_digits(values)}]"
+
+                    if function_signatures[key]==List[str]:
+                        if type(values)!=list:
+                            arguments_dict[key]=[values]
+
+    return arguments_dict

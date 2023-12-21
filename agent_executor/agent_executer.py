@@ -153,7 +153,6 @@ class CustomAgentExecutor(AgentExecutor):
         else :
             return False, output['reason']
 
-
     #________________________________________________________________________________________________
     def create_sub_task(self, input):
         '''
@@ -250,7 +249,7 @@ class CustomAgentExecutor(AgentExecutor):
                     except:
                         is_right_decision, analogy = self.true_tools[self.tool_count] == output.tool, " "  # added by me , evaluator
 
-                    ic(is_right_decision)
+                    # ic(is_right_decision)
                 #==============================================================================================================
                     if not is_right_decision:
                         print("\033[1;35;40m {} \033[0m" .format('agent planned wrongly, picked tool : {} ...'.format(output.tool)))
@@ -280,7 +279,7 @@ class CustomAgentExecutor(AgentExecutor):
                             print('^^^^^^^^^^^^^^^^^^')
                             return AgentFinish(
                                 return_values = {'output':'Stopping Further Agent Execution ...'} ,
-                                         log ='I now know the final answer.\nFinal Answer : sarvagya'
+                                         log ='I now know the final answer.\nFinal Answer : None'
                             )
                         
                         # updating the next tool, tool_input and log with that provided by auxiliary llm

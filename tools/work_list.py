@@ -66,6 +66,7 @@ class WorkList(BaseTool):
         """Returns the filtered arguments and their descriptions."""
 
         signature = {
+                    'applies_to_part' : List[str] ,
                     'created_by': List[str] ,
                     'issue.rev_orgs': List[str] ,
                     'owned_by': List[str] ,
@@ -75,11 +76,11 @@ class WorkList(BaseTool):
                    }
         
         arg_description = {
-            'applies_to_part': 'for accessing work items applicable to a particular part of the project.',
+         'applies_to_part': 'for accessing work items applicable to a particular part of the project.',
          'created_by': 'for accessing the work items created by a particular person.',
          'issue.priority':' For accessing work_items with issues of a particular priority. Can be either of types --> "p0" , "p1" , "p2".' ,
          'issue.rev_orgs': 'For accessing the work-items with issues of provided rev_orgs.',
-         'limit' : 'Limitig the maximum no. of work itmes to return back, DEFAULT : "all" ',
+         'limit' : 'Limiting the maximum no. of work items to return back, DEFAULT : "all" ',
          'owned_by': 'Accessing the work items owned by a particular user id',
          'stage.name':' Accessing work items belonging to a particular stage',
          'ticket.needs_response': 'Accessing work_items with tickets that needs response or not, must be either "True" or "False"',
@@ -97,10 +98,6 @@ class WorkList(BaseTool):
         if 'p0'in query or 'p1'in query or 'p2'in query:
             filtered_signature['issue.priority'] = str
             filtered_arg_description['issue.priority'] = arg_description['issue.priority']
-
-        if "\bpart.*applied\b" in query or "applied" in query or "\applied.*parts\b" in query :
-            filtered_signature['applies_to_part'] = List[str]
-            filtered_arg_description['applies_to_part'] = arg_description['applies_to_part']
 
         if 'all' in query or 'limit..\b' in query:
             filtered_signature['limit'] = int
@@ -121,7 +118,6 @@ class WorkList(BaseTool):
 
         x = set(filtered_signature.keys())
         x.add('issue.priority')
-        x.add('applies_to_part')
         x.add('limit')
         x.add('type')
         x.add('ticket.severity')

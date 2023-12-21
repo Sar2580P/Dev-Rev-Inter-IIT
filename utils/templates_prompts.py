@@ -170,10 +170,28 @@ MISSED_TOOL_TEMPLATE = '''
 There is an AI agent which is picking up tools under ReAct framework to solve user queries.
 It misses picking up correct tool, being unable to reason out its usage for the given query.
 
-You are also provided with the sequence of thoughts and actions taken by the agent till now to solve the query.
+I provide you some few shots how to reason out the mistake highlight of a tool based on the user query and tool description:
 
-AGENT_SCRATCHPAD :
-{agent_scratchpad}
+Example_Query : "Prioritize my p0 issues"
+Example_Tool_Name : "who_am_i"
+Example_Tool_Description : "This tool is used to get the user id of the user who is currently logged in."
+Example_MISTAKE : "The tool 'who_am_i' is useful as there is a keyword 'my' which hints towards the user currently logged in. So, this tool can get the user id of the user currently logged in." 
+
+Example_Query : "Summarize high severity tickets from the customer UltimateCustomer"
+Example_Tool_Name : "search_object_by_name"
+Example_Tool_Description : "Given a search string, returns the id of a matching object in the system of record. If multiple matches are found, it returns the one where the confidence is highest."
+Example_MISTAKE :"We need to find the id of the object, so we must use the tool 'search_object_by_name' tool which searches for the object id based on the name of the object."
+
+
+Example_Query : "What are my all issues in the triage stage under part FEAT-123? Summarize them"
+Example_Tool_Name : "work_list"
+Example_Tool_Description : "Given a search string, returns the id of a matching object in the system of record. If multiple matches are found, it returns the one where the confidence is highest."
+Example_MISTAKE :"We need to find the id of the object, so we must use the tool 'search_object_by_name' tool which searches for the object id based on the name of the object."
+
+
+
+
+
 
 CORRECT_TOOL_NAME : {correct_tool_name}
 TOOL_DESCRIPTION : {tool_description}

@@ -1,0 +1,29 @@
+{
+    "thought": [
+        "I want to prioritize the p0 issues in the project. I think using the tool \"works_list\" with argument \"issue.priority\" will help me filter the work-items with p0 priority. \n\nAction: works_list\n\nAction Input: issue.priority = 'p0'\n",
+        "I now know the final answer\nFinal Answer: The tool \"works_list\" with argument \"issue.priority\" helped me filter the work-items with p0 priority."
+    ],
+    "output": [
+        {
+            "tool_name": "works_list",
+            "arguments": [
+                {
+                    "argument_name": "issue.priority",
+                    "argument_value": "'p0'"
+                },
+                {
+                    "argument_name": "issue.rev_orgs",
+                    "argument_value": "['p0']"
+                },
+                {
+                    "argument_name": "ticket.source_channel",
+                    "argument_value": "p0"
+                },
+                {
+                    "argument_name": "ticket.rev_org",
+                    "argument_value": "['p0']"
+                }
+            ]
+        }
+    ]
+}

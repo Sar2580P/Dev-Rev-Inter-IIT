@@ -39,4 +39,5 @@ def predict_function(query):
 # predict_function('How is life going?')
 # predict_function('How crocodiles give birth?')
 # predict_function('Prioritize all tickets from the support channel "Email"')
+# predict_function('Prioritise my p0 issues')
 

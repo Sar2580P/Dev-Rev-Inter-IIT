@@ -65,12 +65,12 @@ def filter_arguments(query:str, arg_name , arg_descr :dict)->List[str] :
     try : 
         output = arg_filter_parser.parse(response)
         print(output)
-        return output
+        return output['Arguments']
     except Exception as e:
         new_parser = OutputFixingParser.from_llm(parser=parser, llm=llm)
         output = new_parser.parse(response)
         print(output)
-        return output
+        return output['Arguments']
 
 
 

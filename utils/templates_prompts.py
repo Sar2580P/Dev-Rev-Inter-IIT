@@ -235,27 +235,10 @@ Below I provide the query, which needs to be referenced whiele deciding which ar
 QUERY : {query}
 
 ALERT !!!
+- Don't create any new argument from user query, make sure that filtered argument have correct name.
 - If the Query contains specific keywords like $$PREV[i], then take it as a whole.
 - Stick to information provided in the user query and description of arguments.
 - Don't pollute the argument filtering with any assumptions.
-'''
-#____________________________________________________________________________________________________________
-VAR_ARGS_LOGIC_TOOL = '''
-You will be provided with the following user query:
-{query}
-
-You need to infer the probable arguments and also their data types from the user query.
-You need to return the following dictionary of arguments as keys and their data types as values:
-
-Below I provide a sample dictionary of arguments as keys and their data types as values:
-"arg1":"str"
-"arg2":"int"
-"arg3" : "List"
-
-- Use your knowledge if argument types of certain arguments can't be inferred from the user query.
-- Don't pollute the dictionary with unnecessary arguments. Stick to information provided in the user query.
-- Ensure that the arguments are in correct data types before returning the dictionary.
-- Simply return the dictionary of arguments with keys as argument names and values as their data types, with no backticks.
 '''
 
 #____________________________________________________________________________________________________________
@@ -304,10 +287,26 @@ Below you are provided the tools available in toolkit and their description :
 FORMAT INSTRUCTIONS :
 {format_instructions}
 
-Hint :
-  - Philosophical , emotional (joy, sadness, life related) questions cannot be answered with available tools
+Here are a few examples of sample outputs:
+
+QUERY_EXAMPLE : "What is the use of life?"
+OUTPUT :" {{'answer' : 0 , 'reason' : "The available tools are not useful to answer the query."}}"
+
+QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint"
+OUTPUT : "{{'answer' : 1 , 'reason' : "We can use get_similar_items, prioritize_objects, get_sprint_id, add_work_items_to_sprint to solve query."}}"
+
+
+QUERY_EXAMPLE : "Search for youtube videos of user id DEVU-67"
+OUTPUT :" {{'answer' : 0 ,'reason' : "no tool is present to search for youtube videos"}}"
+
+
+QUERY_EXAMPLE : "Create a excel file of work items in the current sprint"
+OUTPUT : "{{'answer' : 0 , 'reason' : "no tool is present to create excel file"}}"
+
+Give a similar answer, reason pair for the below query. If answer is 1, tell me what all tools you would use
 
 QUERY : {query}
+
 '''
 
 critique_prompt = PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['query' ,'tools'], 
@@ -322,25 +321,3 @@ critique_prompt = PromptTemplate(template=CRITIQUE_TEMPLATE, input_variables=['q
 
 
 # ["red" , ""$$PREV[0]"]
-
-'''
-
-QUERY_EXAMPLE : "What is the use of life?"
-ANSWER : 0
-REASON : The available tools are not useful to answer the query.
-
-QUERY_EXAMPLE : "List all work items similar to TKT-420 and add the top 2 highest priority items to the current sprint"
-ANSWER : 1
-REASON : The available tools are useful to answer the query.
-
-QUERY_EXAMPLE : "Search for youtube videos of user id DEVU-67"
-ANSWER : 0
-REASON : no tool is present to search for youtube videos.
-
-QUERY_EXAMPLE : "Create a excel file of work items in the current sprint"
-ANSWER : 0
-REASON : no tool is present to create excel file.
-
-ANSWER : 
-REASON :
-'''

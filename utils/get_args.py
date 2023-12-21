@@ -62,15 +62,23 @@ def fill_signature(query:str, arg_name:str , arg_dtype: dict , arg_descr :dict, 
 def filter_arguments(query:str, arg_name , arg_descr :dict)->List[str] :
     argument_input = '\n'.join(['{name} : {descr}'.format(name = arg , descr = arg_descr[arg]) for arg in arg_name])
     response = arg_filter_chain.run({'query':query, 'arg_description':argument_input})
+    x = None
     try : 
         output = arg_filter_parser.parse(response)
         print(output)
-        return output
+        x =  output['Arguments']
     except Exception as e:
-        new_parser = OutputFixingParser.from_llm(parser=parser, llm=llm)
+        new_parser = OutputFixingParser.from_llm(parser=arg_filter_parser, llm=llm)
         output = new_parser.parse(response)
         print(output)
-        return output
+        x =  output['Arguments']
+
+    final_args = []
+    for arg in x:
+        if arg in arg_name:
+            final_args.append(arg)
+    return final_args
+
 
 
 

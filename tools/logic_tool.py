@@ -9,14 +9,10 @@ sys.path.append(os.getcwd())
 from utils.llm_utility import llm
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from utils.templates_prompts import VAR_ARGS_LOGIC_TOOL, LOGICAL_TEMPLATE
+from utils.templates_prompts import LOGICAL_TEMPLATE
 import ast
 
-prompt = PromptTemplate(
-input_variables=["query"],
-template= VAR_ARGS_LOGIC_TOOL,
-)
-extract_var_args = LLMChain(llm = llm , prompt=prompt)
+
 generate_code_prompt = PromptTemplate(template=LOGICAL_TEMPLATE, input_variables=['query' , 'language'])
 generate_code = LLMChain(llm = llm , prompt=generate_code_prompt)
 

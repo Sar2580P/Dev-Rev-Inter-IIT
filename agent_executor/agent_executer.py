@@ -141,16 +141,17 @@ class CustomAgentExecutor(AgentExecutor):
     def _check_if_answerable_with_tools(self , query:str) -> bool:
         is_query_valid = llm_critique.run({'query' : query , 'tools' : "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])})
         print('CRITIQUE : ' , is_query_valid)
-
+        output = None
         try : 
             output = critique_parser.parse(is_query_valid)
-            if int(output['answer']) ==1 :
-                return True, output['reason']
-            return False, output['reason']
-
         except OutputParserException as e:
-            print('CRTIQUE ERROR : failed to check query validity')
-            return True, None
+            new_parser = OutputFixingParser.from_llm(parser=critique_parser, llm=llm)
+            output = new_parser.parse(is_query_valid)
+
+        if int(output['answer']) ==1 :
+            return True, output['reason']
+        else :
+            return False, output['reason']
 
     #________________________________________________________________________________________________
     def create_sub_task(self, input):

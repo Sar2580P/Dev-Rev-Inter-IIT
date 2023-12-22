@@ -21,14 +21,16 @@ cot = 0
 def predict_function(query):
   agent_executor.eval()
   print('response_schema : ' , agent_executor.return_schema)
-  x = agent_executor(inputs={"input": query})
-  predict_json = agent_executor.return_schema
-  # json.dump(predict_json, open('predict.json', 'w'))
-  thought_action_observations = agent_executor.thought_execution_chain
+  with get_openai_callback() as cb:
+    x = agent_executor(inputs={"input": query})
+    predict_json = agent_executor.return_schema
+    # json.dump(predict_json, open('predict.json', 'w'))
+    thought_action_observations = agent_executor.thought_execution_chain
 
-  a =  {'thought': thought_action_observations ,'output': predict_json , }
-  json.dump(a, open('abc.json', 'w'), indent = 4)
-  return a
+    a =  {'thought': thought_action_observations ,'output': predict_json , }
+    json.dump(a, open('abc.json', 'w'), indent = 4)
+    print('\n\n\n\n\n' ,cb.total_cost)
+    return a
 
 # if __name__ == '__main__':
 #   app.run()
@@ -49,13 +51,13 @@ def predict_function(query):
 # predict_function('Prioritize my P0 issues and add them to the current sprint')
 # predict_function('Summarize high severity tickets from the customer UltimateCustomer')
 # predict_function('What are my all issues in the triage stage under part FEAT-123? Summarize them.')
-predict_function('List all high severity tickets coming in from slack from customer Cust123 and generate a summary of them.')
+# predict_function('List all high severity tickets coming in from slack from customer Cust123 and generate a summary of them.')
 # predict_function('Given a customer meeting transcript T, create action items and add them to my current sprint')
 # predict_function('MANGO MOO about my MEOW')
-
-
+# predict_function('Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them ')
+# predict_function('Get all my blocker and high severity tickets, prioritize them, and summarize them and create actionable task from summary')
 # predict_function('Prioritize my P0 issues and what is the meaning of life')
-
+# predict_function('F')
 
 def keep_digits(string):
     return re.sub(r'[^\d]+', '', string)

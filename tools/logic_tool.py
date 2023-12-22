@@ -19,9 +19,9 @@ generate_code = LLMChain(llm = llm , prompt=generate_code_prompt)
 class LogicalTool(BaseTool):
     name = "logic_tool"
     description = '''
-    THIS TOOL REQUIRES OUTPUTS OF OTHER TOOLS, I.E. IT MUST BE USED ONLY AFTER OTHER TOOLS HAVE BEEN CALLED!!!! 
-    This tool is specialised to perform logical operations on its inputs like:
-    conditional statements, while loops, addition, subtraction, iterate over lists etc.    
+    -  Use this tool, for various logical operations like conditional statements, while loops, addition, subtraction, iterate over lists etc. 
+    - The input to this tool is symbolic and the output is a pseudocode to execute the task on input.
+    - By symbolic, it means that it is in '$$PREV[i]' format, so, llm can't perform logic on it.
     '''
     
     def _run(

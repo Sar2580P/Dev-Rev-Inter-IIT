@@ -19,11 +19,11 @@ from chromadb.api.types import Documents, Embeddings
 # callbacks = [StdOutCallbackHandler(), wandb_callback]
 #_________________________________________________________________________________________
 
-small_llm = OpenAI(temperature=0.0 ,frequency_penalty = 0.1 ,n = 5 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
+# small_llm = OpenAI(temperature=0.0 ,frequency_penalty = 0.1 ,n = 5 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
 
 from langchain.chat_models import ChatOpenAI
 llm = ChatOpenAI(temperature=0, model = 'gpt-4-1106-preview')
-
+small_llm = ChatOpenAI(temperature=0, model = 'gpt-4-1106-preview')
 # llm = OpenAI(temperature=0.00 ,frequency_penalty = 0.1 ,n = 5 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
 
 embedding_func = OpenAIEmbeddings()

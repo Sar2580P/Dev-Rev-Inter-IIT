@@ -224,11 +224,11 @@ class CustomAgentExecutor(AgentExecutor):
             # ic(self.tool_gate)
             # ic(self.agent.llm_chain.prompt)
 
-            if not self.train_mode and not isinstance(output,AgentFinish):
-                self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
-                                                                user_query=inputs['input'], tool_task = output.log, wrong_tool_name=output.tool)
-                if(self.tool_gate&1 != 0):
-                    return None
+            # if not self.train_mode and not isinstance(output,AgentFinish):
+            #     self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
+            #                                                     user_query=inputs['input'], tool_task = output.log, wrong_tool_name=output.tool)
+            #     if(self.tool_gate&1 != 0):
+            #         return None
 
 
 

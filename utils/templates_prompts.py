@@ -31,7 +31,8 @@ Thought : The reason of picking the tool in process of answering user query.
 
 Action : the Tool to take , should be one of [{tool_names}]
 
-Action Input: - Your selected tool will need get its arguments filled by another agent. This agent does not have access to the query or the current output chain. PRECISELY TELL THIS AGENT HOW YOU WANT IT TO FILL THE ARGUMENTS, in natural language
+Action Input: - Your selected tool will need get its arguments filled by another agent. This agent does not have access to the query or the current output chain. 
+              - PRECISELY TELL THIS AGENT HOW YOU WANT IT TO FILL THE ARGUMENTS, in natural language, give emphasis to the argument name and its value.
               - IF you feel that this tool should needs output of other tools, you can infer their output stored in format $$PREV[i], where i is the index of the output you want to use.
 
 ... (this Thought/Action/Action Input must ONLY OCCUR ONCE)
@@ -251,7 +252,6 @@ ALERT !!!
 - Stick to information provided in the user query and description of arguments.
 - Don't pollute the argument filtering with any assumptions.
 - Make sure that there are no parsing errors.
-
 '''
 
 #____________________________________________________________________________________________________________

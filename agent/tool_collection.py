@@ -23,7 +23,7 @@ task_tools = [
     GetSimilarWorkItems(),
     WorkList() , 
     Summarize() ,
-    # LogicalTool(),
+    LogicalTool(),
     CreateActionableTasksFromText(),
     Prioritize(), 
 ]

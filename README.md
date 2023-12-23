@@ -14,8 +14,11 @@ Unset
  agent_message: "Sure, here is the list... ", 
  user_message: "Okay, can you change this list to show only those that are 
  in triage stage?", 
+
  agent_message: "Sure, this is the updated list ... ",
+
 ```
+![Screenshot 2023-12-23 080530](https://github.com/Sar2580P/Dev-Rev-Inter-IIT/assets/94839632/5aa24d37-6091-4371-bc3a-d82ba8c21760)
 
 ## Prerequisites
 Credentials
@@ -97,6 +100,8 @@ The setup can be run in 2 modes:
 ### Eval Mode : 
 * Just run predict.py on user queries
 * The past mistake memory is added to agent prompt to help it assist in avoiding similar mistakes again.
-  
+
+### PS :
+For full problem statement, we have uploaded the file.
 
 ##

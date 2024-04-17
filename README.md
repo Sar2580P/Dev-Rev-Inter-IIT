@@ -1,5 +1,4 @@
 ## Dev-Rev-Inter-IIT (Team-72)
-[Full problem statement](https://github.com/username/repository/blob/main/example.txt)
 
 Problem Statement : 
 A Language model **L** has a set of tools **T**, and a user query **Q** is given. To answer query **Q**, we 
@@ -19,6 +18,7 @@ Unset
  agent_message: "Sure, this is the updated list ... ",
 
 ```
+[Full problem statement](https://github.com/Sar2580P/Dev-Rev-Inter-IIT/blob/main/images/High_DevRev%5B1%5D.pdf)
 
 ## Prerequisites
 Credentials
@@ -101,7 +101,11 @@ The setup can be run in 2 modes:
 * Just run predict.py on user queries
 * The past mistake memory is added to agent prompt to help it assist in avoiding similar mistakes again.
 
-### PS :
-For full problem statement, we have uploaded the file.
-
 ##
+**Participating Members**
+- [Sarvagya Porwal](https://github.com/Sar2580P/Dev-Rev-Inter-IIT/blob/main/images/High_DevRev_Sarvagya%20Porwal.pdf)
+- Shorya Singla
+- Shree
+- Riya Saxena
+- Meghnath Reddy
+- Aditya Bisht

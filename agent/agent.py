@@ -1,14 +1,14 @@
 from typing import List, Optional, Sequence, Any
 from langchain.callbacks.base import BaseCallbackManager
 from langchain.schema.language_model import BaseLanguageModel
-from langchain.agents.mrkl.prompt import SUFFIX
+# from langchain.agents.mrkl.prompt import SUFFIX
 from langchain.prompts import PromptTemplate
 from langchain.tools.base import BaseTool
 from agent.tool_collection import *
 from langchain.agents.mrkl.base import ZeroShotAgent
 from agent.mistakes_selection import *
 from langchain.agents.agent import Agent, AgentOutputParser
-from utils.templates_prompts import PAST_MISTAKES ,PREFIX, FORMAT_INSTRUCTIONS
+from utils.templates_prompts import PAST_MISTAKES,PREFIX, FORMAT_INSTRUCTIONS, SUFFIX
 from agent.tool_collection import get_relevant_tools
 
 from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser

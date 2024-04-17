@@ -24,7 +24,7 @@ from langchain.output_parsers import OutputFixingParser
 class CustomAgentExecutor(AgentExecutor):
     return_schema :List[Dict] = []   # added by me
     tool_count : int = 0             # added by me
-    train_mode : bool = True      # added by me
+    train_mode : bool = False      # added by me
     checkpoints = {}                 # added by me
     true_tools : List[str] = None                 # added by me
     correct_trajectory : List[Dict] = []            # added by me
@@ -215,6 +215,8 @@ class CustomAgentExecutor(AgentExecutor):
             ic(inputs , intermediate_steps , output , self.train_mode)
             print("\033[1;35;40m {} \033[0m" .format('inside _take_next_step , agent.plan completed ...'))
 
+            if isinstance(output, AgentFinish):
+                return output
 
             if output.tool == "NONE":
                 output = AgentFinish(return_values = {'output':'Agent trying to use more tools than in ground truth.\nHence, Aborting Agent Execution ...'} ,

@@ -15,34 +15,26 @@ DO  NOT TAKE CONTEXT FROM ABOVE QUERIES.
 '''
 PREFIX = """
 Below are the tools in your tool-kit along with their description to help you decide on tool choice.
+
 """
+SUFFIX = """Begin!
 
+Question: {input}
+Thought:{agent_scratchpad}"""
 #____________________________________________________________________________________________________________
-FORMAT_INSTRUCTIONS = """
-ALERT !!!
-  - The Thought-Action-Observation repeats until we feel that agent has completely answered the user query.
-  - Each time this process repeates, you need to write some reason in Thought of choosing a particular tool.
 
-Use the following format:
+FORMAT_INSTRUCTIONS = """Use the following format:
 
 Question: the input question you must answer
-
-Thought : The reason of picking the tool in process of answering user query.
-
-Action : the Tool to take , should be one of [{tool_names}]
-
-Action Input: - Your selected tool will need get its arguments filled by another agent. This agent does not have access to the query or the current output chain. 
-              - PRECISELY TELL THIS AGENT HOW YOU WANT IT TO FILL THE ARGUMENTS, in natural language, give emphasis to the argument name and its value.
-              - IF you feel that this tool should needs output of other tools, you can infer their output stored in format $$PREV[i], where i is the index of the output you want to use.
-
-... (this Thought/Action/Action Input must ONLY OCCUR ONCE)
+Thought: you should always think about what to do
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
 
 
-Note that it is possible that the query has been successfully answered and no further tool calls are required
-In this case return:
-Thought: Task has been completed
-Action: NONE
-Action Input: Task complete
 """
 
 # ===================================================================================================================================================================================================
@@ -225,13 +217,14 @@ FORMAT INSTRUCTIONS --->
   - Ensure that the argument value is in correct data type before returning.
   - If the argument value is not explicitly present in the query, then return "NONE".
 
-ALERT !!!
-- If the Query contains specific keywords like $$PREV[i], where i is the index of the output you want to use, 
-          then it is a symbolic representation of the output and is NOT THE ACTUAL OUTPUT
-- use $$PREV[i] as whole and don't pass invalid representation like "$$PREV" OR "$$PREV[]" or i
-
 ANSWER :
 '''
+
+# ALERT !!!
+# - If the Query contains specific keywords like $$PREV[i], where i is the index of the output you want to use, 
+#           then it is a symbolic representation of the output and is NOT THE ACTUAL OUTPUT
+# - use $$PREV[i] as whole and don't pass invalid representation like "$$PREV" OR "$$PREV[]" or i
+
 
 #____________________________________________________________________________________________________________
 

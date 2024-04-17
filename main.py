@@ -35,29 +35,21 @@ def predict_function(query):
 # if __name__ == '__main__':
 #   app.run()
 
-# predict_function('If $$PREV[0] is greater than $$PREV[1] then return 1 else return 3')
-# predict_function('Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them.')
-# predict_function('List all high severity tickets coming in from slack from customer abc123 and generate a summary of them.')
-# predict_function('How is life going?')
-# predict_function('How crocodiles give birth?')
-# predict_function('Prioritize all tickets from the support channel "Email"')
-# predict_function('Prioritise my p0 issues')
+
 
 
 # Dataset Queries:
+# predict_function('Prioritize all tickets from the support channel "Email"')  #
+# predict_function('Summarize issues similar to don:core:dvrv-us-1:devo/0:issue/1')  # 
+# predict_function('What is the meaning of life?')   #
+# predict_function('List all high severity tickets coming in from slack from customer Cust123 and generate a summary of them.')  #
+# predict_function('Prioritize my P0 issues and add them to the current sprint')    #
+# predict_function('How crocodiles give birth?')  #
+# predict_function('Summarize high severity tickets from the customer UltimateCustomer')   #
+# predict_function('Prioritize my P0 issues and what is the meaning of life')   #
+# predict_function('Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them ')  #
+# predict_function('Get all my blocker and high severity tickets, prioritize them, and summarize them and create actionable task from summary') #
 
-# predict_function('Summarize issues similar to don:core:dvrv-us-1:devo/0:issue/1') 
-# predict_function('What is the meaning of life?')
-# predict_function('Prioritize my P0 issues and add them to the current sprint')
-# predict_function('Summarize high severity tickets from the customer UltimateCustomer')
-# predict_function('What are my all issues in the triage stage under part FEAT-123? Summarize them.')
-# predict_function('List all high severity tickets coming in from slack from customer Cust123 and generate a summary of them.')
-# predict_function('Given a customer meeting transcript T, create action items and add them to my current sprint')
-# predict_function('MANGO MOO about my MEOW')
-# predict_function('Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them ')
-# predict_function('Get all my blocker and high severity tickets, prioritize them, and summarize them and create actionable task from summary')
-# predict_function('Prioritize my P0 issues and what is the meaning of life')
-# predict_function('F')
 
 def keep_digits(string):
     return re.sub(r'[^\d]+', '', string)
@@ -94,3 +86,20 @@ def parser(arguments_dict,function_signatures):
                             arguments_dict[key]=[values]
 
     return arguments_dict
+
+
+
+
+
+
+
+
+
+# predict_function('What are my all issues in the triage stage under part FEAT-123? Summarize them.')
+# predict_function('Given a customer meeting transcript T, create action items and add them to my current sprint')
+# predict_function('MANGO MOO about my MEOW')
+# predict_function('If $$PREV[0] is greater than $$PREV[1] then return 1 else return 3')
+# predict_function('Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them.')
+# predict_function('List all high severity tickets coming in from slack from customer abc123 and generate a summary of them.')
+# predict_function('How is life going?')
+# predict_function('Prioritise my p0 issues')

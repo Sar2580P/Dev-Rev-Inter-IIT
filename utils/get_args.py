@@ -2,7 +2,7 @@ import sys , os
 sys.path.append(os.getcwd())
 from typing import List, Union, Any, Dict
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain.chains.llm import LLMChain
 from utils.llm_utility import llm, small_llm
 from memory.tool_memory import retrieve_tool_experience
 from utils.templates_prompts import TOOLS_PROMPT_EXAMPLES, ARG_FILTER_PROMPT
@@ -29,7 +29,6 @@ arg_extraction_prompt = PromptTemplate(template=TOOLS_PROMPT_EXAMPLES ,
 
 signature_chain = LLMChain(llm = small_llm, prompt = arg_extraction_prompt , verbose=False)
 
-
 arg_filter_prompt = PromptTemplate(template=ARG_FILTER_PROMPT,
                                    input_variables=['query', 'arg_description'],
                                    partial_variables={"format_instructions": arg_filter_parser.get_format_instructions()}
@@ -42,8 +41,10 @@ arg_filter_chain = LLMChain(llm = small_llm, prompt = arg_filter_prompt , verbos
 def fill_signature(query:str, arg_name:str , arg_dtype: dict , arg_descr :dict, tool_name:str)->Dict[str,Any] :
     if(len(query.strip('\n').strip().split()) == 1):
         return query
-    extracted_args = signature_chain.run({'arg_description':arg_descr,'arg_dtype':arg_dtype, 'user_query':query})
     
+    print('inside fill_signature... @@@@@@@@@@@@@@@@@@@@')
+    extracted_args = signature_chain.run({'arg_description':arg_descr,'arg_dtype':arg_dtype, 'user_query':query})
+    print('extracted_args is : ',extracted_args)
     extracted_args =  extracted_args.strip('\n').strip(' ')
     extracted_args = re.sub(r'""', '"',extracted_args)
     
@@ -60,6 +61,7 @@ def fill_signature(query:str, arg_name:str , arg_dtype: dict , arg_descr :dict, 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 def filter_arguments(query:str, arg_name , arg_descr :dict)->List[str] :
+    print('inside filter arguments...')
     argument_input = '\n'.join(['{name} : {descr}'.format(name = arg , descr = arg_descr[arg]) for arg in arg_name])
     response = arg_filter_chain.run({'query':query, 'arg_description':argument_input})
     x = None

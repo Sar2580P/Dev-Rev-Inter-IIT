@@ -8,7 +8,7 @@ from evaluator import *
 
 #__________________________________________________________________________________________________________________________
 
-tool_database = Chroma(embedding_function = embedding_func, persist_directory= 'database/tool_mistake_db' , 
+tool_database = Chroma(embedding_function = embedder, persist_directory= 'database/tool_mistake_db' , 
                                 relevance_score_fn='similarity_search_with_score')
 tool_mistake_memory = Memory(k=2, vector_db=tool_database)
 

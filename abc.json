@@ -1,56 +1,6 @@
 {
     "thought": [
-        "Thought: The query contains personal pronouns \"my\" indicating the need to identify the user. The user wants to retrieve their tickets with 'blocker' and 'high' severity, prioritize them, summarize the information, and create actionable tasks from the summary. The first step is to identify the user with the 'who_am_i' tool.\n\nAction: who_am_i\n\nAction Input: Since the user has used personal pronouns like \"my\" in the query, please use the 'who_am_i' tool to return the user_id of the person being referred to in the query.",
-        "Thought: The 'who_am_i' tool has been used to identify the user. Now, with the user_id obtained, we can proceed to retrieve the user's tickets with 'blocker' and 'high' severity using the 'works_list' tool. We need to filter the work items by the user_id for 'owned_by', and by 'ticket.severity' for both 'blocker' and 'high'.\n\nAction: works_list\n\nAction Input: Please use the 'works_list' tool with the following arguments: set 'owned_by' to the user_id obtained from the previous output ($$PREV[0]), and 'ticket.severity' to both 'blocker' and 'high'. If possible, combine the results for both severities into a single list.",
-        "Thought: Now that we have the list of tickets with 'blocker' and 'high' severity owned by the user, the next step is to prioritize these tickets as requested. We will use the 'prioritize_objects' tool to sort the tickets based on their importance.\n\nAction: prioritize_objects\n\nAction Input: Use the 'prioritize_objects' tool to prioritize the list of tickets obtained from the previous output ($$PREV[1]). The tickets should be sorted based on their severity, with 'blocker' tickets being more critical than 'high' severity tickets.",
-        "Thought: Now that we have the prioritized list of tickets, the next step is to summarize this information. We will use the 'summarize_objects' tool to create a summary of the prioritized tickets.\n\nAction: summarize_objects\n\nAction Input: Use the 'summarize_objects' tool to summarize the list of prioritized tickets obtained from the previous output ($$PREV[2]). We need a concise summary that captures the key information from these tickets.",
-        "Thought: With the summary of the prioritized tickets in hand, the final step is to create actionable tasks from this summary as per the user's request. We will use the 'create_actionable_tasks_from_text' tool to extract actionable insights and create tasks.\n\nAction: create_actionable_tasks_from_text\n\nAction Input: Use the 'create_actionable_tasks_from_text' tool to extract actionable tasks from the summary provided in the previous output ($$PREV[3]). The tasks should be clear and directly related to the issues described in the summary.",
-        "I now know the final answer.\nFinal Answer : Consecutive same tool calls , so aborting thought..."
+        "The available tools are not useful to answer the query."
     ],
-    "output": [
-        {
-            "tool_name": "who_am_i",
-            "arguments": []
-        },
-        {
-            "tool_name": "works_list",
-            "arguments": [
-                {
-                    "argument_name": "ticket.severity",
-                    "argument_value": "['blocker', 'high']"
-                },
-                {
-                    "argument_name": "owned_by",
-                    "argument_value": "[\"$$PREV[0]\"]"
-                }
-            ]
-        },
-        {
-            "tool_name": "prioritize_objects",
-            "arguments": [
-                {
-                    "argument_name": "objects",
-                    "argument_value": "[$$PREV[1]]"
-                }
-            ]
-        },
-        {
-            "tool_name": "summarize_objects",
-            "arguments": [
-                {
-                    "argument_name": "objects",
-                    "argument_value": "$$PREV[2]"
-                }
-            ]
-        },
-        {
-            "tool_name": "create_actionable_tasks_from_text",
-            "arguments": [
-                {
-                    "argument_name": "text",
-                    "argument_value": "$$PREV[3]"
-                }
-            ]
-        }
-    ]
+    "output": []
 }

@@ -1,7 +1,8 @@
 ## Dev-Rev-Inter-IIT (Team-72)
+[Full problem statement](https://github.com/username/repository/blob/main/example.txt)
 
 Problem Statement : 
-A Language model L has a set of tools T, and a user query Q is given. To answer query Q, we 
+A Language model **L** has a set of tools **T**, and a user query **Q** is given. To answer query **Q**, we 
  need to use existing tools. You need to output the subset of tools to be used to answer the 
  query, the arguments that these tools should be called with, and how to compose the tools to 
  answer the query. The query is conversational, like so 
@@ -18,7 +19,6 @@ Unset
  agent_message: "Sure, this is the updated list ... ",
 
 ```
-![Screenshot 2023-12-23 080530](https://github.com/Sar2580P/Dev-Rev-Inter-IIT/assets/94839632/5aa24d37-6091-4371-bc3a-d82ba8c21760)
 
 ## Prerequisites
 Credentials

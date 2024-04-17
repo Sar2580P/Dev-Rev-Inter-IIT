@@ -10,9 +10,7 @@ from utils.get_args import fill_signature
 class SearchObjectByName(BaseTool):
     name = "search_object_by_name"
     description = '''
-    - This tool is useful for searching an object by its name. It returns the id of the object.
-   - Given a search string,it is used to return the identity (id), whenever a name of a customer/user/person is present.
-   - If multiple matches are found, it returns the one where the confidence is highest.  
+        The tool is useful to find the id of the object by searching the object name or customer name.
     '''
 
     bag_of_words = set(["customer", "customer name", "username", "user", "part name"])
@@ -37,7 +35,11 @@ class SearchObjectByName(BaseTool):
                 'argument_name': key,
                 'argument_value': arg_description[key],
             }
+            print('arg_dtype is : ',arg_dtype)
+            print('arg_descr is : ',arg_descr)
             x = fill_signature(query = query, arg_name = key , arg_dtype = arg_dtype , arg_descr = arg_descr, tool_name = self.name)
+            print('x is : ',x)
+            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
             if x is not None:
                 li.append({
                     'argument_name': key,

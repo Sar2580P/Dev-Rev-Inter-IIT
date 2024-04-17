@@ -6,7 +6,9 @@ from langchain.callbacks import StdOutCallbackHandler, WandbCallbackHandler
 from datetime import datetime
 from langchain.embeddings import OpenAIEmbeddings
 from chromadb.api.types import Documents, Embeddings
-
+import os
+import warnings
+warnings.filterwarnings("ignore")
 
 # session_group = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
 # wandb_callback = WandbCallbackHandler(
@@ -21,12 +23,20 @@ from chromadb.api.types import Documents, Embeddings
 
 # small_llm = OpenAI(temperature=0.0 ,frequency_penalty = 0.1 ,n = 5 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
 
-from langchain.chat_models import ChatOpenAI
-llm = ChatOpenAI(temperature=0, model = 'gpt-4-1106-preview')
-small_llm = ChatOpenAI(temperature=0, model = 'gpt-4-1106-preview')
-# llm = OpenAI(temperature=0.00 ,frequency_penalty = 0.1 ,n = 5 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
+# from langchain.chat_models import ChatOpenAI
+# llm = ChatOpenAI(temperature=0, model = 'gpt-4-1106-preview')
+# small_llm = ChatOpenAI(temperature=0, model = 'gpt-4-1106-preview')
+# # llm = OpenAI(temperature=0.00 ,frequency_penalty = 0.1 ,n = 5 ,max_tokens=1000,  model="gpt-3.5-turbo-instruct")
 
-embedding_func = OpenAIEmbeddings()
+# embedding_func = OpenAIEmbeddings()
+import google.generativeai as genai
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+
+genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.1)
+small_llm = llm
+embedder = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+
 
 #_________________________________________________________________________________________
 def load_config(CONFIG_PATH):

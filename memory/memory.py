@@ -34,7 +34,7 @@ class Memory():
         self.queue = Queue(maxsize=10)
 
 
-V_db = Chroma(embedding_function = embedding_func, persist_directory= 'database/agent_mistakes_db' , 
+V_db = Chroma(embedding_function = embedder, persist_directory= 'database/agent_mistakes_db' , 
                                 relevance_score_fn='similarity_search_with_score')
 
 mistake_memory:Memory = Memory(k=3,vector_db=V_db)

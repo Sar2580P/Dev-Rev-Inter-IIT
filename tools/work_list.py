@@ -8,12 +8,7 @@ from utils.get_args import *
 from utils.llm_utility import llm
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 
-
-class WorkList(BaseTool):
-    name = "works_list"
-    description = '''
-    - This tool can search and return the relevant work-items on the basis of various search filters.
-    - Below are the arguments present which can be used to filter the work-items .
+'''
     - Whenever the query contains below arguments as keywords, give this tool a try.
     
     Following are the possible arguments with their description that the tool can take -->
@@ -29,6 +24,16 @@ class WorkList(BaseTool):
         - 'ticket.severity': Accessing work items on the basis of ticket severity. MUST BE ONE OF --> 'blocker' , 'high' , 'medium' , 'low',
         - 'ticket.source_channel': Accessing the work-items with tickets belonging to the provided source channel
         - 'type': Accessing work-items on the basis of type, MUST BE one of --> 'issues', 'ticket' , 'task'
+'''
+class WorkList(BaseTool):
+    name = "works_list"
+    description = '''
+    - This tool can search and return the work-items on the basis of various search filters.
+    - The available search filters are -->
+        - part of work-item, the priority of the issue, the stage of the work-item, 
+        - the creator or owner of the work-item , customer-id, severity of the ticket , source channel of the ticket
+        - ticket , limit the count of returned work-items etc.
+
     '''
 
     def _run(
@@ -70,7 +75,7 @@ class WorkList(BaseTool):
 
         signature = {
                     'applies_to_part' : List[str] ,
-                    'created_by': List[str] ,
+                    'customer_id': List[str] ,
                     'issue.rev_orgs': List[str] ,
                     'owned_by': List[str] ,
                     'ticket.needs_response': bool ,
@@ -80,7 +85,7 @@ class WorkList(BaseTool):
         
         arg_description = {
          'applies_to_part': 'for accessing work items applicable to a particular part of the project.',
-         'created_by': 'for accessing the work items created by a particular person.',
+         'customer_id': 'for accessing the work items created by the id of the person/customer.',
          'issue.priority':' For accessing work_items with issues of a particular priority. Can be either of types --> "p0" , "p1" , "p2".' ,
          'issue.rev_orgs': 'For accessing the work-items with issues of provided rev_orgs.',
          'limit' : 'Limiting the maximum no. of work items to return back, DEFAULT : "all" ',

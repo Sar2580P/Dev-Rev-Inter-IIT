@@ -103,6 +103,7 @@ The setup can be run in 2 modes:
 
 ##
 **Participating Members**
+- Kshitiz Kaushik
 - [Sarvagya Porwal](https://github.com/Sar2580P/Dev-Rev-Inter-IIT/blob/main/images/High_DevRev_Sarvagya%20Porwal.pdf)
 - Shorya Singla
 - Shree
